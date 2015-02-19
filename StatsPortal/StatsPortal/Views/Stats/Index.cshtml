@@ -1,0 +1,18 @@
+﻿@model IEnumerable<String>
+@{
+    ViewBag.Title = "Index";
+}
+
+@if (Model != null)
+{
+
+    <h2>Visualization Menu</h2>
+    <ul>
+        @foreach (var domainName in Model)
+        {
+            <li>@Html.ActionLink(domainName + " Matching Stats.", "Matching", new { @domain = domainName })</li>
+        }
+    </ul>
+}
+
+

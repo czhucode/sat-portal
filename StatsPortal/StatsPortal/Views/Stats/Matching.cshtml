@@ -1,0 +1,88 @@
+﻿@model IEnumerable<StatsPortal.Models.MatchingStats>
+
+@{
+    ViewBag.Title = "Matching";
+}
+
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<div class="jumbotron">
+    <h3>@Model.First().Domain Matching</h3>
+
+    <div id="visualization">
+    </div>
+    <hr />
+    <div id="regions_div"></div>
+</div>
+
+<script type="text/javascript">
+    google.load("visualization", "1", { packages: ["geochart"] });
+    google.setOnLoadCallback(drawRegionsMap);
+
+    function drawRegionsMap() {
+
+        var data = google.visualization.arrayToDataTable([
+          ['Country', 'Matched %'],
+          ['GB', 99.49],
+          ['US', 99.7],
+          ['BR', 98.18],
+          ['CA', 100.0],
+          ['FR', 98.56],
+          ['RU', 93.06],
+          ['HK', 93.1],
+          ['PH', 89.29],
+          ['BD', 83.33],
+          ['AZ', 80.0],
+          ['CN', 90.62]
+        ]);
+
+        var options = {};
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+        chart.draw(data, options);
+    }
+</script>
+
+<script>
+    // Load the Visualization API and the piechart package.
+    google.load('visualization', '1.0', { 'packages': ['corechart'] });
+
+    google.setOnLoadCallback(drawChart);
+    var dataValues = @Html.Raw(Json.Encode(Model));
+
+    function drawChart() {
+
+        // Create the data table.
+        var data = new google.visualization.DataTable();
+
+        data.addColumn('date', 'Date');
+        data.addColumn('number', 'Total Matched %');
+        data.addColumn('number', 'Name Matched %');
+        data.addColumn('number', 'Birthyear Matched %');
+        data.addColumn('number', 'Email Matched %');
+
+        for (var i = 0; i < dataValues.length; i++) {
+            data.addRow([new Date(parseInt(dataValues[i].Date.match(/\d+/))), dataValues[i].MatchedPercentage, dataValues[i].PercentageName, dataValues[i].PercentageBirthyear, dataValues[i].PercentageEmail]);
+        }
+
+        // Set chart options
+        var options = {
+            title: '@Model.First().Domain' + ' Matching Stats',
+            curveType: 'function',
+            legend: { position: 'bottom' },
+            vAxis: {
+                title: "Percentage",
+                viewWindowMode: 'explicit',
+                viewWindow: {
+                    max: 105,
+                    min: 0
+                }
+            }
+        };
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.LineChart(document.getElementById('visualization'));
+        chart.draw(data, options);
+    }
+</script>
