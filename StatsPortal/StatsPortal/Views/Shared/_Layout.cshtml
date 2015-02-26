@@ -5,42 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - comScore Portal</title>
     @Styles.Render("~/Content/css")
+    <style type="text/css">
+        footer {
+            padding: 15px;
+        }
+        .padding-top-15 {
+            padding-top: 15px;
+        }
+        .nav-sidebar {
+            /*background-color: #F8F8F8;*/
+        }
+        #snippet_combo_chart {
+            min-height: 400px;
+            min-width: 400px;
+        }
+        #snippet_keyword_chart {
+            min-height: 400px;
+            min-width: 400px;
+        }
+    </style>
     @Scripts.Render("~/bundles/modernizr")
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     @Scripts.Render("~/bundles/site")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("comScore Webportal", "Index", "Home", null, new { @class = "navbar-brand" })
+ 
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">SAT Web Portal</a>
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="#">Dashboard</a></li>
+                        <li><a href="#">Settings</a></li>
+                        <li><a href="#">Profile</a></li>
+                        <li><a href="#">Help</a></li>
+                    </ul>
+                    <form class="navbar-form navbar-right">
+                        <input type="text" class="form-control" placeholder="Search...">
+                    </form>
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+        </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar padding-top-15">
+                <ul class="nav nav-sidebar">
+                    <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Analytics</a></li>
+                    <li><a href="#">Export</a></li>
                 </ul>
-                @Html.Partial("_LoginPartial")
+                <ul class="nav nav-sidebar">
+                    <li><a href="">Nav item</a></li>
+                    <li><a href="">Nav item again</a></li>
+                    <li><a href="">One more nav</a></li>
+                    <li><a href="">Another nav item</a></li>
+                    <li><a href="">More navigation</a></li>
+                </ul>
+                <ul class="nav nav-sidebar">
+                    <li><a href="">Nav item again</a></li>
+                    <li><a href="">One more nav</a></li>
+                    <li><a href="">Another nav item</a></li>
+                </ul>
             </div>
+            <div class="col-sm-9 col-md-10 main">
+                
+                @RenderBody()
+                
+            </div>
+             
         </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
+        
+
         <footer>
             <p>&copy; @DateTime.Now.Year - comScore Webportal</p>
         </footer>
-    </div>
 
+    </div>
+    
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+                @Scripts.Render("~/bundles/bootstrap")
+                @RenderSection("scripts", required: false)
+
 </body>
 </html>

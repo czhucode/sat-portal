@@ -1,0 +1,65 @@
+﻿@model IEnumerable<StatsPortal.Models.SnippetModel>
+
+@{
+    ViewBag.Title = "Snippet";
+}
+
+
+    <h1 class="page-header">Snippet Parsing Stats</h1>
+
+    <div id="snippet_combo_chart"></div>
+<hr />
+
+<div class="row">
+
+    <div id="snippet_keyword_chart" class="col-md-9"></div>
+    
+    <div class="dropdown col-md-3">
+        
+        <div class="col-md-12">
+            
+            <h4>Domain/Keywords:</h4>
+            <select class="form-control" id="snippet_keyword_bar_chart_dropdown">
+                <option>Amazon</option>
+                <option>Aol</option>
+                <option>Ebay</option>
+                <option>Facebook</option>
+                <option>Google</option>
+                <option>Yahoo</option>
+                <option>YouTube</option>
+            </select>
+
+            <br />
+        </div>
+        <div id="snippet_keyword_list" class="col-md-12">
+            
+        </div>
+        
+        <br />
+
+        <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
+        <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
+        
+        <br /><br />
+
+        <button type="button" class="btn btn-primary" id="snippet_keyword_bar_chart_button">Populate</button>
+    </div>
+</div>
+    <hr />
+   @* <div id="regions_div"></div>*@
+
+
+<script type="text/javascript">
+    var dataValues = @Html.Raw(Json.Encode(Model));
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawSnippetCombo);
+
+    google.load("visualization", "1", {packages:["corechart"]});
+    google.setOnLoadCallback(drawSnippetKeywordBar(dataValues));
+
+    //alert(dataValues);
+
+    //google.load("visualization", "1", { packages: ["geochart"] });
+    //google.setOnLoadCallback(drawRegionsMap);
+</script>
+
