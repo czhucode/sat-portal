@@ -93,29 +93,87 @@ function drawSnippetKeywordBar(dataValues) {
 
     var data = new google.visualization.DataTable();
 
-    data.addColumn('string', 'Keyword');
-    data.addColumn('number', 'Counted');
-    data.addColumn('number', 'Parsed');
- 
-    for (var i = 0; i < dataValues.length; i++) {
-        if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
+    if (document.getElementById('keyword_raw_counts').checked) {
 
-            if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
-                data.addRow([dataValues[i].Keyword, dataValues[i].LastDayTotalCount, dataValues[i].LastDayTotalParsed]);
+        data.addColumn('string', 'Keyword');
+        data.addColumn('number', 'Counted');
+        data.addColumn('number', 'Parsed');
+
+        for (var i = 0; i < dataValues.length; i++) {
+            if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
+
+                if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
+                    data.addRow([dataValues[i].Keyword, dataValues[i].TotalCount, dataValues[i].TotalParsed]);
+                }
             }
         }
+
+        var options = {
+            title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
+            bars: 'horizontal', // Required for Material Bar Charts.
+            //height: (data.getNumberOfRows() * 50)
+        }
+
+        var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart"));
+
+        chart.draw(data, options);
     }
 
-    var options = {
-        title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
-        bars: 'horizontal', // Required for Material Bar Charts.
-        //height: (data.getNumberOfRows() * 50)
+    else if (document.getElementById('keyword_percentages').checked) {
+        data.addColumn('string', 'Keyword');
+        data.addColumn('number', 'Percent Parsed');
+
+        for (var i = 0; i < dataValues.length; i++) {
+            if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
+
+                if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
+                    data.addRow([dataValues[i].Keyword, (dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100]);
+                }
+            }
+        }
+
+        var options = {
+            title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
+            bars: 'horizontal', // Required for Material Bar Charts.
+            //height: (data.getNumberOfRows() * 50)
+        }
+
+        var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart"));
+
+        chart.draw(data, options);
     }
 
-    var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart"));
 
-    chart.draw(data, options);
 }
+
+//function drawSnippetKeywordBarPercent(dataValues) {
+
+//    var data = new google.visualization.DataTable();
+
+//    data.addColumn('string', 'Keyword');
+//    data.addColumn('number', 'Percent Parsed');
+
+//    for (var i = 0; i < dataValues.length; i++) {
+//        if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
+
+//            if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
+//                console.log((dataValues[i].LastDayTotalParsed / dataValues[i].LastDayTotalCount) * 100);
+//                data.addRow([dataValues[i].Keyword, (dataValues[i].LastDayTotalParsed / dataValues[i].LastDayTotalCount) * 100]);
+//            }
+//        }
+//    }
+
+//    var options = {
+//        title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
+//        bars: 'horizontal', // Required for Material Bar Charts.
+//        //height: (data.getNumberOfRows() * 50)
+//    }
+
+//    var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart_percent"));
+
+//    chart.draw(data, options);
+//}
+
 
 function getNewKeywords(domainName) {
     
@@ -175,6 +233,10 @@ $(document).ready(function () {
     $("#snippet_keyword_list").html(snippetCheckboxInitPopulate);
 
 
+    $("#keyword_raw_counts, #keyword_percentages").change(function() {
+        console.log("Button changed");
+        drawSnippetKeywordBar(dataValues);
+    });
 
     $("#snippet_keyword_bar_chart_dropdown").change(function () {
         var newKeywords = getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase());

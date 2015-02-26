@@ -18,6 +18,16 @@
         
         <div class="col-md-12">
             
+            <div class="radio">
+                <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
+            </div>
+            
+            <div class="radio">
+                <label><input type="radio" name="optradio" id="keyword_percentages">Percentages</label>
+            </div>
+            
+            <br />
+            
             <h4>Domain/Keywords:</h4>
             <select class="form-control" id="snippet_keyword_bar_chart_dropdown">
                 <option>Amazon</option>
@@ -45,7 +55,13 @@
         <button type="button" class="btn btn-primary" id="snippet_keyword_bar_chart_button">Populate</button>
     </div>
 </div>
-    <hr />
+
+<div class="row">
+    
+    <div id="snippet_keyword_chart_percent"></div>
+    
+</div>
+<hr />
    @* <div id="regions_div"></div>*@
 
 
@@ -56,6 +72,9 @@
 
     google.load("visualization", "1", {packages:["corechart"]});
     google.setOnLoadCallback(drawSnippetKeywordBar(dataValues));
+
+    //google.load("visualization", "1", {packages:["corechart"]});
+    //google.setOnLoadCallback(drawSnippetKeywordBarPercent(dataValues));
 
     //alert(dataValues);
 

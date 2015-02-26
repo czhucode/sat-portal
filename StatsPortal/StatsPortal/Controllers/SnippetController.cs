@@ -18,7 +18,7 @@ namespace StatsPortal.Controllers
             if (stats.Length == 0)
             {
                 string[] lines =
-                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_test_data_large.txt");
+                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_large.txt");
 
                 stats = new SnippetModel[lines.Length];
 
@@ -30,21 +30,13 @@ namespace StatsPortal.Controllers
 
                     stats[i].Domain = fields[0];
                     stats[i].Keyword = fields[1];
-                    stats[i].Date = DateTime.ParseExact(fields[2], "yyyyMMdd", CultureInfo.InvariantCulture,
-                        DateTimeStyles.None);
-                    stats[i].AvgTotalCount90 = Convert.ToInt64(fields[3]);
-                    stats[i].AvgTotalParsed90 = Convert.ToInt64(fields[4]);
-                    stats[i].AvgTotalCount60 = Convert.ToInt64(fields[5]);
-                    stats[i].AvgTotalParsed60 = Convert.ToInt64(fields[6]);
-                    stats[i].AvgTotalCount30 = Convert.ToInt64(fields[7]);
-                    stats[i].AvgTotalParsed30 = Convert.ToInt64(fields[8]);
-                    stats[i].LastDayTotalCount = Convert.ToInt64(fields[9]);
-                    stats[i].LastDayTotalParsed = Convert.ToInt64(fields[10]);
-                    stats[i].PercentEmailParsed = Convert.ToDouble(fields[11]);
-                    stats[i].PercentGenderParsed = Convert.ToDouble(fields[12]);
-                    stats[i].PercentBirthyearParsed = Convert.ToDouble(fields[13]);
-                    stats[i].PercentNameParsed = Convert.ToDouble(fields[14]);
-                    stats[i].PercentUsernameParsed = Convert.ToDouble(fields[15]);
+                    stats[i].TotalCount = Convert.ToInt64(fields[2]);
+                    stats[i].TotalParsed = Convert.ToInt64(fields[3]);
+                    stats[i].EmailParsed = Convert.ToInt64(fields[4]);
+                    stats[i].GenderParsed = Convert.ToInt64(fields[5]);
+                    stats[i].BirthyearParsed = Convert.ToInt64(fields[6]);
+                    stats[i].NameParsed = Convert.ToInt64(fields[7]);
+                    stats[i].UsernameParsed = Convert.ToInt64(fields[8]);
                 }
             }
         }
