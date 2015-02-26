@@ -17,7 +17,7 @@ namespace StatsPortal.Controllers
             if (stats.Length == 0)
             {
                 string[] lines =
-                    System.IO.File.ReadAllLines(@"C:\Users\asouza\Documents\linkedin_stats\LinkedinMatchingStats.txt");
+                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\LinkedinMatchingStats.txt");
 
                 stats = new MatchingStats[lines.Length];
 
@@ -47,7 +47,7 @@ namespace StatsPortal.Controllers
         // GET: /Stats/
         public ActionResult Index()
         {
-            var domains = new List<String> { "LinkedIn", "Facebook", "Google" };
+            var domains = new List<String> { "LinkedIn"};
 
             return View(domains);
         }

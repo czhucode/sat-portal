@@ -68,17 +68,17 @@ function drawSnippetCombo() {
 
     // Some raw data (not necessarily accurate)
     var data = google.visualization.arrayToDataTable([
-        ['Month', 'Facebook', 'YouTube', 'OK', 'Google', 'Yahoo', 'Average'],
-        ['20150221', 14395510, 5264235, 585697, 6501418, 959420, 5541256],
-        ['20150222', 14370066, 5250954, 594153, 6486588, 958776, 5532107.4],
-        ['20150223', 14338534, 5242056, 602801, 6463323, 953046, 5519952],
-        ['20150224', 14322129, 4381712, 612171, 6446516, 951796, 5342864.8],
-        ['20150225', 14317169, 5217820, 620723, 6435730, 950833, 5508455]
+        ['Month', 'Name', 'Username', 'Gender', 'Email', 'Birthyear'],
+        ['20150221', 14395510, 5264235, 585697, 6501418, 959420],
+        ['20150222', 14370066, 5250954, 594153, 6486588, 958776],
+        ['20150223', 14338534, 5242056, 602801, 6463323, 953046],
+        ['20150224', 14322129, 4381712, 612171, 6446516, 951796],
+        ['20150225', 14317169, 5217820, 620723, 6435730, 950833]
     ]);
 
     var options = {
-        title: 'Snippet Daily Parsing Stats',
-        vAxis: { title: "Avg_TotalCount_90days" },
+        title: '' + capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value) + ' Snippet Daily Parsing Stats',
+        vAxis: { title: "Count" },
         hAxis: { title: "Date" },
         seriesType: "bars",
         series: { 5: { type: "line" } }

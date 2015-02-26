@@ -18,7 +18,7 @@ namespace StatsPortal.Controllers
             if (stats.Length == 0)
             {
                 string[] lines =
-                    System.IO.File.ReadAllLines(@"C:\Users\cpearce\Documents\Projects\web_portal\local_test\snippet_test_data_large.txt");
+                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_test_data_large.txt");
 
                 stats = new SnippetModel[lines.Length];
 
