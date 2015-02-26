@@ -6,9 +6,18 @@
     <title>@ViewBag.Title - comScore Portal</title>
     @Styles.Render("~/Content/css")
     <style type="text/css">
-        footer {
-            padding: 15px;
+        body {
+            height: 100%;
         }
+         footer {
+             padding: 15px;
+         }
+
+         h6 {
+             font-weight: bold;
+             padding: 3px;
+             font-size: 14px;
+         }
         .padding-top-15 {
             padding-top: 15px;
         }
@@ -19,7 +28,45 @@
             min-height: 400px;
             min-width: 400px;
         }
+        #snippet_nav_wrapper {
+            width: 18%;
+            position: fixed;
+            bottom: -1px;
+            right: 0px;
+            z-index: 10;
+        } 
+        #toggle_snippet_nav {
+            position: absolute;
+            bottom: -50px;
+            right: 10%;
+            /*height: 1%;*/
+            text-align: right;
+            z-index: 11;
+        } 
+        #snippet_nav {
+            position: relative;
+            bottom: 0px;
+            right: 0px;
+            width: 100%;
+            min-width: 150px;
+            padding: 10px;
+            background: #f2f2f2;
+            border: 1px solid #5a5a5a;
+        }
 
+        #toggle_snippet_in_menu {
+            width: 100%;
+            height: 10px;
+            text-align: right;
+        }
+         
+        .padding-right {
+            padding-right: 5px;
+        } 
+        #snippet_keyword_list {
+            overflow: auto;
+            max-height: 400px;
+        }
     </style>
     @Scripts.Render("~/bundles/modernizr")
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>

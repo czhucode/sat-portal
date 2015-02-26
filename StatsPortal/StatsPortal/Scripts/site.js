@@ -260,4 +260,16 @@ $(document).ready(function () {
         $("input:checkbox").prop('checked', false);
     });
 
+    $(function () {
+        $("#toggle_snippet_nav, #toggle_snippet_in_menu").click(function () {
+            if ($("#snippet_nav").hasClass("popped")) {
+                $("#snippet_nav").animate({ bottom: '-1000px' }, { queue: false, duration: 500 }).removeClass("popped");
+                $("#toggle_snippet_nav").animate({ bottom: '3%' }, { queue: false, duration: 500 });
+            } else {
+                $("#snippet_nav").animate({ bottom: "-1px" }, { queue: false, duration: 250 }).addClass("popped");
+                $("#toggle_snippet_nav").animate({ bottom: '-50px' }, { queue: false, duration: 50 });
+            }
+        });
+    });
+
 });
