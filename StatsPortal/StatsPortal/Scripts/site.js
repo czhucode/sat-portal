@@ -4,26 +4,42 @@ function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function drawRegionsMap() {
+function drawRegionsMap(dataValues) {
 
-    var data = google.visualization.arrayToDataTable([
-      ['Country', 'Matched %'],
-      ['GB', 99.49],
-      ['US', 99.7],
-      ['BR', 98.18],
-      ['CA', 100.0],
-      ['FR', 98.56],
-      ['RU', 93.06],
-      ['HK', 93.1],
-      ['PH', 89.29],
-      ['BD', 83.33],
-      ['AZ', 80.0],
-      ['CN', 90.62]
-    ]);
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+    data.addColumn("string", "Country");
+    data.addColumn("number", "Matched Machines");
+
+    for (var i = 0; i < dataValues.length; i++) {
+        data.addRow([dataValues[i].Country, dataValues[i].MatchedMachines]);
+    }
 
     var options = {};
 
     var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+    // The select handler. Call the chart's getSelection() method
+    function selectHandler() {
+        var selectedItem = chart.getSelection()[0];
+        if (selectedItem) {
+            var value = data.getValue(selectedItem.row, 0);
+
+            $.ajax({
+                type: 'GET',
+                url: 'CountryMatchingStats?country=' + value,
+                dataType: 'json',
+                async: false,
+                success: function (result) {
+                    drawChart(result);
+                }
+            });
+        }
+    }
+
+    // Listen for the 'select' event, and call my function selectHandler() when
+    // the user selects something on the chart.
+    google.visualization.events.addListener(chart, 'select', selectHandler);
 
     chart.draw(data, options);
 }
@@ -34,28 +50,30 @@ function drawChart(dataValues) {
     var data = new google.visualization.DataTable();
 
     data.addColumn('date', 'Date');
-    data.addColumn('number', 'Total Matched %');
-    data.addColumn('number', 'Name Matched %');
-    data.addColumn('number', 'Birthyear Matched %');
-    data.addColumn('number', 'Email Matched %');
+    data.addColumn('number', 'Matched Machines');
+    data.addColumn('number', 'Name Count');
+    data.addColumn('number', 'Birthyear Count');
+    data.addColumn('number', 'Email Count');
 
     for (var i = 0; i < dataValues.length; i++) {
-        data.addRow([new Date(parseInt(dataValues[i].Date.match(/\d+/))), dataValues[i].MatchedPercentage, dataValues[i].PercentageName, dataValues[i].PercentageBirthyear, dataValues[i].PercentageEmail]);
+        data.addRow([new Date(parseInt(dataValues[i].Date.match(/\d+/))), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
     }
 
     // Set chart options
     var options = {
-        title: dataValues[0].Domain + ' Matching Stats',
-        curveType: 'function',
+        title: 'LinkedIn Matching Stats',
+        subtitle: dataValues[0].Country + ' Stats',
+        //curveType: 'function',
         legend: { position: 'bottom' },
         vAxis: {
-            title: "Percentage",
-            viewWindowMode: 'explicit',
-            viewWindow: {
-                max: 105,
-                min: 0
-            }
-        }
+            title: "Counts",
+            viewWindowMode: 'explicit'
+            //viewWindow: {
+            //    max: auto,
+            //    min: 0
+            //}
+        },
+        height: 400
     };
 
     // Instantiate and draw our chart, passing in some options.
