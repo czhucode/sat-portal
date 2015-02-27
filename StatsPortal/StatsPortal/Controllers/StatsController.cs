@@ -31,7 +31,7 @@ namespace StatsPortal.Controllers
             DateTime d = new DateTime(2015,02,13);
             MatchingStats[] countryStats =  stats
                                             .Select(x => new MatchingStats(){Date = x.Date, Country = x.Country, MatchedMachines = x.MatchedMachines})
-                                            .Where(x => x.Date == d.Date)
+                                            .Where(x => x.Date == d.Date && !x.Country.Equals("Overall"))
                                             .ToArray();
 
             model.CountryStats = countryStats;
