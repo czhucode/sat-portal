@@ -28,7 +28,12 @@
             min-height: 400px;
             min-width: 400px;
         }
-        #snippet_nav_wrapper {
+
+        #snippet_line_chart {
+            min-width: 900px;
+            min-height: 400px;    
+        }
+         #snippet_nav_wrapper {
             width: 18%;
             position: fixed;
             bottom: -1px;
@@ -67,6 +72,17 @@
             overflow: auto;
             max-height: 400px;
         }
+        #sidebar-wrapper {
+            z-index: 1000;
+            position: fixed;
+            left: 250px;
+            width: 0;
+            height: 100%;
+            margin-left: -250px;
+            overflow-y: auto;
+            background: #000;
+            transition: all 0.5s ease;
+        }
     </style>
     @Scripts.Render("~/bundles/modernizr")
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
@@ -75,7 +91,7 @@
 </head>
 <body>
  
-        <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -98,48 +114,49 @@
                     </form>
                 </div>
             </div>
-        </nav>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-sm-3 col-md-2 sidebar padding-top-15">
-                <ul class="nav nav-sidebar">
-                    <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Matching</a></li>
-                    <li><a href="#">Snippets</a></li>
-                    <li><a href="#">Cookies</a></li>
-                </ul>
-                <ul class="nav nav-sidebar">
-                    <li><a href="">Traffic</a></li>
-                    <li><a href="">Non Traffic</a></li>
-                    <li><a href="">One more nav</a></li>
-                    <li><a href="">Another nav item</a></li>
-                    <li><a href="">More navigation</a></li>
-                </ul>
-                <ul class="nav nav-sidebar">
-                    <li><a href="">Nav item again</a></li>
-                    <li><a href="">One more nav</a></li>
-                    <li><a href="">Another nav item</a></li>
-                </ul>
-            </div>
-            <div class="col-sm-9 col-md-10 main">
-                
-                @RenderBody()
-                
-            </div>
-             
-        </div>
         
+    </nav>
 
-        <footer>
-            <p>&copy; @DateTime.Now.Year - comScore Webportal</p>
-        </footer>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-3 col-md-2 sidebar padding-top-15">
+                    <ul class="nav nav-sidebar">
+                        <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+                        <li><a href="#">Matching</a></li>
+                        <li><a href="#">Snippets</a></li>
+                        <li><a href="#">Cookies</a></li>
+                    </ul>
+                    <ul class="nav nav-sidebar">
+                        <li><a href="">Traffic</a></li>
+                        <li><a href="">Non Traffic</a></li>
+                        <li><a href="">One more nav</a></li>
+                        <li><a href="">Another nav item</a></li>
+                        <li><a href="">More navigation</a></li>
+                    </ul>
+                    <ul class="nav nav-sidebar">
+                        <li><a href="">Nav item again</a></li>
+                        <li><a href="">One more nav</a></li>
+                        <li><a href="">Another nav item</a></li>
+                    </ul>
+                </div>
+                <div class="col-sm-9 col-md-10 main">
 
-    </div>
-    
-    @Scripts.Render("~/bundles/jquery")
-                @Scripts.Render("~/bundles/bootstrap")
-                @RenderSection("scripts", required: false)
+                    @RenderBody()
+
+                </div>
+
+            </div>
+
+
+            <footer>
+                <p>&copy; @DateTime.Now.Year - comScore Webportal</p>
+            </footer>
+
+        </div>
+
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/bootstrap")
+        @RenderSection("scripts", required: false)
 
 </body>
 </html>

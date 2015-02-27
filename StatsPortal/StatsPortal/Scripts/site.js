@@ -1,4 +1,5 @@
 ﻿google.load("visualization", "1", { packages: ["corechart"] });
+google.load("visualization", "1", { packages: ["line"] });
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -85,14 +86,53 @@ function drawChart(dataValues) {
 function drawSnippetCombo() {
 
     // Some raw data (not necessarily accurate)
-    var data = google.visualization.arrayToDataTable([
-        ['Month', 'Name', 'Username', 'Gender', 'Email', 'Birthyear'],
-        ['20150221', 14395510, 5264235, 585697, 6501418, 959420],
-        ['20150222', 14370066, 5250954, 594153, 6486588, 958776],
-        ['20150223', 14338534, 5242056, 602801, 6463323, 953046],
-        ['20150224', 14322129, 4381712, 612171, 6446516, 951796],
-        ['20150225', 14317169, 5217820, 620723, 6435730, 950833]
-    ]);
+    //var data = google.visualization.arrayToDataTable([
+    //    ['Month', 'Name', 'Username', 'Gender', 'Email', 'Birthyear'],
+    //    ['20150221', 14395510, 5264235, 585697, 6501418, 959420],
+    //    ['20150222', 14370066, 5250954, 594153, 6486588, 958776],
+    //    ['20150223', 14338534, 5242056, 602801, 6463323, 953046],
+    //    ['20150224', 14322129, 4381712, 612171, 6446516, 951796],
+    //    ['20150225', 14317169, 5217820, 620723, 6435730, 950833]
+    //]);
+
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'Month');
+    data.addColumn('number', 'Name');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Username');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Gender');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Birthyear');
+    data.addColumn({ type: 'string', role: 'annotation' });
+    data.addColumn('number', 'Email');
+    data.addColumn({ type: 'string', role: 'annotation' });
+
+    var nameTotal = 0;
+    var usernameTotal = 0;
+    var genderTotal = 0;
+    var byTotal = 0;
+    var emailTotal = 0;
+
+    for (var i = 0; i < dataValues.length; i++) {
+        if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
+
+            if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
+
+                nameTotal += dataValues[i].NameParsed;
+                usernameTotal += dataValues[i].UsernameParsed;
+                genderTotal += dataValues[i].GenderParsed;
+                byTotal += dataValues[i].BirthyearParsed;
+                emailTotal += dataValues[i].EmailParsed;
+            }
+        }
+    }
+
+    data.addRow(["20150222", nameTotal, nameTotal.toString(), usernameTotal, usernameTotal.toString(), genderTotal, genderTotal.toString(), byTotal, byTotal.toString(), emailTotal, emailTotal.toString()]);
+
+    var view = new google.visualization.DataView(data);
+    view.setColumns([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
 
     var options = {
         title: '' + capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value) + ' Snippet Daily Parsing Stats',
@@ -115,16 +155,21 @@ function drawSnippetKeywordBar(dataValues) {
 
         data.addColumn('string', 'Keyword');
         data.addColumn('number', 'Counted');
+        data.addColumn({ type: 'string', role: 'annotation' });
         data.addColumn('number', 'Parsed');
+        data.addColumn({ type: 'string', role: 'annotation' });
 
         for (var i = 0; i < dataValues.length; i++) {
             if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
 
                 if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
-                    data.addRow([dataValues[i].Keyword, dataValues[i].TotalCount, dataValues[i].TotalParsed]);
+                    data.addRow([dataValues[i].Keyword, dataValues[i].TotalCount, dataValues[i].TotalCount.toString(), dataValues[i].TotalParsed, dataValues[i].TotalParsed.toString()]);
                 }
             }
         }
+
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1, 2, 3, 4]);
 
         var options = {
             title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
@@ -140,15 +185,19 @@ function drawSnippetKeywordBar(dataValues) {
     else if (document.getElementById('keyword_percentages').checked) {
         data.addColumn('string', 'Keyword');
         data.addColumn('number', 'Percent Parsed');
+        data.addColumn({ type: 'string', role: 'annotation' });
 
         for (var i = 0; i < dataValues.length; i++) {
             if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
 
                 if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
-                    data.addRow([dataValues[i].Keyword, (dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100]);
+                    data.addRow([dataValues[i].Keyword, roundToTwo((dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100), (roundToTwo((dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100)).toString()]);
                 }
             }
         }
+
+        var view = new google.visualization.DataView(data);
+        view.setColumns([0, 1, 2]);
 
         var options = {
             title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
@@ -163,6 +212,45 @@ function drawSnippetKeywordBar(dataValues) {
 
 
 }
+
+function drawSnippetLineChart(datavalues) {
+
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Date');
+    data.addColumn('number', 'Google');
+    data.addColumn('number', 'Facebook');
+    data.addColumn('number', 'YouTube');
+
+    data.addRows([
+      ["20150213", 2277376, 9537435, 2060438],
+      ["20150214", 2264598, 9532156, 2165894],
+      ["20150215", 2204588, 9032156, 2215854],
+      ["20150216", 2014589, 8999843, 2185963],
+      ["20150217", 2189659, 9004568, 2205482],
+      ["20150218", 2203655, 9098756, 2208945],
+      ["20150219", 2215689, 9105489, 2215900],
+      ["20150220", 2204983, 9099875, 2205489],
+      ["20150221", 1236548, 9102235, 2211598],
+      ["20150222", 1596489, 8854862, 2210569],
+      ["20150223", 2210059, 8869845, 2211003],
+      ["20150224", 2265897, 8964553, 2199986],
+      ["20150225", 2245689, 9000548, 2205489],
+      ["20150226", 2245698, 9004586, 2212354]
+    ]);
+
+    var options = {
+        chart: {
+            title: 'Snippets Parsed',
+            //subtitle: 'in millions of dollars (USD)'
+        },
+    };
+
+    var chart = new google.charts.Line(document.getElementById('snippet_line_chart'));
+
+    chart.draw(data, options);
+
+}
+
 
 //function drawSnippetKeywordBarPercent(dataValues) {
 
@@ -270,6 +358,7 @@ $(document).ready(function () {
 
     $("#snippet_keyword_bar_chart_button").click(function() {
         drawSnippetKeywordBar(dataValues);
+        drawSnippetCombo(dataValues);
     });
 
     $('#snippet_keyword_checkall_button').click(function () {

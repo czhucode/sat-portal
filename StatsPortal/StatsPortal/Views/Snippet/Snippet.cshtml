@@ -38,6 +38,9 @@
     </div>
 
     <div class="col-md-10">
+        
+        <div id="snippet_line_chart"></div>
+        <hr />
 
         <div id="snippet_combo_chart"></div>
         <hr />
@@ -69,6 +72,10 @@
 
 <script type="text/javascript">
     var dataValues = @Html.Raw(Json.Encode(Model));
+
+    google.load("visualization", "1", {packages:["line"]});
+    google.setOnLoadCallback(drawSnippetLineChart);
+
     google.load("visualization", "1", {packages:["corechart"]});
     google.setOnLoadCallback(drawSnippetCombo);
 
