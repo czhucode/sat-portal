@@ -5,65 +5,67 @@
 }
 
 
-    <h1 class="page-header">Snippet Parsing Stats</h1>
+<h1 class="page-header">Snippet Parsing Stats</h1>
 
-    <div id="snippet_combo_chart"></div>
-<hr />
 
 <div class="row">
 
-    <div id="snippet_keyword_chart" class="col-md-9"></div>
-    
-    <div class="dropdown col-md-3">
-        
-        <div class="col-md-12">
-            
+    <div class="dropdown col-md-2" id="snippet_nav_wrapper">
+        <button id="toggle_snippet_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-chevron-up padding-right"></span><span class="glyphicon glyphicon-cog"></span></span></button>
+
+        <div class="popped" id="snippet_nav">
+
+            <div id="toggle_snippet_in_menu"><span class="glyphicon glyphicon-chevron-down"></span></div>
+
+            <h4>Domain/Keywords:</h4>
+            <select class="form-control" id="snippet_keyword_bar_chart_dropdown"></select>
+
+            <div id="snippet_keyword_list" class="col-md-12">
+
+            </div>
+
+            <br />
+
+            <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
+            <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
+
+            <br /><br />
+
+            <button type="button" class="btn btn-primary" id="snippet_keyword_bar_chart_button">Populate</button>
+
+            <br />
+        </div>
+    </div>
+
+    <div class="col-md-10">
+
+        <div id="snippet_combo_chart"></div>
+        <hr />
+
+
+        <div id="snippet_keyword_chart" class="col-md-9"></div>
+        <div id="col-md-3">
             <div class="radio">
                 <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
             </div>
-            
+
             <div class="radio">
                 <label><input type="radio" name="optradio" id="keyword_percentages">Percentages</label>
             </div>
-            
-            <br />
-            
-            <h4>Domain/Keywords:</h4>
-            <select class="form-control" id="snippet_keyword_bar_chart_dropdown">
-                <option>Amazon</option>
-                <option>Aol</option>
-                <option>Ebay</option>
-                <option>Facebook</option>
-                <option>Google</option>
-                <option>Yahoo</option>
-                <option>YouTube</option>
-            </select>
+        </div>
 
-            <br />
-        </div>
-        <div id="snippet_keyword_list" class="col-md-12">
-            
-        </div>
-        
         <br />
 
-        <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
-        <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
-        
-        <br /><br />
+        <hr />
 
-        <button type="button" class="btn btn-primary" id="snippet_keyword_bar_chart_button">Populate</button>
+
+
     </div>
 </div>
 
-<div class="row">
-    
-    <div id="snippet_keyword_chart_percent"></div>
-    
-</div>
-<hr />
-   @* <div id="regions_div"></div>*@
 
+<hr />
+@* <div id="regions_div"></div>*@
 
 <script type="text/javascript">
     var dataValues = @Html.Raw(Json.Encode(Model));
@@ -71,7 +73,7 @@
     google.setOnLoadCallback(drawSnippetCombo);
 
     google.load("visualization", "1", {packages:["corechart"]});
-    google.setOnLoadCallback(drawSnippetKeywordBar(dataValues));
+    //google.setOnLoadCallback(drawSnippetKeywordBar(dataValues));
 
     //google.load("visualization", "1", {packages:["corechart"]});
     //google.setOnLoadCallback(drawSnippetKeywordBarPercent(dataValues));

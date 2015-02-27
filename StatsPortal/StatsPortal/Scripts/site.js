@@ -250,6 +250,7 @@ $(document).ready(function () {
 
     $("#snippet_keyword_list").html(snippetCheckboxInitPopulate);
 
+    drawSnippetKeywordBar(dataValues);
 
     $("#keyword_raw_counts, #keyword_percentages").change(function() {
         console.log("Button changed");
