@@ -10,57 +10,76 @@ namespace StatsPortal.Controllers
 {
     public class StatsController : Controller
     {
-        private MatchingStats[] stats = new MatchingStats[] { };
-
-        public void Init()
-        {
-            if (stats.Length == 0)
-            {
-                string[] lines =
-                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\LinkedinMatchingStats.txt");
-
-                stats = new MatchingStats[lines.Length];
-
-                for (int i = 0; i < lines.Length; i++)
-                {
-                    string[] fields = lines[i].Split('\t');
-
-                    stats[i] = new MatchingStats();
-
-                    stats[i].Date = DateTime.ParseExact(fields[0], "yyyyMMdd", CultureInfo.InvariantCulture,
-                        DateTimeStyles.None);
-                    stats[i].Domain = fields[1];
-                    stats[i].EligibleMachineCount = Convert.ToInt64(fields[2]);
-                    stats[i].MachinesMatched = Convert.ToInt64(fields[3]);
-                    stats[i].MatchedPercentage = Convert.ToDouble(fields[4]);
-                    stats[i].NameCount = Convert.ToInt64(fields[5]);
-                    stats[i].BirthyearCount = Convert.ToInt64(fields[6]);
-                    stats[i].EmailCount = Convert.ToInt64(fields[7]);
-                    stats[i].PercentageName = Convert.ToDouble(fields[8]);
-                    stats[i].PercentageBirthyear = Convert.ToDouble(fields[9]);
-                    stats[i].PercentageEmail = Convert.ToDouble(fields[10]);
-                }
-            }
-        }
+        private StatsViewModel model = new StatsViewModel();
 
         //
         // GET: /Stats/
         public ActionResult Index()
         {
-            var domains = new List<String> { "LinkedIn"};
+            var domains = new List<String> { "LinkedIn" };
 
             return View(domains);
         }
 
         public ActionResult Matching(string domain)
         {
-            Init();
-
+            var stats = LoadCountryStats();
             var matchingStats = from s in stats
-                                where s.Domain.Equals(domain.ToLower())
-                                select s;
+                where s.Country.Equals("Overall")
+                select s;
 
-            return View(matchingStats);
+            DateTime d = new DateTime(2015,02,13);
+            MatchingStats[] countryStats =  stats
+                                            .Select(x => new MatchingStats(){Date = x.Date, Country = x.Country, MatchedMachines = x.MatchedMachines})
+                                            .Where(x => x.Date == d.Date)
+                                            .ToArray();
+
+            model.CountryStats = countryStats;
+            model.MatchingStats = matchingStats.ToArray();
+
+            return View(model);
         }
-	}
+
+        public JsonResult CountryMatchingStats(string country)
+        {
+            var stats = LoadCountryStats();
+
+            var countryStats = from s in stats
+                               where s.Country.Equals(country)
+                               select s;
+
+            return Json(countryStats, JsonRequestBehavior.AllowGet);
+        }
+
+        private IEnumerable<CountryMatchingStats> LoadCountryStats()
+        {
+            var stats = new CountryMatchingStats[] { };
+
+            if (stats.Length == 0)
+            {
+                string[] lines =
+                    System.IO.File.ReadAllLines(
+                        @"C:\Users\asouza\Documents\linkedin_stats\LinkedinMatchingCountryStats.txt");
+
+                stats = new CountryMatchingStats[lines.Length];
+
+                for (int i = 0; i < lines.Length; i++)
+                {
+                    string[] fields = lines[i].Split('\t');
+
+                    stats[i] = new CountryMatchingStats();
+
+                    stats[i].Country = fields[0];
+                    stats[i].MatchedMachines = Convert.ToInt32(fields[2]);
+                    stats[i].NameCount = Convert.ToInt32(fields[3]);
+                    stats[i].EmailCount = Convert.ToInt32(fields[5]);
+                    stats[i].BirthyearCount = Convert.ToInt32(fields[4]);
+                    stats[i].Date = DateTime.ParseExact(fields[fields.Length - 1], "yyyyMMdd", CultureInfo.InvariantCulture,
+                        DateTimeStyles.None);
+                }
+            }
+
+            return stats;
+        }
+    }
 }

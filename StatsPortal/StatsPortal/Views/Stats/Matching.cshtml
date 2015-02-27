@@ -1,25 +1,31 @@
-﻿@model IEnumerable<StatsPortal.Models.MatchingStats>
+﻿@model StatsPortal.Models.StatsViewModel
 
 @{
     ViewBag.Title = "Matching";
 }
 
 
-<div class="jumbotron">
-    <h3>@Model.First().Domain Matching</h3>
 
-    <div id="visualization">
+<h3>LinkedIn Matching</h3>
+
+<div id="visualization">
+</div>
+    
+<hr />
+<div>
+    <div id="auto_country" style="background: white">
+        @Html.Label("Country Code:")
+        @Html.TextBox("Country")
     </div>
-    <hr />
     <div id="regions_div">
     </div>
 </div>
 
 <script type="text/javascript">
-    var dataValues = @Html.Raw(Json.Encode(Model));
+    var dataValues = @Html.Raw(Json.Encode(Model.MatchingStats));
     google.load('visualization', '1.0', { 'packages': ['corechart'] });
     google.setOnLoadCallback(function () {drawChart(dataValues)});
 
     google.load("visualization", "1", { packages: ["geochart"] });
-    google.setOnLoadCallback(drawRegionsMap);
+    google.setOnLoadCallback(function () {drawRegionsMap(@Html.Raw(Json.Encode(Model.CountryStats)))});
 </script>
