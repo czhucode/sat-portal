@@ -110,15 +110,15 @@ function drawChart(dataValues) {
     // Set chart options
     var options = {
         title: 'LinkedIn Matching Stats',
-        subtitle: dataValues[0].Country + ' Stats',
+        subtitle: 'Overall Stats',
         //curveType: 'function',
         legend: { position: 'bottom' },
         vAxis: {
             title: "Counts",
             viewWindowMode: 'explicit',
             chartArea: {
-                left: 100,
-                width: '60%'
+                left: 0,
+                width: '100%'
             }
             //viewWindow: {
             //    max: auto,
@@ -134,7 +134,7 @@ function drawChart(dataValues) {
     chart.draw(data, options);
 }
 
-$(window).resize(function (dataValues) {
-    drawChart(dataValues);
-    drawRegionsMap(dataValues);
-});
+//$(window).resize(function (dataValues) {
+//    drawChart(dataValues);
+//    drawRegionsMap(dataValues);
+//});
