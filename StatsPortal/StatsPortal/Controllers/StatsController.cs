@@ -21,17 +21,17 @@ namespace StatsPortal.Controllers
             return View(domains);
         }
 
-        public ActionResult Matching(string domain)
+        public ActionResult LinkedinMatching()
         {
             var stats = LoadCountryStats();
             var matchingStats = from s in stats
                 where s.Country.Equals("Overall")
                 select s;
 
-            DateTime d = new DateTime(2015,02,13);
+            long d = 20150213;
             MatchingStats[] countryStats =  stats
                                             .Select(x => new MatchingStats(){Date = x.Date, Country = x.Country, MatchedMachines = x.MatchedMachines})
-                                            .Where(x => x.Date == d.Date && !x.Country.Equals("Overall"))
+                                            .Where(x => x.Date == d && !x.Country.Equals("Overall"))
                                             .ToArray();
 
             model.CountryStats = countryStats;
@@ -74,8 +74,9 @@ namespace StatsPortal.Controllers
                     stats[i].NameCount = Convert.ToInt32(fields[3]);
                     stats[i].EmailCount = Convert.ToInt32(fields[5]);
                     stats[i].BirthyearCount = Convert.ToInt32(fields[4]);
-                    stats[i].Date = DateTime.ParseExact(fields[fields.Length - 1], "yyyyMMdd", CultureInfo.InvariantCulture,
-                        DateTimeStyles.None);
+                    /*stats[i].Date = DateTime.ParseExact(fields[fields.Length - 1], "yyyyMMdd", CultureInfo.InvariantCulture,
+                        DateTimeStyles.None);*/
+                    stats[i].Date = Convert.ToInt32(fields[fields.Length - 1].Trim());
                 }
             }
 

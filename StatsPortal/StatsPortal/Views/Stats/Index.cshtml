@@ -10,7 +10,7 @@
     <ul>
         @foreach (var domainName in Model)
         {
-            <li>@Html.ActionLink(domainName + " Matching Stats.", "Matching", new { @domain = domainName })</li>
+            <li>@Html.ActionLink(domainName + " Matching Stats.", "LinkedinMatching", new { @domain = domainName })</li>
         }
         <li><a href="http://localhost:49751/Snippet/Snippet">Snippet Stats</a></li>
     </ul>

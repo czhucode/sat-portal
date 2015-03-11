@@ -7,7 +7,7 @@ namespace StatsPortal.Models
 {
     public class MatchingStats
     {
-        public DateTime Date { get; set; }
+        public long Date { get; set; }
         public string Country { get; set; }
         public long MatchedMachines { get; set; }
     }

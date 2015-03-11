@@ -5,158 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - comScore Portal</title>
     @Styles.Render("~/Content/css")
-    <style type="text/css">
-        body {
-            height: 100%;
-        }
-         footer {
-             padding: 15px;
-         }
-
-         h6 {
-             font-weight: bold;
-             padding: 3px;
-             font-size: 14px;
-         }
-        .padding-top-15 {
-            padding-top: 15px;
-        }
-        .nav-sidebar {
-            /*background-color: #F8F8F8;*/
-        }
-        #snippet_combo_chart, #snippet_keyword_chart, #snippet_keyword_chart_percent {
-            min-height: 400px;
-            min-width: 400px;
-        }
-
-        #snippet_line_chart {
-            min-width: 900px;
-            min-height: 400px;    
-        }
-         #snippet_nav_wrapper {
-            width: 18%;
-            position: fixed;
-            bottom: -1px;
-            right: 0px;
-            z-index: 10;
-        } 
-        #toggle_snippet_nav {
-            position: absolute;
-            bottom: -50px;
-            right: 10%;
-            /*height: 1%;*/
-            text-align: right;
-            z-index: 11;
-        } 
-        #snippet_nav {
-            position: relative;
-            bottom: 0px;
-            right: 0px;
-            width: 100%;
-            min-width: 150px;
-            padding: 10px;
-            background: #f2f2f2;
-            border: 1px solid #5a5a5a;
-        }
-
-        #toggle_snippet_in_menu {
-            width: 100%;
-            height: 10px;
-            text-align: right;
-        }
-         
-        .padding-right {
-            padding-right: 5px;
-        } 
-        #snippet_keyword_list {
-            overflow: auto;
-            max-height: 400px;
-        }
-        #sidebar-wrapper {
-            z-index: 1000;
-            position: fixed;
-            left: 250px;
-            width: 0;
-            height: 100%;
-            margin-left: -250px;
-            overflow-y: auto;
-            background: #000;
-            transition: all 0.5s ease;
-        }
-    </style>
     @Scripts.Render("~/bundles/modernizr")
     <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-    @Scripts.Render("~/bundles/site")
+    @Scripts.Render("~/bundles/jquery")
 </head>
 <body>
- 
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#">SAT Web Portal</a>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Dashboard</a></li>
-                        <li><a href="#">Settings</a></li>
-                        <li><a href="#">Profile</a></li>
-                        <li><a href="#">Help</a></li>
+    <div id="wrapper" class="active">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul id="sidebar_menu" class="sidebar-nav">
+                <li class="sidebar-brand"><a id="menu-toggle" href="#">comScore Inc.<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+            </ul>
+            <nav class="sidebar-nav" id="sidebar">
+                <li>
+                    <a>Traffic<span class="sub_icon glyphicon glyphicon-plus"></span></a>
+                    <ul class="sub-menu">
+                        <li><a href="#">Snippet Parsing</a></li>
+                        <li><a href="#">Cookie Jar</a></li>
                     </ul>
-                    <form class="navbar-form navbar-right">
-                        <input type="text" class="form-control" placeholder="Search...">
-                    </form>
-                </div>
-            </div>
-        
-    </nav>
-
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-3 col-md-2 sidebar padding-top-15">
-                    <ul class="nav nav-sidebar">
-                        <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-                        <li><a href="#">Matching</a></li>
-                        <li><a href="#">Snippets</a></li>
-                        <li><a href="#">Cookies</a></li>
+                </li>
+                <li>
+                    <a>Non Traffic<span class="sub_icon glyphicon glyphicon-plus"></span></a>
+                    <ul class="sub-menu">
+                        <li><a href="#">LinkedIn Matching</a></li>
+                        <li><a href="#">Google Matching</a></li>
+                        <li><a href="#">Facebook Matching</a></li>
                     </ul>
-                    <ul class="nav nav-sidebar">
-                        <li><a href="">Traffic</a></li>
-                        <li><a href="">Non Traffic</a></li>
-                        <li><a href="">One more nav</a></li>
-                        <li><a href="">Another nav item</a></li>
-                        <li><a href="">More navigation</a></li>
-                    </ul>
-                    <ul class="nav nav-sidebar">
-                        <li><a href="">Nav item again</a></li>
-                        <li><a href="">One more nav</a></li>
-                        <li><a href="">Another nav item</a></li>
-                    </ul>
-                </div>
-                <div class="col-sm-9 col-md-10 main">
-
-                    @RenderBody()
-
-                </div>
-
-            </div>
-
-
-            <footer>
-                <p>&copy; @DateTime.Now.Year - comScore Webportal</p>
-            </footer>
-
+                </li>
+            </nav>
+            
         </div>
 
-        @Scripts.Render("~/bundles/jquery")
-        @Scripts.Render("~/bundles/bootstrap")
-        @RenderSection("scripts", required: false)
+        <!-- Page content -->
+        <div id="page-content-wrapper">
+            <!-- Keep all page content within the page-content inset div! -->
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        @RenderBody()
+                    </div>
+                    <div class="col-md-12">
+                        <footer>
+                            <p>&copy; @DateTime.Now.Year - comScore Webportal</p>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+    </div>
+    
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/site")
+    @RenderSection("scripts", required: false)
 </body>
 </html>

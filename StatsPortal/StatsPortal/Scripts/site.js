@@ -4,84 +4,9 @@ google.load("visualization", "1", { packages: ["line"] });
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
-
-function drawRegionsMap(dataValues) {
-
-    // Create the data table.
-    var data = new google.visualization.DataTable();
-    data.addColumn("string", "Country");
-    data.addColumn("number", "Matched Machines");
-
-    for (var i = 0; i < dataValues.length; i++) {
-        data.addRow([dataValues[i].Country, dataValues[i].MatchedMachines]);
-    }
-
-    var options = {};
-
-    var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-
-    // The select handler. Call the chart's getSelection() method
-    function selectHandler() {
-        var selectedItem = chart.getSelection()[0];
-        if (selectedItem) {
-            var value = data.getValue(selectedItem.row, 0);
-
-            $.ajax({
-                type: 'GET',
-                url: 'CountryMatchingStats?country=' + value,
-                dataType: 'json',
-                async: false,
-                success: function (result) {
-                    drawChart(result);
-                }
-            });
-        }
-    }
-
-    // Listen for the 'select' event, and call my function selectHandler() when
-    // the user selects something on the chart.
-    google.visualization.events.addListener(chart, 'select', selectHandler);
-
-    chart.draw(data, options);
+function roundToTwo(value) {
+    return (Math.round(value * 100) / 100);
 }
-
-function drawChart(dataValues) {
-
-    // Create the data table.
-    var data = new google.visualization.DataTable();
-
-    data.addColumn('date', 'Date');
-    data.addColumn('number', 'Matched Machines');
-    data.addColumn('number', 'Name Count');
-    data.addColumn('number', 'Birthyear Count');
-    data.addColumn('number', 'Email Count');
-
-    for (var i = 0; i < dataValues.length; i++) {
-        data.addRow([new Date(parseInt(dataValues[i].Date.match(/\d+/))), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
-    }
-
-    // Set chart options
-    var options = {
-        title: 'LinkedIn Matching Stats',
-        subtitle: dataValues[0].Country + ' Stats',
-        //curveType: 'function',
-        legend: { position: 'bottom' },
-        vAxis: {
-            title: "Counts",
-            viewWindowMode: 'explicit'
-            //viewWindow: {
-            //    max: auto,
-            //    min: 0
-            //}
-        },
-        height: 400
-    };
-
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.LineChart(document.getElementById('visualization'));
-    chart.draw(data, options);
-}
-
 
 function drawSnippetCombo() {
 
@@ -358,7 +283,7 @@ $(document).ready(function () {
 
     $("#snippet_keyword_bar_chart_button").click(function() {
         drawSnippetKeywordBar(dataValues);
-        drawSnippetCombo(dataValues);
+        drawSnippetCombo();
     });
 
     $('#snippet_keyword_checkall_button').click(function () {
@@ -380,4 +305,9 @@ $(document).ready(function () {
         });
     });
 
+});
+
+$("#menu-toggle").click(function (e) {
+    e.preventDefault();
+    $("#wrapper").toggleClass("active");
 });
