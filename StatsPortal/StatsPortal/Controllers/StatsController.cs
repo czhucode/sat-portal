@@ -59,7 +59,7 @@ namespace StatsPortal.Controllers
             {
                 string[] lines =
                     System.IO.File.ReadAllLines(
-                        @"C:\Users\asouza\Documents\linkedin_stats\LinkedinMatchingCountryStats.txt");
+                        @"\\csiadsat07\temp\cpearce\web_portal\test_files\LinkedinMatchingCountryStats.txt");
 
                 stats = new CountryMatchingStats[lines.Length];
 
