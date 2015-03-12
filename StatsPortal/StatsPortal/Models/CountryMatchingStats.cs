@@ -13,5 +13,7 @@ namespace StatsPortal.Models
         public long NameCount { get; set; }
         public long BirthyearCount { get; set; }
         public long EmailCount { get; set; }
+        public long GenderCount { get; set; }
+        public string Domain { get; set; }
     }
 }

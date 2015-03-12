@@ -10,5 +10,6 @@ namespace StatsPortal.Models
         public long Date { get; set; }
         public string Country { get; set; }
         public long MatchedMachines { get; set; }
+        public string Domain { get; set; }
     }
 }

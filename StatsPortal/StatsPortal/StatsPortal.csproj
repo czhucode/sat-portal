@@ -272,7 +272,7 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Stats\Index.cshtml" />
-    <Content Include="Views\Stats\LinkedinMatching.cshtml" />
+    <Content Include="Views\Stats\Matching.cshtml" />
     <Content Include="Views\Snippet\Snippet.cshtml" />
     <Content Include="Views\Snippet\Index.cshtml" />
   </ItemGroup>
