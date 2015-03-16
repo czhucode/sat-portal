@@ -167,6 +167,8 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CountryMatchingStats.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\LookupModel.cs" />
+    <Compile Include="Models\MatchedIdsModel.cs" />
     <Compile Include="Models\MatchingStats.cs" />
     <Compile Include="Controllers\SnippetController.cs" />
     <Compile Include="Models\SnippetEmailModel.cs" />

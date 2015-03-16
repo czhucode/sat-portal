@@ -1,12 +1,12 @@
 ﻿//google.load("visualization", "1", { packages: ["corechart"] });
 //google.load("visualization", "1", { packages: ["line"] });
 
-//function capitalizeFirstLetter(string) {
-//    return string.charAt(0).toUpperCase() + string.slice(1);
-//}
-//function roundToTwo(value) {
-//    return (Math.round(value * 100) / 100);
-//}
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+function roundToTwo(value) {
+    return (Math.round(value * 100) / 100);
+}
 
 //function drawSnippetCombo() {
 
@@ -311,3 +311,7 @@ $("#menu-toggle").click(function (e) {
     e.preventDefault();
     $("#wrapper").toggleClass("active");
 });
+
+function changeClass() {
+    $(this).closest('ul.sub-menu').toggleClass("hidden");
+}

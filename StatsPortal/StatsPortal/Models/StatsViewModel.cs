@@ -9,5 +9,7 @@ namespace StatsPortal.Models
     {
         public CountryMatchingStats[] MatchingStats { get; set; }
         public MatchingStats[] CountryStats { get; set; }
+        public LookupModel[] LookupStats { get; set; }
+        public MatchedIdsModel[] MatchedIdsStats { get; set; }
     }
 }

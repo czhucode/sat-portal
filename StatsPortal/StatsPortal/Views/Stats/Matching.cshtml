@@ -4,14 +4,21 @@
     ViewBag.Title = "Matching";
 }
 
-@*<div class="col-lg-12">
+<div class="col-lg-6">
     <div class="panel panel-default">
         <div id="lookup_stats">
         </div>
     </div>
 </div>
 
-<hr />*@
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <div id="matched_overall">
+        </div>
+    </div>
+</div>
+
+<hr />
 
 <div class="col-lg-12">
     <div class="panel panel-default">
@@ -23,11 +30,15 @@
 <hr />
 
 <div>
-    <div class="col-lg-12">
+    <div id="dashboard" class="col-lg-12">
         <div class="panel panel-default">
-            <div id="auto_country" style="background: white; padding: 5px">
-                @Html.Label("Country Code:")
-                @Html.TextBox("Country", null, new { maxlength = 2, size = 2 })
+            <div>
+                <div id="auto_country" class="col-md-6" style="background: white;">
+                    @Html.Label("Country Code:")
+                    @Html.TextBox("Country", null, new { maxlength = 2, size = 2 })
+                </div>
+                <div id="slider">
+                </div>
             </div>
             <div id="regions_div">
             </div>
@@ -36,19 +47,22 @@
 </div>
 
 <script type="text/javascript">
-    var dataValues = @Html.Raw(Json.Encode(Model.MatchingStats));
-    google.load('visualization', '1.0', { 'packages': ['corechart'] });
-    google.setOnLoadCallback(function () {drawChart(dataValues)});
+    google.setOnLoadCallback(function () {drawChart(@Html.Raw(Json.Encode(Model.MatchingStats))); });
 
     google.load("visualization", "1", { packages: ["geochart"] });
     google.setOnLoadCallback(function () {drawRegionsMap(@Html.Raw(Json.Encode(Model.CountryStats))); });
 
-    $(document).ready(function() { auto_complete(@Html.Raw(Json.Encode(Model.CountryStats))); });
+    google.setOnLoadCallback(function () {drawLookupChart(@Html.Raw(Json.Encode(Model.LookupStats))); });
+    google.setOnLoadCallback(function () {drawMatchingChart(@Html.Raw(Json.Encode(Model.MatchedIdsStats))); });
+
+    $(document).ready(function () { auto_complete(@Html.Raw(Json.Encode(Model.CountryStats))); });
 
     $(window).resize(function () {
         $('#Country').val('');
         drawChart(@Html.Raw(Json.Encode(Model.MatchingStats)));
         drawRegionsMap(@Html.Raw(Json.Encode(Model.CountryStats)));
+        drawLookupChart(@Html.Raw(Json.Encode(Model.LookupStats)));
+        drawMatchingChart(@Html.Raw(Json.Encode(Model.MatchedIdsStats)));
     });
 </script>
 @Scripts.Render("~/bundles/matching")
