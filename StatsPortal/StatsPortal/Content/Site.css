@@ -306,6 +306,11 @@ h6 {
     bottom: 10px;
 }
 
+#show_keyword_chart {
+    position: relative;
+    bottom: 10px;
+}
+
 .padding-right {
     padding-right: 5px;
 }
@@ -345,4 +350,12 @@ h6 {
 
 #keyword_counts_container label {
     margin-left: 25px;
+}
+
+#snippet_keyword_line_chart, #snippet_line_chart {
+    width: 100%;
+}
+
+#keyword_container {
+    display: none;
 }

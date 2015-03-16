@@ -23,27 +23,35 @@ namespace StatsPortal.Controllers
 
             if (stats.Length == 0)
             {
-                string[] lines =
-                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_w_date.txt");
+                List<string> lines =
+                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_combined_v2.txt").ToList();
 
-                stats = new SnippetModel[lines.Length];
 
-                for (int i = 0; i < lines.Length; i++)
+                lines.RemoveAll(item => item.Trim() == "");
+    
+                
+                stats = new SnippetModel[lines.Count];
+
+                for (int i = 0; i < lines.Count; i++)
                 {
                     string[] fields = lines[i].Split('\t');
 
-                    stats[i] = new SnippetModel();
+                    //if (fields[1].ToLower().Equals(domain.ToLower()) || domain.Equals("ALL"))
+                    //{
 
-                    stats[i].Domain = fields[0];
-                    stats[i].Keyword = fields[1];
-                    stats[i].TotalCount = Convert.ToInt64(fields[2]);
-                    stats[i].TotalParsed = Convert.ToInt64(fields[3]);
-                    stats[i].EmailParsed = Convert.ToInt64(fields[4]);
-                    stats[i].GenderParsed = Convert.ToInt64(fields[5]);
-                    stats[i].BirthyearParsed = Convert.ToInt64(fields[6]);
-                    stats[i].NameParsed = Convert.ToInt64(fields[7]);
-                    stats[i].UsernameParsed = Convert.ToInt64(fields[8]);
-                    stats[i].Date = fields[9];
+                        stats[i] = new SnippetModel();
+
+                        stats[i].Domain = fields[1];
+                        stats[i].Keyword = fields[2];
+                        stats[i].TotalCount = Convert.ToInt64(fields[3]);
+                        stats[i].TotalParsed = Convert.ToInt64(fields[4]);
+                        stats[i].EmailParsed = Convert.ToInt64(fields[5]);
+                        stats[i].GenderParsed = Convert.ToInt64(fields[6]);
+                        stats[i].BirthyearParsed = Convert.ToInt64(fields[7]);
+                        stats[i].NameParsed = Convert.ToInt64(fields[8]);
+                        stats[i].UsernameParsed = Convert.ToInt64(fields[9]);
+                        stats[i].Date = fields[0];
+                    //}
                 }
             }
 
@@ -112,7 +120,7 @@ namespace StatsPortal.Controllers
             if (stats.Length == 0)
             {
                 string[] lines =
-                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_w_date.txt");
+                    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_combined.txt");
 
                 stats = new SnippetModel[lines.Length];
 
@@ -122,16 +130,16 @@ namespace StatsPortal.Controllers
 
                     stats[i] = new SnippetModel();
 
-                    stats[i].Domain = fields[0];
-                    stats[i].Keyword = fields[1];
-                    stats[i].TotalCount = Convert.ToInt64(fields[2]);
-                    stats[i].TotalParsed = Convert.ToInt64(fields[3]);
-                    stats[i].EmailParsed = Convert.ToInt64(fields[4]);
-                    stats[i].GenderParsed = Convert.ToInt64(fields[5]);
-                    stats[i].BirthyearParsed = Convert.ToInt64(fields[6]);
-                    stats[i].NameParsed = Convert.ToInt64(fields[7]);
-                    stats[i].UsernameParsed = Convert.ToInt64(fields[8]);
-                    stats[i].Date = fields[9];
+                    stats[i].Domain = fields[1];
+                    stats[i].Keyword = fields[2];
+                    stats[i].TotalCount = Convert.ToInt64(fields[3]);
+                    stats[i].TotalParsed = Convert.ToInt64(fields[4]);
+                    stats[i].EmailParsed = Convert.ToInt64(fields[5]);
+                    stats[i].GenderParsed = Convert.ToInt64(fields[6]);
+                    stats[i].BirthyearParsed = Convert.ToInt64(fields[7]);
+                    stats[i].NameParsed = Convert.ToInt64(fields[8]);
+                    stats[i].UsernameParsed = Convert.ToInt64(fields[9]);
+                    stats[i].Date = fields[0];
                 }
             }
 
@@ -376,6 +384,65 @@ namespace StatsPortal.Controllers
 
 
             return Json(chartData, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        public JsonResult GetDomainList()
+        {
+            List<string> domainList = new List<string>();
+
+            List<string> lines =
+                System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_combined_v2.txt").ToList();
+
+
+            lines.RemoveAll(item => item.Trim() == "");
+
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string[] fields = lines[i].Split('\t');
+                if (!domainList.Contains(fields[1]))
+                {
+                    domainList.Add(fields[1]);
+                }
+            }
+
+            domainList.Sort();
+
+
+
+            return Json(domainList, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public JsonResult GetKeywordData(string domain, string keyword, string startDay, int dayCount)
+        {
+            Init();
+
+            string[][] fullKeywordData = new string[dayCount][];
+            for (int j = 0; j < dayCount; j ++)
+            {
+                string currentDate = (Convert.ToInt32(startDay) + j).ToString();
+                string[] keywordData = new string[8];
+                for (int i = 0; i < model.SnippetStats.Length; i++)
+                {
+                    if (model.SnippetStats[i].Domain.ToLower().Equals(domain.ToLower()) && model.SnippetStats[i].Keyword.ToLower().Equals(keyword.ToLower()) && model.SnippetStats[i].Date.Equals(currentDate))
+                    {
+                        keywordData[0] = model.SnippetStats[i].Date;
+                        keywordData[1] = model.SnippetStats[i].TotalCount.ToString();
+                        keywordData[2] = model.SnippetStats[i].TotalParsed.ToString();
+                        keywordData[3] = model.SnippetStats[i].EmailParsed.ToString();
+                        keywordData[4] = model.SnippetStats[i].GenderParsed.ToString();
+                        keywordData[5] = model.SnippetStats[i].BirthyearParsed.ToString();
+                        keywordData[6] = model.SnippetStats[i].NameParsed.ToString();
+                        keywordData[7] = model.SnippetStats[i].UsernameParsed.ToString();
+                    }
+                    fullKeywordData[j] = keywordData;
+                }
+            }
+
+
+            return Json(fullKeywordData, JsonRequestBehavior.AllowGet);
         }
 
 	}

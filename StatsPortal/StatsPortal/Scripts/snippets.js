@@ -104,7 +104,7 @@ function drawDomainLineChart(dataPool, days, firstDay) {
             title: 'Domain Trends',
             subtitle: 'Demographic Trends by Domain'
         },
-        width: 1000,
+       // width: 1000,
         height: 600
     };
 
@@ -181,7 +181,7 @@ function drawKeywordLine(dataPool, days, firstDay) {
                 title: 'Keyword Trends',
                 subtitle: 'Total Seen by Date'
             },
-            width: 900,
+          //  width: 900,
             height: 600
         };
 
@@ -488,11 +488,71 @@ function drawSnippetLine(domainName, startDate, dayCount) {
     });
 }
 
+function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: "GetKeywordData",
+        traditional: true,
+        data: {
+            domain: domainName,
+            keyword: keyword,
+            startDay: startDate,
+            dayCount: dayCount
+        },
+        success: function (domainList) {
+
+            // Callback that creates and populates a data table,    
+            // instantiates the pie chart, passes in the data and    
+            // draws it. 
+            var keywordInfo = domainList;
+            
+            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Emails Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Names Parsed</th><th>Usenames Parsed</th></tr></thead>";
+            var tableBodyPopulate = "<tbody>";
+
+            for (var i = 0; i < domainList.length; i++) {
+                tableBodyPopulate += '<tr><td>' + domainList[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + domainList[i][1] + '</td><td>' + domainList[i][2] + '</td><td>' + domainList[i][3] + '</td><td>' + domainList[i][4] + '</td><td>' + domainList[i][5] + '</td><td>' + domainList[i][6] + '</td><td>' + domainList[i][7] + "</td></tr>";
+                //'<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '" checked>' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
+            }
+
+            tableBodyPopulate += "</tbody>"
+
+            debugger;
+
+            $("#keyword_table").html(tableHeaderPopulate + "" + tableBodyPopulate);
+
+            debugger;
+        },
+        error: function () {
+            alert("Error loading data! Please try again.");
+        }
+    });
+}
+
+
 $(document).ready(function () {
 
   
 
     var dataValueDomains = [];
+    //$.ajax({
+    //    type: 'POST',
+    //    dataType: 'json',
+    //    url: "GetDomainList",
+    //    traditional: true,
+    //    data: {},
+    //    success: function (domainList) {
+
+    //        // Callback that creates and populates a data table,    
+    //        // instantiates the pie chart, passes in the data and    
+    //        // draws it. 
+    //        dataValueDomains = domainList;
+    //        debugger;
+    //    },
+    //    error: function () {
+    //        alert("Error loading data! Please try again.");
+    //    }
+    //});
     for (var i = 0; i < dataValues.length; i++) {
         if ($.inArray(dataValues[i].Domain, dataValueDomains) === -1) {
             dataValueDomains.push(dataValues[i].Domain);
@@ -511,11 +571,15 @@ $(document).ready(function () {
     var snippetCheckboxInit = getNewKeywords(dataValueDomains[0]);
 
     var snippetCheckboxInitPopulate = "";
+    var keywordDataInitPopulate = "";
     for (var i = 0; i < snippetCheckboxInit.length; i++) {
         snippetCheckboxInitPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckboxInit[i].replace(/"/g, '&quot;') + '" checked>' + snippetCheckboxInit[i].replace(/"/g, '&quot;') + '</label></div>';
+        keywordDataInitPopulate += "<option>" + snippetCheckboxInit[i].replace(/"/g, '&quot;') + "</option>";
+        
     }
 
     $("#snippet_keyword_list").html(snippetCheckboxInitPopulate);
+    $("#snippet_keyword_data_dropdown").html(keywordDataInitPopulate);
 
     //drawSnippetKeywordBar(dataValues);
 
@@ -531,12 +595,17 @@ $(document).ready(function () {
         var newKeywords = getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase());
 
         var snippetCheckboxPopulate = "";
+        var keywordDropdownPopulate = "";
         for (var i = 0; i < newKeywords.length; i++) {
             snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '" checked>' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
+            keywordDropdownPopulate += "<option>" + newKeywords[i].replace(/"/g, '&quot;') + "</option>";
         }
 
         $("#snippet_keyword_list").html(snippetCheckboxPopulate);
+        $("#snippet_keyword_data_dropdown").html(keywordDropdownPopulate);
     });
+
+
 
     $("#snippet_keyword_bar_chart_button").click(function () {
         //drawSnippetKeywordBar(dataValues);
@@ -566,7 +635,13 @@ $(document).ready(function () {
 
     drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
     drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+    
+    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
 
+    $("#snippet_keyword_data_dropdown").change(function () {
+        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+    });
+    
 
     $(function () {
         $("#toggle_snippet_nav, #toggle_snippet_in_menu").click(function () {
@@ -580,6 +655,8 @@ $(document).ready(function () {
         });
     });
 
-
+    $('#show_keyword_chart').click(function () {
+        $('#keyword_container').toggle();
+    });
 
 });
