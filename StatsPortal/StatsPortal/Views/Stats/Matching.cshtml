@@ -58,11 +58,15 @@
     $(document).ready(function () { auto_complete(@Html.Raw(Json.Encode(Model.CountryStats))); });
 
     $(window).resize(function () {
+        reloadGraphs();
+    });
+
+    function reloadGraphs() {
         $('#Country').val('');
         drawChart(@Html.Raw(Json.Encode(Model.MatchingStats)));
         drawRegionsMap(@Html.Raw(Json.Encode(Model.CountryStats)));
         drawLookupChart(@Html.Raw(Json.Encode(Model.LookupStats)));
         drawMatchingChart(@Html.Raw(Json.Encode(Model.MatchedIdsStats)));
-    });
+    }
 </script>
 @Scripts.Render("~/bundles/matching")

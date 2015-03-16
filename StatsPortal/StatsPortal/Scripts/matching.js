@@ -271,7 +271,14 @@ function drawLookupChart(dataValues) {
         },
         height: 400,
         width: '60%',
-        legend: { position: 'bottom' },
+        legend: {
+            position: 'bottom',
+            textStyle: {
+                color: '#757575',
+                fontSize: 14,
+                bold: false
+            }
+        },
         hAxis: {
             title : 'Date',
             slantedText: true,
@@ -350,7 +357,14 @@ function drawMatchingChart(dataValues) {
         },
         height: 400,
         width: '60%',
-        legend: { position: 'bottom' },
+        legend: {
+            position: 'bottom',
+            textStyle: {
+                color: '#757575',
+                fontSize: 14,
+                bold: false
+            }
+        },
         hAxis: {
             title: 'Date',
             slantedText: true,

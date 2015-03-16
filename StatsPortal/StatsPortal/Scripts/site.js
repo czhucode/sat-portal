@@ -312,6 +312,20 @@ $("#menu-toggle").click(function (e) {
     $("#wrapper").toggleClass("active");
 });
 
-function changeClass() {
-    $(this).closest('ul.sub-menu').toggleClass("hidden");
+function collapseSubMenu2() {
+    $('#sub_menu_2').toggleClass('hidden');
+    if ($('#menu_2 a span').hasClass('glyphicon-plus')) {
+        $('#menu_2 a span').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+    } else {
+        $('#menu_2 a span').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+    }
+}
+
+function collapseSubMenu1() {
+    $('#sub_menu_1').toggleClass('hidden');
+    if ($('#menu_1 a span').hasClass('glyphicon-plus')) {
+        $('#menu_1 a span').removeClass('glyphicon-plus').addClass('glyphicon-minus');
+    } else {
+        $('#menu_1 a span').removeClass('glyphicon-minus').addClass('glyphicon-plus');
+    }
 }
