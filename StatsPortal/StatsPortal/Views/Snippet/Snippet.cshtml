@@ -1,51 +1,108 @@
-﻿@model IEnumerable<StatsPortal.Models.SnippetModel>
+﻿@model StatsPortal.Models.SnippetViewModel
+
 
 @{
     ViewBag.Title = "Snippet";
 }
 
+@Scripts.Render("~/bundles/snippets")
 
 <h1 class="page-header">Snippet Parsing Stats</h1>
 
 
-<div class="row">
 
-    <div class="dropdown col-md-2" id="snippet_nav_wrapper">
-        <button id="toggle_snippet_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-chevron-up padding-right"></span><span class="glyphicon glyphicon-cog"></span></span></button>
+<!-- Toolbar -->
+<div class="dropdown col-md-2" id="snippet_nav_wrapper">
+    
 
-        <div class="popped" id="snippet_nav">
+    <button id="toggle_snippet_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-menu-down padding-right-5"></span><span class="glyphicon glyphicon-cog"></span></span></button>
 
-            <div id="toggle_snippet_in_menu"><span class="glyphicon glyphicon-chevron-down"></span></div>
+    <div class="popped" id="snippet_nav">
+        <div id="toggle_snippet_in_menu"><span class="glyphicon glyphicon-menu-up padding-right-5"></span></div>
+       
 
-            <h4>Domain/Keywords:</h4>
+
+        <div id="row">
             <select class="form-control" id="snippet_keyword_bar_chart_dropdown"></select>
+        </div>
+        
 
-            <div id="snippet_keyword_list" class="col-md-12">
+        @*<div id="snippet_keyword_list" class="col-md-12">
 
+        </div>
+
+        <br />
+
+        <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
+        <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
+
+        <br /><br />*@
+
+        <div class="row">
+            <div class="col-md-12" id="populate_wrapper">
+                <button type="button" class="btn btn-primary" id="snippet_keyword_bar_chart_button">Populate</button>
             </div>
 
-            <br />
+        </div>
+        
+        <br />
+    </div>
+</div>
 
-            <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
-            <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
 
-            <br /><br />
+<!-- Summary Line Chart -->
+<div class="col-md-12">
+    <div class="panel panel-default">
+        @*<div class="radio" id="keyword_counts_container_domain">
+            <label><input type="radio" name="optradio" id="keyword_raw_counts_domain" checked="checked">Raw Counts</label>
 
-            <button type="button" class="btn btn-primary" id="snippet_keyword_bar_chart_button">Populate</button>
+            <label><input type="radio" name="optradio" id="keyword_percentages_domain">Percent Parsed</label>
+        </div>*@
+        <div id="snippet_line_chart"></div>
+    </div>
+</div>
 
-            <br />
+<!-- Keyword Line Chart -->
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="radio" id="keyword_counts_container">
+            <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
+
+            <label><input type="radio" name="optradio" id="keyword_percentages">Percent Parsed</label>
+        </div>
+
+        <div id="snippet_keyword_line_chart"></div>
+
+        <div id="keyword_toolbar_wrapper">
+            
+            <div id="keyword_line_toggle">
+                
+                <div id="keyword_toolbar_container">
+                    
+                    <div id="snippet_keyword_list"></div>
+                    <br />
+                    <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
+                    <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
+
+                </div>
+                <button id="toggle_keyword_line_nav" class="btn btn-sm"><span id="toggle_icon"><span class="glyphicon glyphicon-cog"></span></span></button>
+            </div>
         </div>
     </div>
+</div>
 
-    <div class="col-md-10">
-        
-        <div id="snippet_line_chart"></div>
-        <hr />
-
-        <div id="snippet_combo_chart"></div>
-        <hr />
+<!-- Keyword Chart(s) -->
+@*<div class="col-md-12">
+    <div class="panel panel-default">
+        <div class="col-md-9" id="snippet_combo_chart"></div>
 
 
+    </div>
+</div>
+
+
+<div class="col-md-12">
+    <div class="panel panel-default">
         <div id="snippet_keyword_chart" class="col-md-9"></div>
         <div id="col-md-3">
             <div class="radio">
@@ -56,30 +113,32 @@
                 <label><input type="radio" name="optradio" id="keyword_percentages">Percentages</label>
             </div>
         </div>
-
-        <br />
-
-        <hr />
-
-
-
     </div>
-</div>
-
+</div>*@
 
 <hr />
-@* <div id="regions_div"></div>*@
 
 <script type="text/javascript">
-    var dataValues = @Html.Raw(Json.Encode(Model));
 
-    google.load("visualization", "1", {packages:["line"]});
-    google.setOnLoadCallback(drawSnippetLineChart);
 
-    google.load("visualization", "1", {packages:["corechart"]});
-    google.setOnLoadCallback(drawSnippetCombo);
+    var dataValues = @Html.Raw(Json.Encode(Model.SnippetStats));
+    //var snippetCounts = dataValues.SnippetStats;
 
-    google.load("visualization", "1", {packages:["corechart"]});
+   
+
+
+    //google.load("visualization", "1", {packages:["line"]});
+    //google.setOnLoadCallback(drawSnippetLineChart());
+
+    //google.load('visualization', '1.1', {packages: ['line']});
+    //google.setOnLoadCallback(drawKeywordLine(dataValues));
+
+    //google.load("visualization", "1", {packages:["corechart"]});
+    //google.setOnLoadCallback(drawSnippetCombo);
+
+    //google.load("visualization", "1", {packages:["corechart"]});
+
+
     //google.setOnLoadCallback(drawSnippetKeywordBar(dataValues));
 
     //google.load("visualization", "1", {packages:["corechart"]});
@@ -90,4 +149,3 @@
     //google.load("visualization", "1", { packages: ["geochart"] });
     //google.setOnLoadCallback(drawRegionsMap);
 </script>
-

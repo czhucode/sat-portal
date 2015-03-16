@@ -17,6 +17,7 @@ namespace StatsPortal.Models
         public long BirthyearParsed { get; set; }
         public long NameParsed { get; set; }
         public long UsernameParsed { get; set; }
+        public string Date { get; set; }
 
     }
 }
