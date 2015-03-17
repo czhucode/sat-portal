@@ -47,15 +47,17 @@
 </div>
 
 <script type="text/javascript">
-    google.setOnLoadCallback(function () {drawChart(@Html.Raw(Json.Encode(Model.MatchingStats))); });
+    google.setOnLoadCallback(function () { drawChart(@Html.Raw(Json.Encode(Model.MatchingStats))); });
 
     google.load("visualization", "1", { packages: ["geochart"] });
-    google.setOnLoadCallback(function () {drawRegionsMap(@Html.Raw(Json.Encode(Model.CountryStats))); });
+    google.setOnLoadCallback(function () { drawRegionsMap(@Html.Raw(Json.Encode(Model.CountryStats))); });
 
-    google.setOnLoadCallback(function () {drawLookupChart(@Html.Raw(Json.Encode(Model.LookupStats))); });
-    google.setOnLoadCallback(function () {drawMatchingChart(@Html.Raw(Json.Encode(Model.MatchedIdsStats))); });
+    google.setOnLoadCallback(function () { drawLookupChart(@Html.Raw(Json.Encode(Model.LookupStats))); });
+    google.setOnLoadCallback(function () { drawMatchingChart(@Html.Raw(Json.Encode(Model.MatchedIdsStats))); });
 
-    $(document).ready(function () { auto_complete(@Html.Raw(Json.Encode(Model.CountryStats))); });
+    $(document).ready(function () {
+        auto_complete(@Html.Raw(Json.Encode(Model.CountryStats)));
+    });
 
     $(window).resize(function () {
         reloadGraphs();

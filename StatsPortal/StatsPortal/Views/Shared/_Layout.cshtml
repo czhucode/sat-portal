@@ -29,9 +29,9 @@
                 <li id="menu_2">
                     <a>Social Network<span class="sub_icon glyphicon glyphicon-plus" onclick="collapseSubMenu2()"></span></a>
                     <ul id ="sub_menu_2" class="sub-menu hidden">
-                        <li>@Html.ActionLink("Linkedin", "Matching", new { @domain = "Linkedin" })</li>
-                        <li>@Html.ActionLink("Google", "Matching", new { @domain = "Google" })</li>
-                        <li>@Html.ActionLink("Facebook", "Matching", new { @domain = "Facebook" })</li>
+                        <li>@Html.ActionLink("Linkedin", "Matching", "Stats", new { @domain = "Linkedin" }, new {})</li>
+                        <li>@Html.ActionLink("Google", "Matching", "Stats", new { @domain = "Google" }, new {})</li>
+                        <li>@Html.ActionLink("Facebook", "Matching", "Stats", new { @domain = "Facebook" }, new {})</li>
                     </ul>
                 </li>
             </div>

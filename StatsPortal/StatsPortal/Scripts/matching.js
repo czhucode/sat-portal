@@ -263,7 +263,7 @@ function drawLookupChart(dataValues) {
     //};
 
     var options = {
-        title: 'Linkedin Lookup Stats',
+        title:  getQueryStringValue('domain') + ' Lookup Stats',
         titleTextStyle: {
             color: '#757575',
             fontSize: 16,
@@ -349,7 +349,7 @@ function drawMatchingChart(dataValues) {
     data.sort([{ column: 0 }]);
 
     var options = {
-        title: 'Matching Id Stats',
+        title: getQueryStringValue('domain') + ' Matching Id Stats',
         titleTextStyle: {
             color: '#757575',
             fontSize: 16,
