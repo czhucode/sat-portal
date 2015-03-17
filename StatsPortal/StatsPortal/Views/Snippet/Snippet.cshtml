@@ -53,6 +53,7 @@
 <!-- Summary Line Chart -->
 <div class="col-md-12">
     <div class="panel panel-default">
+        @*<h4>Total Counts: <span class="domain_name"></span></h4>*@
         @*<div class="radio" id="keyword_counts_container_domain">
                 <label><input type="radio" name="optradio" id="keyword_raw_counts_domain" checked="checked">Raw Counts</label>
 
@@ -65,6 +66,7 @@
 <!-- Keyword Line Chart -->
 <div class="col-md-12">
     <div class="panel panel-default">
+        @*<h4>Total Seen by Keyword: <span class="domain_name"></span></h4>*@
         <div class="radio" id="keyword_counts_container">
             <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
 
@@ -85,7 +87,7 @@
                     <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
 
                 </div>
-                <button id="show_keyword_chart" class="btn btn-sm">More Info</button>
+            @*    <button id="show_keyword_chart" class="btn btn-sm">More Info</button>*@
                 <button id="toggle_keyword_line_nav" class="btn btn-sm"><span id="toggle_icon"><span class="glyphicon glyphicon-cog"></span></span></button>
                
             </div>
@@ -93,13 +95,25 @@
     </div>
 </div>
 
-<div class="table-responsive col-md-12" id="keyword_container">
-    <div class="panel panel-default">
-        <h4>Keyword Data</h4>
-        <div class="col-md-3">
+<div class="col-md-12" id="keyword_container">
+    <div class="panel panel-default" id="keyword_data_panel">
+        @*<h4>Keyword Data</h4>*@
+        <div class="radio" id="keyword_data_toggle_container">
+            <label><input type="radio" name="optradio" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
+
+            <label><input type="radio" name="optradio" id="keyword_data_percentages">Percent Parsed</label>
+        </div>
+        <div class="col-md-12" id="keyword_form_container">
             <select class="form-control" id="snippet_keyword_data_dropdown"></select>
-            </div>
-        <table class="table" id="keyword_table"></table>
+        </div>
+        
+        <br />
+        <br />
+        
+            <div id="keyword_data_bar"></div>
+
+
+        @*<table class="table" id="keyword_table"></table>*@
     </div>
 </div>
 

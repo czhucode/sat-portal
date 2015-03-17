@@ -254,7 +254,7 @@ h6 {
     position: fixed;
     top: -1px;
     right: -1px;
-    z-index: 11;
+    z-index: 20;
 }
 
 #toggle_snippet_nav {
@@ -342,20 +342,31 @@ h6 {
     padding-top: 10px;
 }
 
-#keyword_counts_container {
+#keyword_counts_container, #keyword_data_toggle_container {
     text-align: right;
 }
 
 
 
-#keyword_counts_container label {
+#keyword_counts_container label, #keyword_data_toggle_container label {
     margin-left: 25px;
 }
 
-#snippet_keyword_line_chart, #snippet_line_chart {
+
+#snippet_keyword_line_chart, #snippet_line_chart, #keyword_data_bar, #keyword_form_container {
     width: 100%;
 }
 
-#keyword_container {
-    display: none;
+#keyword_data_panel {
+    height: 100%;
+    width: 100%;
+    text-align: right;
+}
+
+#keyword_form_container {
+    text-align: right;
+}
+
+#snippet_keyword_data_dropdown {
+    width: 25%;
 }
