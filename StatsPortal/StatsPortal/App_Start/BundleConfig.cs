@@ -36,6 +36,20 @@ namespace StatsPortal
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
+
+            // Adding the Kendo UI javascript bundle.
+            bundles.Add(new ScriptBundle("~/bundles/kendo").Include(
+                        "~/Scripts/kendo/kendo.all.min.js",
+                            // "~/Scripts/kendo/kendo.timezones.min.js", // uncomment if using the Scheduler
+                        "~/Scripts/kendo/kendo.aspnetmvc.min.js"));
+
+            // Adding the Kenndo UI style bundle
+            bundles.Add(new StyleBundle("~/Content/kendo/css").Include(
+                        "~/Content/kendo/kendo.common-bootstrap.min.css",
+                        "~/Content/kendo/kendo.bootstrap.min.css"));
+
+            // Tell ASP.NET bundles to allow minified files in debug mode.
+            bundles.IgnoreList.Clear();
         }
     }
 }
