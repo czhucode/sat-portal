@@ -7,8 +7,8 @@ namespace StatsPortal.Models
 {
     public class StatsViewModel
     {
-        public CountryMatchingStats[] MatchingStats { get; set; }
-        public MatchingStats[] CountryStats { get; set; }
+        public CountryMatchingStatsModel[] MatchingStats { get; set; }
+        public CountryMatchingModel[] CountryStats { get; set; }
         public LookupModel[] LookupStats { get; set; }
         public MatchedIdsModel[] MatchedIdsStats { get; set; }
     }
