@@ -5,11 +5,15 @@ using System.Web;
 
 namespace StatsPortal.Models
 {
-    public class MatchingStats
+    public class CountryMatchingStatsModel
     {
         public long Date { get; set; }
         public string Country { get; set; }
         public long MatchedMachines { get; set; }
+        public long NameCount { get; set; }
+        public long BirthyearCount { get; set; }
+        public long EmailCount { get; set; }
+        public long GenderCount { get; set; }
         public string Domain { get; set; }
     }
 }
