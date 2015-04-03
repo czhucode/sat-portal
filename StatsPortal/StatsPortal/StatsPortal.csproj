@@ -163,19 +163,23 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\CookiesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="DAL\ConnectionFactory.cs" />
     <Compile Include="DAL\Extensions\CommandExtensionMethod.cs" />
     <Compile Include="DAL\Extensions\DataRecordExtensions.cs" />
     <Compile Include="DAL\Repository.cs" />
+    <Compile Include="DAL\Repository\CookiesRepository.cs" />
     <Compile Include="DAL\Repository\LookupRepository.cs" />
     <Compile Include="DAL\Repository\CountryMatchingRepository.cs" />
     <Compile Include="DAL\Repository\MatchingRepository.cs" />
+    <Compile Include="DAL\Repository\SnippetsRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CookieModel.cs" />
     <Compile Include="Models\CountryMatchingStatsModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LookupModel.cs" />
@@ -194,6 +198,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\cookies.css" />
     <Content Include="Content\images\cs_Logo.png" />
     <Content Include="Content\images\cS_newlogo_whitetype.png" />
     <Content Include="Content\kendo\Black\editor.png" />
@@ -470,6 +475,7 @@
     <Content Include="Content\old_versions\bootstrap.css" />
     <Content Include="Content\dashboard.css" />
     <Content Include="Content\old_versions\bootstrap.min.css" />
+    <Content Include="Content\snippets.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -531,6 +537,7 @@
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\cookies.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -1037,6 +1044,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\snippets.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -1180,6 +1188,8 @@
     <Content Include="Scripts\kendo\kendo.view.min.js.map" />
     <Content Include="Scripts\kendo\kendo.web.min.js.map" />
     <Content Include="Scripts\kendo\kendo.window.min.js.map" />
+    <Content Include="Views\Cookies\Cookies.cshtml" />
+    <Content Include="Views\Cookies\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

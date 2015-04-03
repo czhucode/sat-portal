@@ -1,15 +1,11 @@
-﻿@model StatsPortal.Models.SnippetViewModel
+﻿@model StatsPortal.Models.CookieModel
 
 @{
-    ViewBag.Title = "Snippet";
+    ViewBag.Title = "Index";
 }
 
-@Scripts.Render("~/bundles/snippets")
+@Scripts.Render("~/bundles/cookies")
 
-
-<head>
-    <link rel="stylesheet" type="text/css" href="~/Content/snippets.css">
-</head>
 
 <br />
 
@@ -20,13 +16,24 @@
 
     <div class="popped" id="snippet_nav">
         <div id="toggle_snippet_in_menu"><span class="glyphicon glyphicon-menu-up padding-right-5"></span></div>
-        
+
         <div id="row">
             <select class="form-control" id="snippet_keyword_bar_chart_dropdown"></select>
         </div>
 
+        @*<div id="snippet_keyword_list" class="col-md-12">
+
+            </div>
+
+            <br />
+
+            <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
+            <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
+
+            <br /><br />*@
+
         <div class="row">
-            
+
             <div class="col-md-12" id="populate_wrapper">
                 <button type="button" class="btn btn-primary" id="snippet_populate_button">Populate</button>
             </div>
@@ -55,7 +62,7 @@
 <!-- Keyword Line Chart -->
 <div class="col-md-12">
     <div class="panel panel-default">
-
+        @*<h4>Total Seen by Keyword: <span class="domain_name"></span></h4>*@
         <div class="radio" id="keyword_counts_container">
             <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
 
@@ -76,19 +83,17 @@
                     <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
 
                 </div>
-
+                @*    <button id="show_keyword_chart" class="btn btn-sm">More Info</button>*@
                 <button id="toggle_keyword_line_nav" class="btn btn-sm"><span id="toggle_icon"><span class="glyphicon glyphicon-cog"></span></span></button>
-               
+
             </div>
         </div>
     </div>
 </div>
 
-
-<!-- Keyword Bar Chart -->
 <div class="col-md-12" id="keyword_container">
     <div class="panel panel-default" id="keyword_data_panel">
-
+        @*<h4>Keyword Data</h4>*@
         <div class="radio" id="keyword_data_toggle_container">
             <label><input type="radio" name="optradio" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
 
@@ -97,30 +102,55 @@
         <div class="col-md-12" id="keyword_form_container">
             <select class="form-control" id="snippet_keyword_data_dropdown"></select>
         </div>
-        
+
         <br />
         <br />
-        
+
         <div id="keyword_data_bar"></div>
 
         <div class="col col-md-12" id="keyword_chart_toggle_wrapper">
             <button id="toggle_keyword_chart" class="btn btn-sm">View as Table</button>
         </div>
-        
-        <!-- Keyword Table View -->
+
         <table class="table" id="keyword_table"></table>
     </div>
 </div>
+
+
+<!-- Keyword Chart(s) -->
+@*<div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="col-md-9" id="snippet_combo_chart"></div>
+
+
+        </div>
+    </div>
+
+
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div id="snippet_keyword_chart" class="col-md-9"></div>
+            <div id="col-md-3">
+                <div class="radio">
+                    <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
+                </div>
+
+                <div class="radio">
+                    <label><input type="radio" name="optradio" id="keyword_percentages">Percentages</label>
+                </div>
+            </div>
+        </div>
+    </div>*@
 
 <hr />
 
 <script type="text/javascript">
 
 
-    var dataValues = @Html.Raw(Json.Encode(Model.SnippetStats));
+    var dataValues = @Html.Raw(Json.Encode(Model));
     //var snippetCounts = dataValues.SnippetStats;
 
-    
+
 
     //google.load("visualization", "1", {packages:["line"]});
     //google.setOnLoadCallback(drawSnippetLineChart());

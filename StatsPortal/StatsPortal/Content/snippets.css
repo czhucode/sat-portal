@@ -1,0 +1,137 @@
+﻿#snippet_combo_chart, #snippet_keyword_chart, #snippet_keyword_chart_percent {
+    min-height: 400px;
+    min-width: 400px;
+}
+
+#snippet_line_chart {
+    min-width: 900px;
+    min-height: 400px;
+}
+
+#snippet_nav_wrapper {
+    width: 18%;
+    position: fixed;
+    top: -1px;
+    right: -1px;
+    z-index: 20;
+}
+
+#toggle_snippet_nav {
+    position: absolute;
+    top: -50px;
+    right: 10%;
+    /*height: 1%;*/
+    text-align: right;
+    z-index: 10;
+}
+
+#snippet_nav {
+    position: relative;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+    min-width: 150px;
+    padding: 10px;
+    background: #f2f2f2;
+    border: 1px solid #5a5a5a;
+}
+
+#toggle_snippet_in_menu {
+    width: 100%;
+    height: 10px;
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: #5a5a5a;
+    z-index: 12;
+    color: #f2f2f2;
+    height: 15px;
+    font-size: 10px;
+    padding-top: 3px;
+}
+
+#keyword_line_toggle {
+    width: 20%;
+    position: absolute;
+    bottom: 5%;
+    right: 3%;
+    text-align: right;
+    z-index: 12;
+}
+
+#toggle_keyword_line_nav {
+    position: relative;
+    bottom: 10px;
+}
+
+.padding-right {
+    padding-right: 5px;
+}
+#snippet_keyword_list {
+    overflow: auto;
+    max-height: 400px;
+}
+
+#keyword_toolbar_wrapper {
+    width: 100%;
+    text-align: right;
+}
+
+#keyword_toolbar_container {
+    background-color: #f2f2f2;
+    border: 1px solid #f2f2f2;
+    border-radius: 5px;
+    text-align: left;
+    padding: 5px;
+    width: 100%;
+    position: relative;
+    bottom: 10px;
+    display: none;
+}
+
+
+#populate_wrapper {
+    padding-left: 0;
+    padding-top: 10px;
+}
+
+#keyword_counts_container, #keyword_data_toggle_container {
+    text-align: right;
+}
+
+
+
+#keyword_counts_container label, #keyword_data_toggle_container label {
+    margin-left: 25px;
+}
+
+
+#snippet_keyword_line_chart, #snippet_line_chart, #keyword_data_bar, #keyword_form_container {
+    width: 100%;
+}
+
+#keyword_data_panel {
+    height: 100%;
+    width: 100%;
+    text-align: right;
+}
+
+#keyword_form_container {
+    text-align: right;
+}
+
+#snippet_keyword_data_dropdown {
+    width: 25%;
+}
+
+#keyword_chart_toggle_wrapper {
+    width: 100%;
+    text-align: center;
+    margin-top: -30px;
+}
+
+#keyword_table {
+    text-align: center;
+    display: none;
+}

@@ -1,0 +1,114 @@
+﻿@model StatsPortal.Models.CookieModel
+
+@{
+    ViewBag.Title = "Cookies";
+}
+
+@Scripts.Render("~/bundles/cookies")
+
+<head>
+    <link rel="stylesheet" type="text/css" href="~/Content/cookies.css">
+</head>
+
+
+<!-- Toolbar -->
+<div class="dropdown col-md-2" id="cookies_nav_wrapper">
+
+    <button id="toggle_cookies_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-menu-down padding-right-5"></span><span class="glyphicon glyphicon-cog"></span></span></button>
+
+    <div class="popped" id="cookies_nav">
+        <div id="toggle_cookies_in_menu"><span class="glyphicon glyphicon-menu-up padding-right-5"></span></div>
+
+        <div id="row">
+            <select class="form-control" id="cookies_keyword_bar_chart_dropdown"></select>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-12" id="populate_wrapper">
+                <button type="button" class="btn btn-primary" id="cookies_populate_button">Populate</button>
+            </div>
+
+        </div>
+
+        <br />
+
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="panel panel-default">
+        <div id="cookie_domain_line_chart"></div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="panel panel-default">
+        
+        <div class="radio" id="keyword_counts_container">
+            <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
+
+            <label><input type="radio" name="optradio" id="keyword_percentages">Percent Parsed</label>
+        </div>
+
+        <div id="cookie_keyword_line_chart"></div>
+        <div id="keyword_toolbar_wrapper">
+
+            <div id="keyword_line_toggle">
+
+                <div id="keyword_toolbar_container">
+
+                    <div id="cookies_keyword_list"></div>
+                    <br />
+                    <button type="button" class="btn btn-default btn-xs" id="cookies_keyword_checkall_button">Select All</button>
+                    <button type="button" class="btn btn-default btn-xs" id="cookies_keyword_uncheckall_button">Disselect All</button>
+
+                </div>
+
+                <button id="toggle_keyword_line_nav" class="btn btn-sm"><span id="toggle_icon"><span class="glyphicon glyphicon-cog"></span></span></button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="panel panel-default">
+        
+        <div class="radio" id="keyword_data_toggle_container">
+            <label><input type="radio" name="optradio" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
+
+            <label><input type="radio" name="optradio" id="keyword_data_percentages">Percent Parsed</label>
+        </div>
+        <div class="col-md-12" id="keyword_form_container">
+            <select class="form-control" id="cookies_keyword_data_dropdown"></select>
+        </div>
+
+        <br />
+        <br />
+
+        <div id="cookie_keyword_bar_chart"></div>
+
+
+        <div class="col col-md-12" id="keyword_chart_toggle_wrapper">
+            <button id="toggle_keyword_chart" class="btn btn-sm">View as Table</button>
+        </div>
+
+        <!-- Keyword Table View -->
+        <table class="table" id="keyword_table"></table>
+
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+
+    var dataValues = @Html.Raw(Json.Encode(Model));
+
+    //$(window).resize(function () {
+    //    reloadGraphs();
+    //});
+
+
+</script>

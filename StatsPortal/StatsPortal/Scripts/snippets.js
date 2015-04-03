@@ -66,6 +66,34 @@ google.load("visualization", "1.1", { packages: ["bar"] });
 //    chart.draw(data, options);
 //}
 
+//function reloadData(domain, startDate, endDate) {
+//    $.ajax({
+//        type: 'POST',
+//        dataType: 'json',
+//        url: "ReloadData",
+//        traditional: true,
+//        data: {
+//            domain: domain,
+//            startDate: startDate,
+//            endDate: endDate
+//        },
+//        success: function (firstModel) {
+
+//            console.log("Data reload successful!");
+
+//        },
+//        error: function () {
+//            alert("Data reload failure! Please try again.");
+//        }
+//    });
+//}
+
+function reloadGraphs() {
+    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+};
+
 function drawDomainLineChart(dataPool, days, firstDay) {
 
     var data = new google.visualization.DataTable();
@@ -86,7 +114,7 @@ function drawDomainLineChart(dataPool, days, firstDay) {
     data.addColumn('number', "Birthyear");
     data.addColumn('number', "Email");
 
-    debugger;
+
 
     for (var i = 1; i < numRows; i++) {
         for (var j = 1; j < dataPool[i].length; j++) {
@@ -121,8 +149,6 @@ function drawDomainLineChart(dataPool, days, firstDay) {
 
     chart.draw(data, options);
 }
-
-
 
 function drawKeywordLine(dataPool, days, firstDay) {
 
@@ -278,71 +304,71 @@ function drawKeywordLine(dataPool, days, firstDay) {
 
 }
 
-function drawSnippetKeywordBar(dataValues) {
+//function drawSnippetKeywordBar(dataValues) {
 
-    var data = new google.visualization.DataTable();
+//    var data = new google.visualization.DataTable();
 
-    if (document.getElementById('keyword_raw_counts').checked) {
+//    if (document.getElementById('keyword_raw_counts').checked) {
 
-        data.addColumn('string', 'Keyword');
-        data.addColumn('number', 'Counted');
-        data.addColumn({ type: 'string', role: 'annotation' });
-        data.addColumn('number', 'Parsed');
-        data.addColumn({ type: 'string', role: 'annotation' });
+//        data.addColumn('string', 'Keyword');
+//        data.addColumn('number', 'Counted');
+//        data.addColumn({ type: 'string', role: 'annotation' });
+//        data.addColumn('number', 'Parsed');
+//        data.addColumn({ type: 'string', role: 'annotation' });
 
-        for (var i = 0; i < dataValues.length; i++) {
-            if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
+//        for (var i = 0; i < dataValues.length; i++) {
+//            if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
 
-                if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
-                    data.addRow([dataValues[i].Keyword, dataValues[i].TotalCount, dataValues[i].TotalCount.toString(), dataValues[i].TotalParsed, dataValues[i].TotalParsed.toString()]);
-                }
-            }
-        }
+//                if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
+//                    data.addRow([dataValues[i].Keyword, dataValues[i].TotalCount, dataValues[i].TotalCount.toString(), dataValues[i].TotalParsed, dataValues[i].TotalParsed.toString()]);
+//                }
+//            }
+//        }
 
-        var view = new google.visualization.DataView(data);
-        view.setColumns([0, 1, 2, 3, 4]);
+//        var view = new google.visualization.DataView(data);
+//        view.setColumns([0, 1, 2, 3, 4]);
 
-        var options = {
-            title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
-            bars: 'horizontal', // Required for Material Bar Charts.
-            //height: (data.getNumberOfRows() * 50)
-        }
+//        var options = {
+//            title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
+//            bars: 'horizontal', // Required for Material Bar Charts.
+//            //height: (data.getNumberOfRows() * 50)
+//        }
 
-        var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart"));
+//        var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart"));
 
-        chart.draw(data, options);
-    }
+//        chart.draw(data, options);
+//    }
 
-    else if (document.getElementById('keyword_percentages').checked) {
-        data.addColumn('string', 'Keyword');
-        data.addColumn('number', 'Percent Parsed');
-        data.addColumn({ type: 'string', role: 'annotation' });
+//    else if (document.getElementById('keyword_percentages').checked) {
+//        data.addColumn('string', 'Keyword');
+//        data.addColumn('number', 'Percent Parsed');
+//        data.addColumn({ type: 'string', role: 'annotation' });
 
-        for (var i = 0; i < dataValues.length; i++) {
-            if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
+//        for (var i = 0; i < dataValues.length; i++) {
+//            if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
 
-                if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
-                    data.addRow([dataValues[i].Keyword, roundToTwo((dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100), (roundToTwo((dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100)).toString()]);
-                }
-            }
-        }
+//                if ($.inArray(dataValues[i].Keyword, getCheckedValues("keyword_checkbox")) > -1) {
+//                    data.addRow([dataValues[i].Keyword, roundToTwo((dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100), (roundToTwo((dataValues[i].TotalParsed / dataValues[i].TotalCount) * 100)).toString()]);
+//                }
+//            }
+//        }
 
-        var view = new google.visualization.DataView(data);
-        view.setColumns([0, 1, 2]);
+//        var view = new google.visualization.DataView(data);
+//        view.setColumns([0, 1, 2]);
 
-        var options = {
-            title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
-            bars: 'horizontal', // Required for Material Bar Charts.
-            //height: (data.getNumberOfRows() * 50)
-        }
+//        var options = {
+//            title: '' + document.getElementById('snippet_keyword_bar_chart_dropdown').value + ' Keywords Counted/Parsed for 02/25/2015',
+//            bars: 'horizontal', // Required for Material Bar Charts.
+//            //height: (data.getNumberOfRows() * 50)
+//        }
 
-        var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart"));
+//        var chart = new google.visualization.BarChart(document.getElementById("snippet_keyword_chart"));
 
-        chart.draw(data, options);
-    }
+//        chart.draw(data, options);
+//    }
 
 
-}
+//}
 
 function drawSnippetLineChart(datavalues) {
 
@@ -411,6 +437,47 @@ function drawSnippetLineChart(datavalues) {
 //    chart.draw(data, options);
 //}
 
+function getReadDomains() {
+    var domains = [];
+
+    for (var i = 0; i < dataValues.length; i++) {
+        if ($.inArray(dataValues[i].Domain, domains) === -1) {
+            domains.push(dataValues[i].Domain);
+        }
+    }
+
+    return domains.sort();
+
+}
+
+function populateDomainDropdown(domainlist)
+{
+    var snippetDropdownPopulate = "";
+    for (var i = 0; i < domainlist.length; i++) {
+        snippetDropdownPopulate += "<option>" + capitalizeFirstLetter(domainlist[i]) + "</option>";
+    }
+
+    $("#snippet_keyword_bar_chart_dropdown").html(snippetDropdownPopulate);
+}
+
+function populateKeywordData(domain) {
+    var snippetCheckbox = getNewKeywords(domain);
+
+    var snippetCheckboxPopulate = "";
+    var keywordDataPopulate = "";
+    for (var i = 0; i < snippetCheckbox.length; i++) {
+        if (i == 0) {
+            snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+        } else {
+            snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+           
+        }
+        keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+    }
+
+    $("#snippet_keyword_list").html(snippetCheckboxPopulate);
+    $("#snippet_keyword_data_dropdown").html(keywordDataPopulate);
+}
 
 function getNewKeywords(domainName) {
 
@@ -441,6 +508,7 @@ function getCheckedValues(className) {
 
 }
 
+
 function drawDomainLine(domainName, startDate, dayCount) {
     //var checked = true;
     //if (document.getElementById('keyword_percentages_domain').checked) {
@@ -469,6 +537,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
         },
         error: function () {
             alert("Error loading data! Please try again.");
+            debugger;
         }
     });
 }
@@ -519,27 +588,27 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
         },
         success: function (keywordData) {
  
-            //var keywordInfo = domainList;
+            var keywordInfo = keywordData;
             
-            //var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Emails Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Names Parsed</th><th>Usenames Parsed</th></tr></thead>";
-            //var tableBodyPopulate = "<tbody>";
+            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Emails Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Names Parsed</th><th>Usenames Parsed</th></tr></thead>";
+            var tableBodyPopulate = "<tbody>";
 
-            //for (var i = 0; i < domainList.length; i++) {
-            //    if (domainList[i][0] == null) {
-            //        tableBodyPopulate += '<tr><td>' + domainList[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + "</td></tr>";
+            for (var i = 0; i < keywordData.length; i++) {
+                if (keywordData[i][0] == null) {
+                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + "</td></tr>";
 
-            //    } else {
-            //        tableBodyPopulate += '<tr><td>' + domainList[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + domainList[i][1] + '</td><td>' + domainList[i][2] + '</td><td>' + roundToTwo(parseFloat(domainList[i][2]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][3] + '</td><td>' + domainList[i][4] + '</td><td>' + domainList[i][5] + '</td><td>' + domainList[i][6] + '</td><td>' + domainList[i][7] + "</td></tr>";
-            //    }
-            //    //                tableBodyPopulate += '<tr><td>' + domainList[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + domainList[i][1] + '</td><td>' + domainList[i][2] + '</td><td>' + roundToTwo(parseFloat(domainList[i][2]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][3] + '</td><td>' + roundToTwo(parseFloat(domainList[i][3]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][4] + '</td><td>' + roundToTwo(parseFloat(domainList[i][4]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][5] + '</td><td>' + roundToTwo(parseFloat(domainList[i][5]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][6] + '</td><td>' + roundToTwo(parseFloat(domainList[i][6]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][7] + '</td><td>' + roundToTwo(parseFloat(domainList[i][7]) / parseFloat(domainList[i][1]) * 100) + '</td></tr>';
+                } else {
+                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + keywordData[i][1] + '</td><td>' + keywordData[i][2] + '</td><td>' + roundToTwo(parseFloat(keywordData[i][2]) / parseFloat(keywordData[i][1]) * 100) + '</td><td>' + keywordData[i][3] + '</td><td>' + keywordData[i][4] + '</td><td>' + keywordData[i][5] + '</td><td>' + keywordData[i][6] + '</td><td>' + keywordData[i][7] + "</td></tr>";
+                }
+                //                tableBodyPopulate += '<tr><td>' + domainList[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + domainList[i][1] + '</td><td>' + domainList[i][2] + '</td><td>' + roundToTwo(parseFloat(domainList[i][2]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][3] + '</td><td>' + roundToTwo(parseFloat(domainList[i][3]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][4] + '</td><td>' + roundToTwo(parseFloat(domainList[i][4]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][5] + '</td><td>' + roundToTwo(parseFloat(domainList[i][5]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][6] + '</td><td>' + roundToTwo(parseFloat(domainList[i][6]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][7] + '</td><td>' + roundToTwo(parseFloat(domainList[i][7]) / parseFloat(domainList[i][1]) * 100) + '</td></tr>';
 
-            //    //'<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '" checked>' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
-            //}
+                //'<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '" checked>' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
+            }
 
-            //tableBodyPopulate += "</tbody>"
+            tableBodyPopulate += "</tbody>";
 
 
-            //$("#keyword_table").html(tableHeaderPopulate + "" + tableBodyPopulate);
+            $("#keyword_table").html(tableHeaderPopulate + "" + tableBodyPopulate);
 
             var data = new google.visualization.DataTable();
 
@@ -578,7 +647,7 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
                 }
             }
 
-            debugger;
+           
             var options = {
    
                 title: "Demo Stats by Keyword: " + capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()),
@@ -611,63 +680,18 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
 
 $(document).ready(function () {
 
-  
+    // Load domains from file
+    var dataValueDomains = getReadDomains();
 
-    var dataValueDomains = [];
-    //$.ajax({
-    //    type: 'POST',
-    //    dataType: 'json',
-    //    url: "GetDomainList",
-    //    traditional: true,
-    //    data: {},
-    //    success: function (domainList) {
+    // Populate domain dropdown using read-in domains
+    populateDomainDropdown(dataValueDomains);
 
-    //        // Callback that creates and populates a data table,    
-    //        // instantiates the pie chart, passes in the data and    
-    //        // draws it. 
-    //        dataValueDomains = domainList;
-    //        debugger;
-    //    },
-    //    error: function () {
-    //        alert("Error loading data! Please try again.");
-    //    }
-    //});
-    for (var i = 0; i < dataValues.length; i++) {
-        if ($.inArray(dataValues[i].Domain, dataValueDomains) === -1) {
-            dataValueDomains.push(dataValues[i].Domain);
-        }
-    }
 
-    dataValueDomains = dataValueDomains.sort();
+    // Populate initial keyword data
+    populateKeywordData(dataValueDomains[0]);
 
-    var snippetDropdownPopulate = "";
-    for (var i = 0; i < dataValueDomains.length; i++) {
-        snippetDropdownPopulate += "<option>" + capitalizeFirstLetter(dataValueDomains[i]) + "</option>";
-    }
 
-    $("#snippet_keyword_bar_chart_dropdown").html(snippetDropdownPopulate);
-
-    var snippetCheckboxInit = getNewKeywords(dataValueDomains[0]);
-
-    var snippetCheckboxInitPopulate = "";
-    var keywordDataInitPopulate = "";
-    for (var i = 0; i < snippetCheckboxInit.length; i++) {
-        if (i == 0) {
-            snippetCheckboxInitPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckboxInit[i].replace(/"/g, '&quot;') + '" checked>' + snippetCheckboxInit[i].replace(/"/g, '&quot;') + '</label></div>';
-            keywordDataInitPopulate += "<option>" + snippetCheckboxInit[i].replace(/"/g, '&quot;') + "</option>";
-        } else
-        {
-            snippetCheckboxInitPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckboxInit[i].replace(/"/g, '&quot;') + '">' + snippetCheckboxInit[i].replace(/"/g, '&quot;') + '</label></div>';
-            keywordDataInitPopulate += "<option>" + snippetCheckboxInit[i].replace(/"/g, '&quot;') + "</option>";
-        }
-        
-    }
-
-    $("#snippet_keyword_list").html(snippetCheckboxInitPopulate);
-    $("#snippet_keyword_data_dropdown").html(keywordDataInitPopulate);
-
-    //drawSnippetKeywordBar(dataValues);
-
+    // Handle raw count/percentage toggle
     $("#keyword_raw_counts, #keyword_percentages").change(function () {
         drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
     });
@@ -676,41 +700,41 @@ $(document).ready(function () {
         drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
     });
 
-    //$("#keyword_raw_counts_domain, #keyword_percentages_domain").change(function () {
-    //    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 3);
-    //});
 
+    // Update keyword list when new domain is chosen
     $("#snippet_keyword_bar_chart_dropdown").change(function () {
-        var newKeywords = getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase());
+        populateKeywordData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase());
+        //var newKeywords = getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase());
 
-        var snippetCheckboxPopulate = "";
-        var keywordDropdownPopulate = "";
-        for (var i = 0; i < newKeywords.length; i++) {
-            if (i == 0) {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '" checked>' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
-            } else {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '">' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
+        //var snippetCheckboxPopulate = "";
+        //var keywordDropdownPopulate = "";
+        //for (var i = 0; i < newKeywords.length; i++) {
+        //    if (i == 0) {
+        //        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '" checked>' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
+        //    } else {
+        //        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + newKeywords[i].replace(/"/g, '&quot;') + '">' + newKeywords[i].replace(/"/g, '&quot;') + '</label></div>';
 
 
-            }
-            keywordDropdownPopulate += "<option>" + newKeywords[i].replace(/"/g, '&quot;') + "</option>";
-        }
+        //    }
+        //    keywordDropdownPopulate += "<option>" + newKeywords[i].replace(/"/g, '&quot;') + "</option>";
+        //}
 
-        $("#snippet_keyword_list").html(snippetCheckboxPopulate);
-        $("#snippet_keyword_data_dropdown").html(keywordDropdownPopulate);
+        //$("#snippet_keyword_list").html(snippetCheckboxPopulate);
+        //$("#snippet_keyword_data_dropdown").html(keywordDropdownPopulate);
     });
 
-    $(".domain_name").html(capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value));
-
-    $("#snippet_keyword_bar_chart_button").click(function () {
+    // Handle "Populate" button click
+    $("#snippet_populate_button").click(function () {
         //drawSnippetKeywordBar(dataValues);
         //drawSnippetCombo();
+        //reloadData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", "20150307");
         drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
         drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
         //$(".domain_name").html(capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value));
         drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
     });
 
+    // Handle onclick changes to "Check/Uncheck All" buttons
     $('#snippet_keyword_checkall_button').click(function () {
         $("input:checkbox").prop('checked', true);
     });
@@ -718,28 +742,27 @@ $(document).ready(function () {
         $("input:checkbox").prop('checked', false);
     });
 
-    $('#toggle_keyword_line_nav').click(function () {
-        $('#keyword_toolbar_container').toggle();
-    });
-
-    $("#snippet_keyword_list").change(function () {
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-    });
-
+    // When "Check/Uncheck All" buttons are clicked, refresh graph
     $("#snippet_keyword_checkall_button, #snippet_keyword_uncheckall_button").click(function () {
         drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
     });
 
-    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-    
-    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+    // Handle show/hide toggle for keyword menu
+    $('#toggle_keyword_line_nav').click(function () {
+        $('#keyword_toolbar_container').toggle();
+    });
 
+    // Whenever a keyword is selected/unselected, refresh the graph
+    $("#snippet_keyword_list").change(function () {
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+    });
+
+    // Upon selecting a different keyword in the keyword info graph area, refresh graph
     $("#snippet_keyword_data_dropdown").change(function () {
         drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
     });
-    
 
+    // Handle click animations for domain bar
     $(function () {
         $("#toggle_snippet_nav, #toggle_snippet_in_menu").click(function () {
             if ($("#snippet_nav").hasClass("popped")) {
@@ -752,8 +775,17 @@ $(document).ready(function () {
         });
     });
 
-    $('#show_keyword_chart').click(function () {
-        $('#keyword_container').toggle();
+    // Handle toggle for keyword table
+    $("#toggle_keyword_chart").click(function () {
+        $("#keyword_table").toggle();
     });
+
+    // Initialize graphs
+    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+
+    
+
 
 });

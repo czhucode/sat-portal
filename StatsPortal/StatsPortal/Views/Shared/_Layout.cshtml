@@ -14,53 +14,112 @@
 </head>
 <body>
     <div id="wrapper" class="active">
-
-        <!-- Sidebar -->
+        
         <div id="sidebar-wrapper">
-            <ul id="sidebar_menu" class="sidebar-nav">
-                <li class="sidebar-brand"><a id="menu-toggle" href="#">comScore Inc.<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
-            </ul>
-            <div class="sidebar-nav" id="sidebar">
-                <li id="menu_1">
-                    <a>Traffic<span class="sub_icon glyphicon glyphicon-plus" onclick="collapseSubMenu1()"></span></a>
-                    <ul id="sub_menu_1" class="sub-menu hidden">
-                        <li>@Html.ActionLink("Snippet Parsing", "Snippet", "Snippet")</li>
-                        <li><a href="#">Cookie Jar</a></li>
-                    </ul>
-                </li>
-                <li id="menu_2">
-                    <a>Social Network<span class="sub_icon glyphicon glyphicon-plus" onclick="collapseSubMenu2()"></span></a>
-                    <ul id ="sub_menu_2" class="sub-menu hidden">
-                        <li>@Html.ActionLink("Linkedin", "Matching", "Stats", new { @domain = "Linkedin" }, new {})</li>
-                        <li>@Html.ActionLink("Google", "Matching", "Stats", new { @domain = "Google" }, new {})</li>
-                        <li>@Html.ActionLink("Facebook", "Matching", "Stats", new { @domain = "Facebook" }, new {})</li>
-                    </ul>
-                </li>
-            </div>
             
+            <div id="sidebar_nav_icon">
+                <span id="main_icon" class="glyphicon glyphicon-menu-hamburger"></span>
+            </div>
+
+            <ul id="menu">
+                <li>
+                    Traffic
+                    <ul>
+                        <li>
+                            @Html.ActionLink("Snippet Parsing", "Snippet", "Snippet")
+                        </li>
+                        <li>
+                            @Html.ActionLink("Cookie Parsing", "Cookies", "Cookies")
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Non-Traffic
+                </li>
+                <li>
+                    Social Networks
+                    <ul>
+                        <li>@Html.ActionLink("Linkedin", "Matching", "Stats", new { @domain = "Linkedin" }, new { })</li>
+                        <li>@Html.ActionLink("Google", "Matching", "Stats", new { @domain = "Google" }, new { })</li>
+                        <li>@Html.ActionLink("Facebook", "Matching", "Stats", new { @domain = "Facebook" }, new { })</li>
+                    </ul>
+                </li>
+            </ul>
         </div>
 
-        <!-- Page content -->
-        <div id="page-content-wrapper">
-            <!-- Keep all page content within the page-content inset div! -->
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">
-                        @RenderBody()
-                    </div>
-                    <div class="col-lg-12">
-                        <footer>
-                            <p>&copy; @DateTime.Now.Year - comScore Webportal</p>
-                        </footer>
+            <!-- Sidebar -->
+            @*<div id="sidebar-wrapper">
+                <ul id="sidebar_menu" class="sidebar-nav">
+                    <li class="sidebar-brand"><a id="menu-toggle" href="#">comScore Inc.<span id="main_icon" class="glyphicon glyphicon-align-justify"></span></a></li>
+                </ul>
+                <div class="sidebar-nav" id="sidebar">
+                    <li id="menu_1">
+                        <a>Traffic<span class="sub_icon glyphicon glyphicon-plus" onclick="collapseSubMenu1()"></span></a>
+                        <ul id="sub_menu_1" class="sub-menu hidden">
+                            <li>@Html.ActionLink("Snippet Parsing", "Snippet", "Snippet")</li>
+                            <li><a href="#">Cookie Jar</a></li>
+                        </ul>
+                    </li>
+                    <li id="menu_2">
+                        <a>Social Network<span class="sub_icon glyphicon glyphicon-plus" onclick="collapseSubMenu2()"></span></a>
+                        <ul id ="sub_menu_2" class="sub-menu hidden">
+                            <li>@Html.ActionLink("Linkedin", "Matching", "Stats", new { @domain = "Linkedin" }, new {})</li>
+                            <li>@Html.ActionLink("Google", "Matching", "Stats", new { @domain = "Google" }, new {})</li>
+                            <li>@Html.ActionLink("Facebook", "Matching", "Stats", new { @domain = "Facebook" }, new {})</li>
+                        </ul>
+                    </li>
+                </div>
+
+            </div>*@
+
+            <!-- Page content -->
+            <div id="page-content-wrapper">
+                <!-- Keep all page content within the page-content inset div! -->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            @RenderBody()
+                        </div>
+                        <div class="col-lg-12">
+                            <footer>
+                                <p>&copy; @DateTime.Now.Year - comScore Webportal</p>
+                            </footer>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-    </div>
+        </div>
     
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/site")
     @RenderSection("scripts", required: false)
+    
+    <script>
+        $(document).ready(function () {
+
+            var initMenu = function () {
+                var orientation = 'vertical';
+                $("#menu").kendoMenu({
+                    orientation: orientation
+                }).data("kendoMenu").wrapper.css("width", (orientation == "horizontal") ? 600 : 120);
+            };
+
+            initMenu();
+
+            $("#sidebar-wrapper").hover(
+                function() {
+                    $(this).animate({ 'margin-left': '-250px', 'width': '200px' }, 100, function (){});
+                },
+                function() {
+                    $(this).animate({ 'margin-left': '-450px', 'width': '250px'}, 100, function (){});
+                }
+            );
+
+        });
+    </script>
+
+
+
 </body>
 </html>
