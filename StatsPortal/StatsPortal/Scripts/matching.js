@@ -9,7 +9,8 @@ function getQueryStringValue(key) {
 
 // The select handler. Call the chart's getSelection() method
 function selectHandler(value, domain) {
-    //var options = {}
+
+    // Ajax call to load the country matching stats on country click
     if (value) {
         $.ajax({
             type: 'GET',
@@ -21,16 +22,6 @@ function selectHandler(value, domain) {
                 document.getElementById('Country').value = value;
             }
         });
-
-        //var view = new google.visualization.DataView(data);
-        //view.setColumns([0, {
-        //    type: 'number',
-        //    label: data.getColumnLabel(1),
-        //    calc: function (dt, row) {
-        //        return (selection[0].row == row) ? 2 : 1;
-        //    }
-        //}]);
-        //chart.draw(view, options);
     }
 }
 
@@ -46,14 +37,10 @@ function drawRegionsMap(dataValues) {
     }
 
     var options = {
-        //colorAxis: { colors: ['#E6E3D4', '109618'] },
-        //colorAxis: { colors: ['#A3BC98', '109618'] },
         colorAxis: { colors: ['#C7CAB8', '109618'] },
         height : 550,
         keepAspectRation : true
     }
-
-    //var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
 
     // Create a dashboard
     var dash = new google.visualization.Dashboard(document.getElementById('dashboard'));
@@ -82,12 +69,13 @@ function drawRegionsMap(dataValues) {
     // Listen for the 'select' event, and call my function selectHandler() when
     // the user selects something on the chart.
     google.visualization.events.addListener(chart, 'select', function () {
-        //var selectedItem = chart.getSelection()[0];
+        // Get the selected item
         var selectedItem = chart.getChart().getSelection()[0];
 
         // Get dataTable
         var d = chart.getDataTable();
-        //var value = data.getValue(selectedItem.row, 0);
+
+        // Get the value from the selected item
         var value = d.getValue(selectedItem.row, 0);
         var domain = getQueryStringValue('domain');
         selectHandler(value, domain);
@@ -99,17 +87,11 @@ function drawRegionsMap(dataValues) {
     //chart.draw(data, options);
 }
 
+/**
+  * Country auto complete which uses jQuery UI
+  */
 function auto_complete(dataValues) {
     $("#Country").autocomplete({
-        //source: function (req, add) {
-        //    add($.map(dataValues, function (el) {
-        //        Object.prototype.toString.call(el);
-        //        return {
-        //            country: el.Country,
-        //            mm: el.MatchedMachines
-        //        };
-        //    }));
-        //},
         source: function (request, response) {
             var re = $.ui.autocomplete.escapeRegex(request.term);
             var matcher = new RegExp("^" + re, "i");
@@ -136,6 +118,9 @@ function auto_complete(dataValues) {
     };
 }
 
+/**
+  *     Draws the Line Chart that populates the Matching Stats for all/each country.
+  */
 function drawChart(dataValues) {
 
     // Create the data table.
@@ -143,22 +128,23 @@ function drawChart(dataValues) {
 
     data.addColumn('string', 'Date');
     data.addColumn('number', 'Matched Machines');
-    data.addColumn('number', 'Name Count');
+    data.addColumn('number', 'Names');
     if (dataValues[0].Domain == 'google' || dataValues[0].Domain == 'facebook') {
-        data.addColumn('number', 'Gender Count');
-        data.addColumn('number', 'Birthyear Count');
+        data.addColumn('number', 'Genders');
+        data.addColumn('number', 'Birthyears');
 
         if (dataValues[0].Domain == 'google')
-            data.addColumn('number', 'Email Count');
+            data.addColumn('number', 'Emails');
     }
 
     if (dataValues[0].Domain == 'linkedin') {
-        data.addColumn('number', 'Birthyear Count');
-        data.addColumn('number', 'Email Count');
+        data.addColumn('number', 'Birthyears');
+        data.addColumn('number', 'Emails');
     }
 
     for (var i = 0; i < dataValues.length; i++) {
-        // data.addRow([new Date(parseInt(dataValues[i].Date.match(/\d+/))), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
+
+        // Build the rows of the DataTable based on the domain
         if (dataValues[0].Domain == 'linkedin')
             data.addRow([dataValues[i].Date.toString(), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
         else if (dataValues[0].Domain == 'google')
@@ -213,33 +199,39 @@ function drawChart(dataValues) {
 
     // Instantiate and draw our chart, passing in some options.
     var chart = new google.charts.Line(document.getElementById('visualization'));
-    //chart.draw(data, google.charts.Line.convertOptions(options));
+
+    //chart.draw(data, google.charts.Line.convertOptions(options));         // Uncomment this line if using Material Charts
     chart.draw(data, options);
 }
 
-
+/**
+  *     Draws the Line Chart that populates the Lookup Stats.
+  */
 function drawLookupChart(dataValues) {
-
+    // DataTable Declaration
     var data = new google.visualization.DataTable();
+
+    // Build the column headers of the DataTable based on the domain
     data.addColumn('string', 'Date');
     data.addColumn('number', 'Lookup Count');
-    data.addColumn('number', 'Name Count');
+    data.addColumn('number', 'Names');
 
     if (dataValues[0].Domain == 'google' || dataValues[0].Domain == 'facebook') {
-        data.addColumn('number', 'Gender Count');
-        data.addColumn('number', 'Birthyear Count');
+        data.addColumn('number', 'Genders');
+        data.addColumn('number', 'Birthyears');
 
         if (dataValues[0].Domain == 'google')
-            data.addColumn('number', 'Email Count');
+            data.addColumn('number', 'Emails');
     }
 
     if (dataValues[0].Domain == 'linkedin') {
-        data.addColumn('number', 'Birthyear Count');
-        data.addColumn('number', 'Email Count');
+        data.addColumn('number', 'Birthyears');
+        data.addColumn('number', 'Emails');
     }
 
     for (var i = 0; i < dataValues.length; i++) {
-        // data.addRow([new Date(parseInt(dataValues[i].Date.match(/\d+/))), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
+
+        // Build the rows of the DataTable based on the domain
         if (dataValues[0].Domain == 'linkedin')
             data.addRow([dataValues[i].Date.toString(), dataValues[i].LookupCount, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
         else if (dataValues[0].Domain == 'google')
@@ -251,17 +243,7 @@ function drawLookupChart(dataValues) {
     // Sort the data
     data.sort([{ column: 0 }]);
 
-    //var options = {
-    //    chart: {
-    //        title: 'Linkedin Lookup Stats',
-    //        subtitle: 'for timestamp ' + dataValues[0].Date
-    //    },
-    //    height: 400,
-    //    vAxis: {
-    //        gridlines: { color: '#333', count: 4 }
-    //    }
-    //};
-
+    // Define the options for the Line Chart
     var options = {
         title:  getQueryStringValue('domain') + ' Lookup Stats',
         titleTextStyle: {
@@ -298,11 +280,6 @@ function drawLookupChart(dataValues) {
             }
         },
         pointSize: 4,
-        crosshair: {
-            trigger : 'focus',
-            orientation: 'vertical',
-            focused: { opacity: 0.5 }
-        },
         explorer: {
             keepInBounds: true,
             actions: ['dragToZoom', 'rightClickToReset']
@@ -314,29 +291,36 @@ function drawLookupChart(dataValues) {
     chart.draw(data, options);
 }
 
+/**
+  *     Draws the Line Chart that populates the Matched Id Stats.
+  */
 function drawMatchingChart(dataValues) {
 
+    // DataTable Declaration
     var data = new google.visualization.DataTable();
+
+    // Build the column headers of the DataTable based on the domain
     data.addColumn('string', 'Date');
     data.addColumn('number', 'Eligible Ids');
     data.addColumn('number', 'Matched Ids');
-    data.addColumn('number', 'Name Count');
+    data.addColumn('number', 'Names');
 
     if (dataValues[0].Domain == 'google' || dataValues[0].Domain == 'facebook') {
-        data.addColumn('number', 'Gender Count');
-        data.addColumn('number', 'Birthyear Count');
+        data.addColumn('number', 'Genders');
+        data.addColumn('number', 'Birthyears');
 
         if (dataValues[0].Domain == 'google')
-            data.addColumn('number', 'Email Count');
+            data.addColumn('number', 'Emails');
     }
 
     if (dataValues[0].Domain == 'linkedin') {
-        data.addColumn('number', 'Birthyear Count');
-        data.addColumn('number', 'Email Count');
+        data.addColumn('number', 'Birthyears');
+        data.addColumn('number', 'Emails');
     }
 
     for (var i = 0; i < dataValues.length; i++) {
-        // data.addRow([new Date(parseInt(dataValues[i].Date.match(/\d+/))), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
+        
+        // Build the rows of the DataTable based on the domain
         if (dataValues[0].Domain == 'linkedin')
             data.addRow([dataValues[i].Date.toString(), dataValues[i].EligibleIdsCount, dataValues[i].MatchedIdsCount, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
         else if (dataValues[0].Domain == 'google')
@@ -348,6 +332,7 @@ function drawMatchingChart(dataValues) {
     // Sort the data
     data.sort([{ column: 0 }]);
 
+    // Define the options for the Line Chart
     var options = {
         title: getQueryStringValue('domain') + ' Matching Id Stats',
         titleTextStyle: {
@@ -384,11 +369,6 @@ function drawMatchingChart(dataValues) {
             }
         },
         pointSize: 4,
-        crosshair: {
-            trigger: 'focus',
-            orientation: 'vertical',
-            focused: { opacity: 0.5 }
-        },
         explorer: {
             keepInBounds: true,
             actions: ['dragToZoom', 'rightClickToReset']

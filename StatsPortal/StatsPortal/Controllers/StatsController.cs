@@ -45,7 +45,7 @@ namespace StatsPortal.Controllers
 
             // Load the entire table
             lookupStats = lookupRepo.GetAll();
-            matchingStats = countryRepo.GetAll();
+            matchingStats = countryRepo.GetByDomain(domain);
             matchedIdsStats = matchRepo.GetAll();
 
             // Declare the ViewModel 
@@ -54,12 +54,12 @@ namespace StatsPortal.Controllers
             var d = matchingStats.Max(i => i.Date);
 
             var mStats = matchingStats
-                        .Where(x => x.Country.Equals("TOTALS") && x.Domain.ToLower().Equals(domain.ToLower()))
+                        .Where(x => x.Country.Equals("TOTALS"))
                         .ToArray();
 
             var cStats = matchingStats
                         .Select(x => new CountryMatchingModel() { Date = x.Date, Country = x.Country, MatchedMachines = x.MatchedMachines, Domain = x.Domain })
-                        .Where(x => x.Date == d && !x.Country.Equals("TOTALS") && x.Domain.ToLower().Equals(domain.ToLower()))
+                        .Where(x => x.Date == d && !x.Country.Equals("TOTALS"))
                         .ToArray();
 
             var mIds = matchedIdsStats

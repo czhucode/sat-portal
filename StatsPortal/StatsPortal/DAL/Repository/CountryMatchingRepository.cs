@@ -26,12 +26,13 @@ namespace StatsPortal.DAL.Repository
             item.EmailCount = record.GetValue<Int64>("i_email_count");
         }
 
-        // List All fields from the table
-        public IEnumerable<CountryMatchingStatsModel> GetAll()
+        // Get all country stats for a given domain
+        public IEnumerable<CountryMatchingStatsModel> GetByDomain(string domain)
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = @"Select * from dbo.test_cpearce_country_stats";
+                command.CommandText = @"Select * from dbo.test_cpearce_country_stats where v_domain = @domain";
+                command.AddParameter("domain", domain);
                 return ToList(command);
             }
         }
