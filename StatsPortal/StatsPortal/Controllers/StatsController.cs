@@ -36,47 +36,55 @@ namespace StatsPortal.Controllers
         {
             // Use the Connection factory to create connections to multiple databases.
             var factory = new ConnectionFactory("SAT01");
-            IDbConnection conn = factory.CreateConnection();
-            
-            // Initialize the repos
-            var lookupRepo = new LookupRepository(conn);
-            var countryRepo = new CountryMatchingRepository(conn);
-            var matchRepo = new MatchingRepository(conn);
-
-            // Load the entire table
-            lookupStats = lookupRepo.GetAll();
-            matchingStats = countryRepo.GetByDomain(domain);
-            matchedIdsStats = matchRepo.GetAll();
 
             // Declare the ViewModel 
             var model = new StatsViewModel();
 
-            var d = matchingStats.Max(i => i.Date);
+            using (IDbConnection conn = factory.CreateConnection()) { 
 
-            var mStats = matchingStats
-                        .Where(x => x.Country.Equals("TOTALS"))
-                        .ToArray();
+                //conn.Open();
+                // Initialize the repos
+                var lookupRepo = new LookupRepository(conn);
+                var countryRepo = new CountryMatchingRepository(conn);
+                var matchRepo = new MatchingRepository(conn);
 
-            var cStats = matchingStats
-                        .Select(x => new CountryMatchingModel() { Date = x.Date, Country = x.Country, MatchedMachines = x.MatchedMachines, Domain = x.Domain })
-                        .Where(x => x.Date == d && !x.Country.Equals("TOTALS"))
-                        .ToArray();
+                // Load the entire table
+                lookupStats = lookupRepo.GetAll();
+                matchingStats = countryRepo.GetByDomain(domain);
+                matchedIdsStats = matchRepo.GetAll();
 
-            var mIds = matchedIdsStats
-                        .Where(m => m.Domain.ToLower().Equals(domain.ToLower()))
-                        .ToArray();
+                
 
-            //var lookup = lookupStats
-            //            .Where(l => l.Domain.ToLower().Equals(domain.ToLower()))
-            //            .ToArray();
+                var d = matchingStats.Max(i => i.Date);
 
-            var lookup = lookupRepo.GetWhereDomainIs(domain).ToArray();
+                var mStats = matchingStats
+                            .Where(x => x.Country.ToLower().Equals("totals"))
+                            .ToArray();
 
-            model.CountryStats = cStats;
-            model.MatchingStats = mStats;
-            model.MatchedIdsStats = mIds;
-            model.LookupStats = lookup;
+                var cStats = matchingStats
+                            .Select(x => new CountryMatchingModel() { Date = x.Date, Country = x.Country, MatchedMachines = x.MatchedMachines, Domain = x.Domain })
+                            .Where(x => x.Date == d && !x.Country.ToLower().Equals("totals"))
+                            .ToArray();
 
+                var mIds = matchedIdsStats
+                            .Where(m => m.Domain.ToLower().Equals(domain.ToLower()) && m.Date > d - 7)
+                            .ToArray();
+
+                //var lookup = lookupStats
+                //            .Where(l => l.Domain.ToLower().Equals(domain.ToLower()))
+                //            .ToArray();
+
+                var lookup = lookupRepo
+                            .GetWhereDomainIs(domain)
+                            .Where(x => x.Date > d - 7)         // Get records for atleast 1 week back
+                            .ToArray();
+
+                model.CountryStats = cStats;
+                model.MatchingStats = mStats;
+                model.MatchedIdsStats = mIds;
+                model.LookupStats = lookup;
+            }
+            
             return View(model);
         }
 
@@ -85,15 +93,20 @@ namespace StatsPortal.Controllers
             // Use the Connection factory to create connections to multiple databases.
             var factory = new ConnectionFactory("SAT01");
 
-            // Initialize the repos
-            var countryRepo = new CountryMatchingRepository(factory.CreateConnection());
+            using (IDbConnection conn = factory.CreateConnection())
+            {
+                //conn.Open();
 
-            // Call the repo API
-            var cStats = countryRepo
-                        .GetByCountryAndDomain(country, domain)
-                        .OrderByDescending(x => x.Date);
+                // Initialize the repos
+                var countryRepo = new CountryMatchingRepository(conn);
 
-            return Json(cStats, JsonRequestBehavior.AllowGet);
+                // Call the repo API
+                var cStats = countryRepo
+                            .GetByCountryAndDomain(country, domain)
+                            .OrderByDescending(x => x.Date);
+
+                return Json(cStats, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
