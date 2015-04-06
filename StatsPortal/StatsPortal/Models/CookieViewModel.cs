@@ -5,10 +5,9 @@ using System.Web;
 
 namespace StatsPortal.Models
 {
-    public class SnippetViewModel
+    public class CookieViewModel
     {
-        public SnippetModel[] SnippetStats { get; set; }
-        public SnippetEmailModel[] SnippetEmailStats { get; set; }
+        public CookieModel CookieStats { get; set; }
         public string startDate { get; set; }
         public string endDate { get; set; }
     }

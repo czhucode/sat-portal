@@ -20,6 +20,7 @@ namespace StatsPortal.Controllers
     public class CookiesController : Controller
     {
         // Global list of Models created from SQL data
+
         private static IEnumerable<CookieModel> models;
 
         public void Init()
@@ -33,72 +34,91 @@ namespace StatsPortal.Controllers
         // Returns default data when page is loaded
         public ActionResult Cookies(string startDate, string endDate)
         {
+            DateTime end = new DateTime();
+            DateTime start = new DateTime();
 
             // Use the Connection factory to create connections to multiple databases.
             var factory = new ConnectionFactory("SAT04");
-            IDbConnection conn = factory.CreateConnection();
-
-            var cookieRepo = new CookiesRepository(conn);
-            // If we have not selected a domain, choose Facebook as the default
-            //if (domain.IsNullOrWhiteSpace())
-            //{
-            //    domain = "facebook.com";
-            //}
-
-            if (startDate.IsNullOrWhiteSpace())
+            using (IDbConnection conn = factory.CreateConnection())
             {
-                startDate = "20150301";
+                //IDbConnection conn = factory.CreateConnection();
+
+                var cookieRepo = new CookiesRepository(conn);
+                // If we have not selected a domain, choose Facebook as the default
+                //if (domain.IsNullOrWhiteSpace())
+                //{
+                //    domain = "facebook.com";
+                //}
+
+                //if (startDate.IsNullOrWhiteSpace())
+                //{
+                //    startDate = (cookieRepo.GetMaxDate()).ToString();
+                //    //startDate = "20150301";
+                //}
+
+                //if (endDate.IsNullOrWhiteSpace())
+                //{
+                //    endDate = cookieRepo.GetMaxDate().ToString();
+                //    //endDate = "20150307";
+                //}
+                end = DateTime.ParseExact(cookieRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
+                start = end.AddDays(-6);
+                var testStart = start.ToString("yyyyMMdd");
+                var testEnd = end.ToString("yyyyMMdd");
+
+                //// Create list to hold models
+                //List<CookieModel> cookieMonster = new List<CookieModel>();
+
+                //// Get data
+                //DataTable dataPool = GetData(startDate, endDate);
+
+                //// Read lines from file and put into a list
+                //List<string> lines =
+                //    System.IO.File.ReadAllLines(
+                //        @"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
+
+                //// Remove any blank lines
+                //lines.RemoveAll(item => item.Trim() == "");
+
+                // Loop through the lines in the file. For each line, if the domain matches the selected domain, put data into a CookieModel
+                //for (int i = 0; i < dataPool.Rows.Count; i++)
+                //{
+                //    CookieModel tempCookieModel = new CookieModel();
+
+                //        tempCookieModel.Domain = dataPool.Rows[i][1].ToString();
+                //        tempCookieModel.Keyword = dataPool.Rows[i][2].ToString();
+                //        tempCookieModel.TotalCount = Convert.ToInt64(dataPool.Rows[i][3].ToString());
+                //        tempCookieModel.TotalParsed = Convert.ToInt64(dataPool.Rows[i][4].ToString());
+                //        tempCookieModel.EmailParsed = Convert.ToInt64(dataPool.Rows[i][5].ToString());
+                //        tempCookieModel.GenderParsed = Convert.ToInt64(dataPool.Rows[i][6].ToString());
+                //        tempCookieModel.BirthyearParsed = Convert.ToInt64(dataPool.Rows[i][7].ToString());
+                //        tempCookieModel.NameParsed = Convert.ToInt64(dataPool.Rows[i][8].ToString());
+                //        tempCookieModel.UsernameParsed = Convert.ToInt64(dataPool.Rows[i][9].ToString());
+                //        tempCookieModel.Date = dataPool.Rows[i][0].ToString();
+
+                //        cookieMonster.Add(tempCookieModel);
+
+
+
+                //}
+
+                // Sort models by domain and keyword for more organized display
+                //var domainKeywordSort = from element in cookieMonster
+                //    orderby element.Domain ascending, element.Keyword ascending
+                //    select element;
+                models = cookieRepo.GetAll(start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd"));
             }
 
-            if (endDate.IsNullOrWhiteSpace())
-            {
-                endDate = "20150307";
-            }
-
-            //// Create list to hold models
-            //List<CookieModel> cookieMonster = new List<CookieModel>();
-
-            //// Get data
-            //DataTable dataPool = GetData(startDate, endDate);
-
-            //// Read lines from file and put into a list
-            //List<string> lines =
-            //    System.IO.File.ReadAllLines(
-            //        @"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
-
-            //// Remove any blank lines
-            //lines.RemoveAll(item => item.Trim() == "");
-
-            // Loop through the lines in the file. For each line, if the domain matches the selected domain, put data into a CookieModel
-            //for (int i = 0; i < dataPool.Rows.Count; i++)
-            //{
-            //    CookieModel tempCookieModel = new CookieModel();
-
-            //        tempCookieModel.Domain = dataPool.Rows[i][1].ToString();
-            //        tempCookieModel.Keyword = dataPool.Rows[i][2].ToString();
-            //        tempCookieModel.TotalCount = Convert.ToInt64(dataPool.Rows[i][3].ToString());
-            //        tempCookieModel.TotalParsed = Convert.ToInt64(dataPool.Rows[i][4].ToString());
-            //        tempCookieModel.EmailParsed = Convert.ToInt64(dataPool.Rows[i][5].ToString());
-            //        tempCookieModel.GenderParsed = Convert.ToInt64(dataPool.Rows[i][6].ToString());
-            //        tempCookieModel.BirthyearParsed = Convert.ToInt64(dataPool.Rows[i][7].ToString());
-            //        tempCookieModel.NameParsed = Convert.ToInt64(dataPool.Rows[i][8].ToString());
-            //        tempCookieModel.UsernameParsed = Convert.ToInt64(dataPool.Rows[i][9].ToString());
-            //        tempCookieModel.Date = dataPool.Rows[i][0].ToString();
-
-            //        cookieMonster.Add(tempCookieModel);
-                
-
-
-            //}
-
-            // Sort models by domain and keyword for more organized display
-            //var domainKeywordSort = from element in cookieMonster
-            //    orderby element.Domain ascending, element.Keyword ascending
-            //    select element;
-            models = cookieRepo.GetAll(startDate, endDate);
-
+            
+                CookieViewModel viewModel = new CookieViewModel();
+            viewModel.CookieStats = models.Where(item => item.Domain.ToLower().Equals("facebook.com")).First();
+            viewModel.startDate = start.ToString("yyyyMMdd");
+            viewModel.endDate = end.ToString("yyyyMMdd");
             // Return the view with the data
-            return View(models.First());
+            //CookieModel testing = models.Where(item => item.Domain.ToLower().Equals("facebook.com")).First();
+
+            //return View(models.First());
+            return View(viewModel);
         }
 
         // Returns data for a given domain/keyword(s) and returns in a list of CookieModels
@@ -294,47 +314,47 @@ namespace StatsPortal.Controllers
             return Json(keywordList, JsonRequestBehavior.AllowGet);
         }
 
-        // Returns data for a given domain/keyword(s) and returns in a list of CookieModels
-        public JsonResult GetCookieData(string domain, string[] keywordList)
-        {
-            List<CookieModel> cookieMonster = new List<CookieModel>();
+        //// Returns data for a given domain/keyword(s) and returns in a list of CookieModels
+        //public JsonResult GetCookieData(string domain, string[] keywordList)
+        //{
+        //    List<CookieModel> cookieMonster = new List<CookieModel>();
 
 
-            List<string> lines =
-               System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
+        //    List<string> lines =
+        //       System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
 
 
-            lines.RemoveAll(item => item.Trim() == "");
+        //    lines.RemoveAll(item => item.Trim() == "");
 
-            for (int i = 0; i < lines.Count; i++)
-            {
+        //    for (int i = 0; i < lines.Count; i++)
+        //    {
                 
-                CookieModel tempCookieModel = new CookieModel();
-                string[] fields = lines[i].Split('\t');
+        //        CookieModel tempCookieModel = new CookieModel();
+        //        string[] fields = lines[i].Split('\t');
 
-                if (fields[1].ToLower().Equals(domain) || domain.ToLower().Equals("all"))
-                {
-                    if (Array.IndexOf(keywordList, fields[2].ToLower()) > -1)
-                    {
-                        tempCookieModel.Domain = fields[1];
-                        tempCookieModel.Keyword = fields[2];
-                        tempCookieModel.TotalCount = Convert.ToInt64(fields[3]);
-                        tempCookieModel.TotalParsed = Convert.ToInt64(fields[4]);
-                        tempCookieModel.EmailParsed = Convert.ToInt64(fields[5]);
-                        tempCookieModel.GenderParsed = Convert.ToInt64(fields[6]);
-                        tempCookieModel.BirthyearParsed = Convert.ToInt64(fields[7]);
-                        tempCookieModel.NameParsed = Convert.ToInt64(fields[8]);
-                        tempCookieModel.UsernameParsed = Convert.ToInt64(fields[9]);
-                        tempCookieModel.Date = fields[0];
+        //        if (fields[1].ToLower().Equals(domain) || domain.ToLower().Equals("all"))
+        //        {
+        //            if (Array.IndexOf(keywordList, fields[2].ToLower()) > -1)
+        //            {
+        //                tempCookieModel.Domain = fields[1];
+        //                tempCookieModel.Keyword = fields[2];
+        //                tempCookieModel.TotalCount = Convert.ToInt64(fields[3]);
+        //                tempCookieModel.TotalParsed = Convert.ToInt64(fields[4]);
+        //                tempCookieModel.EmailParsed = Convert.ToInt64(fields[5]);
+        //                tempCookieModel.GenderParsed = Convert.ToInt64(fields[6]);
+        //                tempCookieModel.BirthyearParsed = Convert.ToInt64(fields[7]);
+        //                tempCookieModel.NameParsed = Convert.ToInt64(fields[8]);
+        //                tempCookieModel.UsernameParsed = Convert.ToInt64(fields[9]);
+        //                tempCookieModel.Date = fields[0];
 
-                        cookieMonster.Add(tempCookieModel);
-                    }
-                }
-            }
+        //                cookieMonster.Add(tempCookieModel);
+        //            }
+        //        }
+        //    }
 
 
-            return Json(cookieMonster, JsonRequestBehavior.AllowGet);
-        }
+        //    return Json(cookieMonster, JsonRequestBehavior.AllowGet);
+        //}
 
         // Returns data needed to build the domain-level line graph
         public JsonResult GetDomainLineData(string domain, string[] keywordList, int days, string startDay)
@@ -398,7 +418,7 @@ namespace StatsPortal.Controllers
                 long totalParsed = 0;
 
                 // Add the date to the first column
-                string currentDate = (Convert.ToInt32(startDay) + i).ToString(); ;
+                string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(i)).ToString("yyyyMMdd");
                 tempString[0] = currentDate;
 
                 // Generate values for the rest of the columns
@@ -432,7 +452,8 @@ namespace StatsPortal.Controllers
             }
 
 
-
+            //string test = (Convert.ToInt32("20150307") - Convert.ToInt32(startDay) + 1).ToString();
+            //string test2 = DateTime.Now.AddDays(-1.0).ToString("yyyyMMdd");
 
             return Json(chartData, JsonRequestBehavior.AllowGet);
 
@@ -444,17 +465,17 @@ namespace StatsPortal.Controllers
         {
             //List<CookieModel> data = LoadCookieData(domain, keywordList, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
             List<CookieModel> data = models.ToList();
-            List<string> keywords = new List<string>();
-            foreach (CookieModel c in data)
-            {
-                if (c.Domain.ToLower().Equals(domain.ToLower()))
-                {
-                    if (!keywords.Contains(c.Keyword))
-                    {
-                        keywords.Add(c.Keyword);
-                    }
-                }
-            }
+            //List<string> keywords = new List<string>();
+            //foreach (CookieModel c in data)
+            //{
+            //    if (c.Domain.ToLower().Equals(domain.ToLower()))
+            //    {
+            //        if (!keywords.Contains(c.Keyword))
+            //        {
+            //            keywords.Add(c.Keyword);
+            //        }
+            //    }
+            //}
 
             Dictionary<Tuple<string, string, string>, double> dict = new Dictionary<Tuple<string, string, string>, double>();
             for (int i = 0; i < data.Count; i++)
@@ -483,16 +504,19 @@ namespace StatsPortal.Controllers
                 }
 
             }
-
+            if (keywordList == null)
+            {
+                keywordList = new string[0];
+            }
 
             string[][] chartData = new string[days + 1][];
-            string[] columns = new string[keywords.Count + 1];
+            string[] columns = new string[keywordList.Length + 1];
 
             columns[0] = "Date";
 
-            for (int i = 1; i < (keywords.Count + 1); i++)
+            for (int i = 1; i < (keywordList.Length + 1); i++)
             {
-                columns[i] = keywords[i - 1];
+                columns[i] = keywordList[i - 1];
             }
             chartData[0] = columns;
 
@@ -502,7 +526,7 @@ namespace StatsPortal.Controllers
                 string[] tempString = new string[chartData[0].Length];
 
                 // Add the date to the first column
-                string currentDate = (Convert.ToInt32(startDay) + i).ToString(); ;
+                string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(i)).ToString("yyyyMMdd");
                 tempString[0] = currentDate;
 
                 // Generate values for the rest of the columns
@@ -537,7 +561,7 @@ namespace StatsPortal.Controllers
             string[][] fullKeywordData = new string[days][];
             for (int j = 0; j < days; j++)
             {
-                string currentDate = (Convert.ToInt32(startDay) + j).ToString();
+                string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(j)).ToString("yyyyMMdd");
                 string[] keywordData = new string[8];
                 for (int i = 0; i < data.Count; i++)
                 {

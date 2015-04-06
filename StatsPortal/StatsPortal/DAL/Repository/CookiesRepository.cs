@@ -36,23 +36,23 @@ namespace StatsPortal.DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                List<string> testDates = new List<string>();
-                testDates.Add(startDate);
+                List<DateTime> testDates = new List<DateTime>();
+                testDates.Add(DateTime.ParseExact(startDate, "yyyyMMdd", null));
                 //for (int i = 1; i < (Convert.ToInt32(endDate) - Convert.ToInt32(startDate) + 1); i++)
                 for (int i = 1; i < 7; i++)
                 {
-                    testDates.Add((Convert.ToInt32(startDate) + i).ToString());
+                    testDates.Add(DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(i));
                 }
                 string test_query = "SELECT * FROM cookiejar_stats_v2 WITH (NOLOCK) WHERE i_handoff_date IN (";
                 for (int i = 0; i < testDates.Count; i++)
                 {
                     if (i == testDates.Count - 1)
                     {
-                        test_query += "'" + testDates[i] + "'";
+                        test_query += "'" + testDates[i].ToString("yyyyMMdd") + "'";
                     }
                     else
                     {
-                        test_query += "'" + testDates[i] + "',";
+                        test_query += "'" + testDates[i].ToString("yyyyMMdd") + "',";
                     }
                 }
 
@@ -61,5 +61,26 @@ namespace StatsPortal.DAL.Repository
                 return ToList(command);
             }
         }
+
+        public int GetMaxDate()
+        {
+            int item = 0;
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = @"SELECT MAX(i_handoff_date) AS i_handoff_date FROM cookiejar_stats_v2";
+                using (var reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        item = reader.GetValue<int>("i_handoff_date");
+                    }
+
+                }
+                return item;
+                //return ToList(command);
+            }
+        } 
     }
 }
+//SELECT MAX(i_handoff_date) FROM cookiejar_stats_v2

@@ -2,6 +2,9 @@
 google.load("visualization", "1", { packages: ["line"] });
 google.load("visualization", "1.1", { packages: ["bar"] });
 
+// Globals 
+var domainDropdownList;
+var keywordMenuList;
 
 //function drawSnippetCombo() {
 
@@ -89,9 +92,9 @@ google.load("visualization", "1.1", { packages: ["bar"] });
 //}
 
 function reloadGraphs() {
-    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
+    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), startTimeValue, 7);
+    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
 };
 
 function drawDomainLineChart(dataPool, days, firstDay) {
@@ -437,60 +440,126 @@ function drawSnippetLineChart(datavalues) {
 //    chart.draw(data, options);
 //}
 
-function getReadDomains() {
-    var domains = [];
 
-    for (var i = 0; i < dataValues.length; i++) {
-        if ($.inArray(dataValues[i].Domain, domains) === -1) {
-            domains.push(dataValues[i].Domain);
+
+function getDomains(startDate, endDate, fn) {
+
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: "GetDomainList",
+        traditional: true,
+        data: {
+            startDate: startDate,
+            endDate: endDate
+        },
+        success: function (domainList) {
+
+            console.log(domainList[0].toString());
+            //domainDropdownList = domainList;
+            //console.log(domainDropdownList[0].toString());
+            fn(domainList);
+            debugger;
+
+        },
+        error: function () {
+            alert("Error loading domains! Please try again.");
         }
-    }
+    });
 
-    return domains.sort();
+}
+
+function getReadDomains() {
+
+
+    return domainDropdownList;
 
 }
 
 function populateDomainDropdown(domainlist)
 {
     var snippetDropdownPopulate = "";
+    debugger;
     for (var i = 0; i < domainlist.length; i++) {
-        snippetDropdownPopulate += "<option>" + capitalizeFirstLetter(domainlist[i]) + "</option>";
+        if (dataValues[i].Domain.toLowerCase() === domainlist[i].toLowerCase()) {
+            snippetDropdownPopulate += "<option selected>" + capitalizeFirstLetter(domainlist[i]) + "</option>";
+        } else {
+            snippetDropdownPopulate += "<option>" + capitalizeFirstLetter(domainlist[i]) + "</option>";
+        }
     }
-
+    debugger;
     $("#snippet_keyword_bar_chart_dropdown").html(snippetDropdownPopulate);
 }
 
 function populateKeywordData(domain) {
-    var snippetCheckbox = getNewKeywords(domain);
+    populateNewKeywords(domain, startTimeValue, endTimeValue, function (d) {
+        keywordMenuList = d;
+        var snippetCheckbox = keywordMenuList;
+        var snippetCheckboxPopulate = "";
+        var keywordDataPopulate = "";
+        for (var i = 0; i < snippetCheckbox.length; i++) {
+            if (i == 0) {
+                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+            } else {
+                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
 
-    var snippetCheckboxPopulate = "";
-    var keywordDataPopulate = "";
-    for (var i = 0; i < snippetCheckbox.length; i++) {
-        if (i == 0) {
-            snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
-        } else {
-            snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
-           
+            }
+            keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;') + "</option>";
         }
-        keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;') + "</option>";
-    }
+        debugger;
+        $("#snippet_keyword_list").html(snippetCheckboxPopulate);
+        $("#snippet_keyword_data_dropdown").html(keywordDataPopulate);
+    }); 
+    debugger;
+    //var snippetCheckbox = getNewKeywords(domain);
 
-    $("#snippet_keyword_list").html(snippetCheckboxPopulate);
-    $("#snippet_keyword_data_dropdown").html(keywordDataPopulate);
+    //var snippetCheckboxPopulate = "";
+    //var keywordDataPopulate = "";
+    //for (var i = 0; i < snippetCheckbox.length; i++) {
+    //    if (i == 0) {
+    //        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+    //    } else {
+    //        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+           
+    //    }
+    //    keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+    //}
+    //debugger;
+    //$("#snippet_keyword_list").html(snippetCheckboxPopulate);
+    //$("#snippet_keyword_data_dropdown").html(keywordDataPopulate);
 }
 
-function getNewKeywords(domainName) {
+function populateNewKeywords(domain, startDate, endDate, fn) {
 
-    var keywords = [];
-    for (var i = 0; i < dataValues.length; i++) {
-        if (dataValues[i].Domain.toLowerCase() === document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()) {
-            if ($.inArray(dataValues[i].Keyword, keywords) === -1) {
-                keywords.push(dataValues[i].Keyword);
-            }
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        url: "GetKeywords",
+        traditional: true,
+        data: {
+            domain: domain,
+            startDate: startDate,
+            endDate: endDate
+        },
+        success: function (keywordList) {
+            // Callback that creates and populates a data table,    
+            // instantiates the pie chart, passes in the data and    
+            // draws it. 
+            console.log(keywordList[0].toString());
+            //keywordMenuList = keywordList;
+            //console.log(keywordMenuList[0].toString());
+            fn(keywordList);
+
+        },
+        error: function () {
+            alert("Error populating keywords! Please try again.");
         }
-    }
+    });
+}
 
-    return keywords;
+function getNewKeywords(keywordList) {
+
+    return keywordList;
 
 }
 
@@ -524,7 +593,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
             startDay: startDate,
             days: dayCount,
             // keywordList: getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase())
-            keywordList: getNewKeywords(domainName)
+            keywordList: keywordMenuList
             //countCheck: checked
         },
         success: function (chartsdata) {
@@ -532,7 +601,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
             // Callback that creates and populates a data table,    
             // instantiates the pie chart, passes in the data and    
             // draws it. 
-            drawDomainLineChart(chartsdata, dayCount, "20150301");
+            drawDomainLineChart(chartsdata, dayCount, startTimeValue);
 
         },
         error: function () {
@@ -542,7 +611,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
     });
 }
 
-function drawSnippetLine(domainName, startDate, dayCount) {
+function drawSnippetLine(domainName, keywordList, startDate, endDate, dayCount) {
     var checked = true;
     if (document.getElementById('keyword_percentages').checked) {
         checked = false;
@@ -555,9 +624,10 @@ function drawSnippetLine(domainName, startDate, dayCount) {
         data: {
             domain: domainName,
             startDay: startDate,
+            endDate: endDate,
             days: dayCount,
             // keywordList: getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase())
-            keywordList: getCheckedValues("keyword_checkbox"),
+            keywordList: keywordList,
             countCheck: checked
 },
         success: function (chartsdata) {
@@ -565,7 +635,7 @@ function drawSnippetLine(domainName, startDate, dayCount) {
             // Callback that creates and populates a data table,    
             // instantiates the pie chart, passes in the data and    
             // draws it. 
-            drawKeywordLine(chartsdata, dayCount, "20150301");
+            drawKeywordLine(chartsdata, dayCount, startTimeValue);
 
         },
         error: function () {
@@ -681,23 +751,30 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
 $(document).ready(function () {
 
     // Load domains from file
-    var dataValueDomains = getReadDomains();
+    //var dataValueDomains = getDomains("startTimeValue", endTimeValue);
+    
+    getDomains(startTimeValue, endTimeValue, function (d) {
+        domainDropdownList = d;
+        populateDomainDropdown(d);
+    });
+
+    //var dataValueDomains = domainDropdownList;
 
     // Populate domain dropdown using read-in domains
-    populateDomainDropdown(dataValueDomains);
+    //populateDomainDropdown(domainDropdownList);
 
 
     // Populate initial keyword data
-    populateKeywordData(dataValueDomains[0]);
+    populateKeywordData(dataValues[0].Domain.toLowerCase());
 
 
     // Handle raw count/percentage toggle
     $("#keyword_raw_counts, #keyword_percentages").change(function () {
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
     });
 
     $("#keyword_data_raw_counts, #keyword_data_percentages").change(function () {
-        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
     });
 
 
@@ -727,11 +804,11 @@ $(document).ready(function () {
     $("#snippet_populate_button").click(function () {
         //drawSnippetKeywordBar(dataValues);
         //drawSnippetCombo();
-        //reloadData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", "20150307");
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-        drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+        //reloadData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "startTimeValue", endTimeValue);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
+        drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), startTimeValue, 7);
         //$(".domain_name").html(capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value));
-        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
     });
 
     // Handle onclick changes to "Check/Uncheck All" buttons
@@ -744,7 +821,7 @@ $(document).ready(function () {
 
     // When "Check/Uncheck All" buttons are clicked, refresh graph
     $("#snippet_keyword_checkall_button, #snippet_keyword_uncheckall_button").click(function () {
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
     });
 
     // Handle show/hide toggle for keyword menu
@@ -754,12 +831,12 @@ $(document).ready(function () {
 
     // Whenever a keyword is selected/unselected, refresh the graph
     $("#snippet_keyword_list").change(function () {
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
     });
 
     // Upon selecting a different keyword in the keyword info graph area, refresh graph
     $("#snippet_keyword_data_dropdown").change(function () {
-        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
     });
 
     // Handle click animations for domain bar
@@ -781,9 +858,10 @@ $(document).ready(function () {
     });
 
     // Initialize graphs
-    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "20150301", 7);
-    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+    drawSnippetLine(dataValues[0].Domain.toLowerCase(), dataValues[0].Keyword, startTimeValue, endTimeValue, 7);
+    drawDomainLine(dataValues[0].Domain.toLowerCase(), startTimeValue, 7);
+    //drawKeywordInfo(dataValues[0].Domain.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+    drawKeywordInfo(dataValues[0].Domain.toLowerCase(), dataValues[0].Keyword, startTimeValue, 7);
 
     
 

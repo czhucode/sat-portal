@@ -1,4 +1,4 @@
-﻿@model StatsPortal.Models.CookieModel
+﻿@model StatsPortal.Models.CookieViewModel
 
 @{
     ViewBag.Title = "Cookies";
@@ -23,7 +23,7 @@
             <select class="form-control" id="cookies_keyword_bar_chart_dropdown"></select>
         </div>
 
-        <div class="row">
+        <div class="row top-margin-small">
 
             <div class="col-md-12" id="populate_wrapper">
                 <button type="button" class="btn btn-primary" id="cookies_populate_button">Populate</button>
@@ -104,7 +104,9 @@
 <script type="text/javascript">
 
 
-    var dataValues = @Html.Raw(Json.Encode(Model));
+    var dataValues = @Html.Raw(Json.Encode(Model.CookieStats));
+    var startTimeValue = @Model.startDate;
+    var endTimeValue = @Model.endDate;
 
     //$(window).resize(function () {
     //    reloadGraphs();

@@ -19,7 +19,8 @@ namespace StatsPortal.Controllers
     public class SnippetController : Controller
     {
 
-        private static SnippetViewModel model = new SnippetViewModel();
+        //private static SnippetViewModel model = new SnippetViewModel();
+        private SnippetModel[] snippetModel;
 
         public void Init()
         {
@@ -33,85 +34,131 @@ namespace StatsPortal.Controllers
 
         public ActionResult Snippet(string domain, string startDate, string endDate)
         {
+            var model = new SnippetViewModel();
+
+            DateTime end = new DateTime();
+            DateTime start = new DateTime();
 
             // Use the Connection factory to create connections to multiple databases.
             var factory = new ConnectionFactory("SAT04");
-            IDbConnection conn = factory.CreateConnection();
-
-            var snippetRepo = new SnippetsRepository(conn);
-
-            if (domain.IsNullOrWhiteSpace())
+            using (IDbConnection conn = factory.CreateConnection())
             {
-                domain = "aol";
+
+
+                var snippetRepo = new SnippetsRepository(conn);
+
+                if (domain.IsNullOrWhiteSpace())
+                {
+                    domain = "google";
+                }
+
+                //if (startDate.IsNullOrWhiteSpace())
+                //{
+                //    startDate = "20150301";
+                //}
+
+                //if (endDate.IsNullOrWhiteSpace())
+                //{
+                //    endDate = "20150307";
+                //}
+                end = DateTime.ParseExact(snippetRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
+                start = end.AddDays(-6);
+
+                //model.SnippetStats = LoadSnippetData();
+
+                //DataTable dataPool = GetData(startDate, endDate);
+
+                //SnippetModel[] stats = new SnippetModel[dataPool.Rows.Count];
+
+                //for (int i = 0; i < stats.Length; i++)
+                //{
+
+                //    stats[i] = new SnippetModel();
+
+                //    stats[i].Domain = dataPool.Rows[i][1].ToString();
+                //    stats[i].Keyword = dataPool.Rows[i][2].ToString();
+                //    stats[i].TotalCount = Convert.ToInt64(dataPool.Rows[i][3].ToString());
+                //    stats[i].TotalParsed = Convert.ToInt64(dataPool.Rows[i][4].ToString());
+                //    stats[i].EmailParsed = Convert.ToInt64(dataPool.Rows[i][5].ToString());
+                //    stats[i].GenderParsed = Convert.ToInt64(dataPool.Rows[i][6].ToString());
+                //    stats[i].BirthyearParsed = Convert.ToInt64(dataPool.Rows[i][7].ToString());
+                //    stats[i].NameParsed = Convert.ToInt64(dataPool.Rows[i][8].ToString());
+                //    stats[i].UsernameParsed = Convert.ToInt64(dataPool.Rows[i][9].ToString());
+                //    stats[i].Date = dataPool.Rows[i][0].ToString();
+
+                //}
+
+                //var snippetData = snippetRepo.GetAll(domain, startDate, endDate).ToArray();
+                model.SnippetStats = ReloadData(domain, startDate, endDate);
+                model.startDate = start.ToString("yyyyMMdd");
+                model.endDate = end.ToString("yyyyMMdd");
             }
 
-            if (startDate.IsNullOrWhiteSpace())
-            {
-                startDate = "20150301";
-            }
-
-            if (endDate.IsNullOrWhiteSpace())
-            {
-                endDate = "20150307";
-            }
-
-            //model.SnippetStats = LoadSnippetData();
-
-            //DataTable dataPool = GetData(startDate, endDate);
-
-            //SnippetModel[] stats = new SnippetModel[dataPool.Rows.Count];
-
-            //for (int i = 0; i < stats.Length; i++)
-            //{
-
-            //    stats[i] = new SnippetModel();
-
-            //    stats[i].Domain = dataPool.Rows[i][1].ToString();
-            //    stats[i].Keyword = dataPool.Rows[i][2].ToString();
-            //    stats[i].TotalCount = Convert.ToInt64(dataPool.Rows[i][3].ToString());
-            //    stats[i].TotalParsed = Convert.ToInt64(dataPool.Rows[i][4].ToString());
-            //    stats[i].EmailParsed = Convert.ToInt64(dataPool.Rows[i][5].ToString());
-            //    stats[i].GenderParsed = Convert.ToInt64(dataPool.Rows[i][6].ToString());
-            //    stats[i].BirthyearParsed = Convert.ToInt64(dataPool.Rows[i][7].ToString());
-            //    stats[i].NameParsed = Convert.ToInt64(dataPool.Rows[i][8].ToString());
-            //    stats[i].UsernameParsed = Convert.ToInt64(dataPool.Rows[i][9].ToString());
-            //    stats[i].Date = dataPool.Rows[i][0].ToString();
-
-            //}
-
-            model.SnippetStats = snippetRepo.GetAll(domain, startDate, endDate).ToArray();
-            
             return View(model);
         }
 
-        //public JsonResult ReloadData(string domain, string startDate, string endDate)
-        //{
-        //    // Use the Connection factory to create connections to multiple databases.
-        //    var factory = new ConnectionFactory("SAT04");
-        //    IDbConnection conn = factory.CreateConnection();
+        private SnippetModel[] ReloadData(string domain, string startDate, string endDate)
+        {
+            var model = new SnippetViewModel();
+            DateTime end = new DateTime();
+            DateTime start = new DateTime();
+            // Use the Connection factory to create connections to multiple databases.
+            var factory = new ConnectionFactory("SAT04");
+            using (IDbConnection conn = factory.CreateConnection())
+            {
+                
+                var snippetRepo = new SnippetsRepository(conn);
 
-        //    var snippetRepo = new SnippetsRepository(conn);
+                if (domain.IsNullOrWhiteSpace())
+                {
+                    domain = "google";
+                }
 
-        //    if (domain.IsNullOrWhiteSpace())
-        //    {
-        //        domain = "aol";
-        //    }
+                //if (startDate.IsNullOrWhiteSpace())
+                //{
+                //    startDate = "20150301";
+                //}
 
-        //    if (startDate.IsNullOrWhiteSpace())
-        //    {
-        //        startDate = "20150301";
-        //    }
+                //if (endDate.IsNullOrWhiteSpace())
+                //{
+                //    endDate = "20150307";
+                //}
+                end = DateTime.ParseExact(snippetRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
+                start = end.AddDays(-6);
 
-        //    if (endDate.IsNullOrWhiteSpace())
-        //    {
-        //        endDate = "20150307";}
 
-        
 
-        //    model.SnippetStats = snippetRepo.GetAll(domain, startDate, endDate).ToArray();
+                model.SnippetStats = snippetRepo.GetAll(domain, start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd")).ToArray();
+                model.startDate = start.ToString("yyyyMMdd");
+                model.endDate = end.ToString("yyyyMMdd");
 
-        //    return Json(model.SnippetStats.First(), JsonRequestBehavior.AllowGet);
-        //}
+                //return model.SnippetStats;
+            }
+            
+
+            //var snippetRepo = new SnippetsRepository(conn);
+
+            //if (domain.IsNullOrWhiteSpace())
+            //{
+            //    domain = "google";
+            //}
+
+            //if (startDate.IsNullOrWhiteSpace())
+            //{
+            //    startDate = "20150301";
+            //}
+
+            //if (endDate.IsNullOrWhiteSpace())
+            //{
+            //    endDate = "20150307";
+            //}
+
+
+
+            //model.SnippetStats = snippetRepo.GetAll(domain, startDate, endDate).ToArray();
+
+            return model.SnippetStats;
+        }
 
         //public DataTable GetData(string startDate, string endDate)
         //{
@@ -248,39 +295,39 @@ namespace StatsPortal.Controllers
 
         }
 
-        public JsonResult getColumnFormatData(string domain, string startDay, int days, string[] keywordList, bool countCheck)
+        public JsonResult getColumnFormatData(string domain, string startDay, string endDate, int days, string[] keywordList, bool countCheck)
         {
             //model.SnippetStats = LoadSnippetData();
-
+            var data = ReloadData(domain, startDay, endDate);
 
             Dictionary<Tuple<string, string, string>, double> dict = new Dictionary<Tuple<string, string, string>, double>();
-            for (int i = 0; i < model.SnippetStats.Length; i++)
+            for (int i = 0; i < data.Length; i++)
             {
-                if (model.SnippetStats[i].Domain.ToLower().Equals(domain.ToLower()))
+                if (data[i].Domain.ToLower().Equals(domain.ToLower()))
                 {
                     int pos = -1;
                     if (keywordList != null)
                     {
-                        pos = Array.IndexOf(keywordList.ToArray(), model.SnippetStats[i].Keyword);
+                        pos = Array.IndexOf(keywordList.ToArray(), data[i].Keyword);
                     }
                         if (pos > -1)
                         {
-                            if (!dict.ContainsKey(new Tuple<string, string, string>(model.SnippetStats[i].Domain,
-                                model.SnippetStats[i].Keyword,
-                                model.SnippetStats[i].Date)))
+                            if (!dict.ContainsKey(new Tuple<string, string, string>(data[i].Domain,
+                                data[i].Keyword,
+                                data[i].Date)))
                             {
                                 Tuple<string, string, string> tup =
-                                    new Tuple<string, string, string>(model.SnippetStats[i].Domain,
-                                        model.SnippetStats[i].Keyword,
-                                        model.SnippetStats[i].Date);
+                                    new Tuple<string, string, string>(data[i].Domain,
+                                        data[i].Keyword,
+                                        data[i].Date);
 
                                 if (countCheck)
                                 {
-                                    dict.Add(tup, Convert.ToDouble(model.SnippetStats[i].TotalCount));
+                                    dict.Add(tup, Convert.ToDouble(data[i].TotalCount));
                                 }
                                 else
                                 {
-                                    dict.Add(tup, (Convert.ToDouble(model.SnippetStats[i].TotalParsed) / Convert.ToDouble(model.SnippetStats[i].TotalCount)) * 100);
+                                    dict.Add(tup, (Convert.ToDouble(data[i].TotalParsed) / Convert.ToDouble(data[i].TotalCount)) * 100);
                                 }
                             }
                         }
@@ -290,7 +337,7 @@ namespace StatsPortal.Controllers
 
 
             string[][] chartData = new string[days + 1][];
-            chartData[0] = getColumns(model.SnippetStats, domain, keywordList);
+            chartData[0] = getColumns(data, domain, keywordList);
 
             for (int i = 0; i < days; i++)
             {
@@ -298,7 +345,7 @@ namespace StatsPortal.Controllers
                 string[] tempString = new string[chartData[0].Length];
 
                 // Add the date to the first column
-                string currentDate = (Convert.ToInt32(startDay) + i).ToString();;
+                string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(i)).ToString("yyyyMMdd");
                 tempString[0] = currentDate;
 
                 // Generate values for the rest of the columns
@@ -327,24 +374,41 @@ namespace StatsPortal.Controllers
         public JsonResult getDomainLineData(string domain, string startDay, int days, string[] keywordList)
         {
             //model.SnippetStats = LoadSnippetData();
+            var data = ReloadData(domain, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
+
+            List<string> keywords = new List<string>();
+            foreach (SnippetModel s in data)
+            if (keywordList == null)
+            {
+                if (!keywords.Contains(s.Keyword))
+                {
+                    keywords.Add(s.Keyword);
+                }
+            }
+            else
+            {
+                keywords = keywordList.ToList();
+            }
+
+            int x = 0;
 
 
             Dictionary<Tuple<string, string, string>, long[]> dict = new Dictionary<Tuple<string, string, string>, long[]>();
-            for (int i = 0; i < model.SnippetStats.Length; i++)
+            for (int i = 0; i < data.Length; i++)
             {
-                if (model.SnippetStats[i].Domain.ToLower().Equals(domain.ToLower()))
+                if (data[i].Domain.ToLower().Equals(domain.ToLower()))
                 {
-                        if (!dict.ContainsKey(new Tuple<string, string, string>(model.SnippetStats[i].Domain,
-                            model.SnippetStats[i].Keyword,
-                            model.SnippetStats[i].Date)))
+                        if (!dict.ContainsKey(new Tuple<string, string, string>(data[i].Domain,
+                            data[i].Keyword,
+                            data[i].Date)))
                         {
                             Tuple<string, string, string> tup =
-                                new Tuple<string, string, string>(model.SnippetStats[i].Domain,
-                                    model.SnippetStats[i].Keyword,
-                                    model.SnippetStats[i].Date);
+                                new Tuple<string, string, string>(data[i].Domain,
+                                    data[i].Keyword,
+                                    data[i].Date);
 
 
-                            dict.Add(tup, new long[] { model.SnippetStats[i].NameParsed, model.SnippetStats[i].UsernameParsed, model.SnippetStats[i].GenderParsed, model.SnippetStats[i].BirthyearParsed, model.SnippetStats[i].EmailParsed, model.SnippetStats[i].TotalCount, model.SnippetStats[i].TotalParsed });
+                            dict.Add(tup, new long[] { data[i].NameParsed, data[i].UsernameParsed, data[i].GenderParsed, data[i].BirthyearParsed, data[i].EmailParsed, data[i].TotalCount, data[i].TotalParsed });
 
                         }
                     }
@@ -354,7 +418,7 @@ namespace StatsPortal.Controllers
 
 
             string[][] chartData = new string[days + 1][];
-            chartData[0] = getColumns(model.SnippetStats, domain, keywordList);
+            chartData[0] = getColumns(data, domain, keywords.ToArray());
 
             for (int i = 0; i < days; i++)
             {
@@ -369,7 +433,7 @@ namespace StatsPortal.Controllers
                 long totalParsed = 0;
 
                 // Add the date to the first column
-                string currentDate = (Convert.ToInt32(startDay) + i).ToString(); ;
+                string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(i)).ToString("yyyyMMdd");
                 tempString[0] = currentDate;
 
                 // Generate values for the rest of the columns
@@ -410,26 +474,37 @@ namespace StatsPortal.Controllers
 
 
 
-        public JsonResult GetDomainList()
+        public JsonResult GetDomainList(string startDate, string endDate)
         {
             List<string> domainList = new List<string>();
 
-            //List<string> lines =
-            //    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_combined_v2.txt").ToList();
-
-
-            //lines.RemoveAll(item => item.Trim() == "");
-
-            for (int i = 0; i < model.SnippetStats.Length; i++)
+            //var model = new SnippetViewModel();
+            // Use the Connection factory to create connections to multiple databases.
+            var factory = new ConnectionFactory("SAT04");
+            using (IDbConnection conn = factory.CreateConnection())
             {
-                if (!domainList.Contains(model.SnippetStats[i].Domain))
-                {
-                    domainList.Add(model.SnippetStats[i].Domain);
-                }
+                //IDbConnection conn = factory.CreateConnection();
+
+                var snippetRepo = new SnippetsRepository(conn);
+
+                //List<string> lines =
+                //    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_combined_v2.txt").ToList();
+
+
+                ////lines.RemoveAll(item => item.Trim() == "");
+
+                //for (int i = 0; i < model.SnippetStats.Length; i++)
+                //{
+                //    if (!domainList.Contains(model.SnippetStats[i].Domain))
+                //    {
+                //        domainList.Add(model.SnippetStats[i].Domain);
+                //    }
+                //}
+
+                domainList = snippetRepo.GetDomains(startDate, endDate).ToList();
+
+                domainList.Sort();
             }
-
-            domainList.Sort();
-
 
 
             return Json(domainList, JsonRequestBehavior.AllowGet);
@@ -439,24 +514,25 @@ namespace StatsPortal.Controllers
         public JsonResult GetKeywordData(string domain, string keyword, string startDay, int dayCount)
         {
             //model.SnippetStats = LoadSnippetData();
+            var data = ReloadData(domain, startDay, (Convert.ToInt32(startDay) + dayCount - 1).ToString());
 
             string[][] fullKeywordData = new string[dayCount][];
             for (int j = 0; j < dayCount; j ++)
             {
-                string currentDate = (Convert.ToInt32(startDay) + j).ToString();
+                string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(j)).ToString("yyyyMMdd");
                 string[] keywordData = new string[8];
-                for (int i = 0; i < model.SnippetStats.Length; i++)
+                for (int i = 0; i < data.Length; i++)
                 {
-                    if (model.SnippetStats[i].Domain.ToLower().Equals(domain.ToLower()) && model.SnippetStats[i].Keyword.ToLower().Equals(keyword.ToLower()) && model.SnippetStats[i].Date.Equals(currentDate))
+                    if (data[i].Domain.ToLower().Equals(domain.ToLower()) && data[i].Keyword.ToLower().Equals(keyword.ToLower()) && data[i].Date.Equals(currentDate))
                     {
-                        keywordData[0] = model.SnippetStats[i].Date;
-                        keywordData[1] = model.SnippetStats[i].TotalCount.ToString();
-                        keywordData[2] = model.SnippetStats[i].TotalParsed.ToString();
-                        keywordData[3] = model.SnippetStats[i].EmailParsed.ToString();
-                        keywordData[4] = model.SnippetStats[i].GenderParsed.ToString();
-                        keywordData[5] = model.SnippetStats[i].BirthyearParsed.ToString();
-                        keywordData[6] = model.SnippetStats[i].NameParsed.ToString();
-                        keywordData[7] = model.SnippetStats[i].UsernameParsed.ToString();
+                        keywordData[0] = data[i].Date;
+                        keywordData[1] = data[i].TotalCount.ToString();
+                        keywordData[2] = data[i].TotalParsed.ToString();
+                        keywordData[3] = data[i].EmailParsed.ToString();
+                        keywordData[4] = data[i].GenderParsed.ToString();
+                        keywordData[5] = data[i].BirthyearParsed.ToString();
+                        keywordData[6] = data[i].NameParsed.ToString();
+                        keywordData[7] = data[i].UsernameParsed.ToString();
                     }
                     fullKeywordData[j] = keywordData;
                 }
@@ -464,6 +540,23 @@ namespace StatsPortal.Controllers
 
 
             return Json(fullKeywordData, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetKeywords(string domain, string startDate, string endDate)
+        {
+            var data = ReloadData(domain, startDate, endDate);
+
+            List<string> keywords = new List<string>();
+
+            foreach (SnippetModel s in data)
+            {
+                if (!keywords.Contains(s.Keyword))
+                {
+                    keywords.Add(s.Keyword);
+                }
+            }
+
+            return Json(keywords, JsonRequestBehavior.AllowGet);
         }
 
 	}

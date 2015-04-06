@@ -57,7 +57,12 @@ function populateKeywordData(domain) {
                     cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
 
                 }
-                keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+                if (cookiesCheckbox[i].toString().toLowerCase === dataValues.Keyword.toString().toLowerCase) {
+                    keywordDataPopulate += "<option selected>" + cookiesCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+
+                } else {
+                    keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+                }
             }
 
             $("#cookies_keyword_list").html(cookiesCheckboxPopulate);
@@ -369,13 +374,16 @@ function initialize() {
     populateKeywordData(dataValues.Domain);
 
     // Replace ["all"] with GetCheckedKeywords
-    drawDomainLineChart(dataValues.Domain, ["all"], 7, "20150301");
+    drawDomainLineChart(dataValues.Domain, ["all"], 7, startTimeValue);
+
+    console.log(startTimeValue);
+    console.log(endTimeValue);
+    // Replace ["all"] with GetCheckedKeywords
+    drawKeywordLineChart(dataValues.Domain, dataValues.Keyword, 7, startTimeValue);
 
     // Replace ["all"] with GetCheckedKeywords
-    drawKeywordLineChart(dataValues.Domain, dataValues.Keyword, 7, "20150301");
-
-    // Replace ["all"] with GetCheckedKeywords
-    drawKeywordBarTable(dataValues.Domain, dataValues.Keyword, "20150301", 7);
+    //drawKeywordBarTable(dataValues.Domain, dataValues.Keyword, startTimeValue, 7);
+    drawKeywordBarTable(dataValues.Domain, dataValues.Keyword, startTimeValue, 7);
 }
 
 $(document).ready(function () {
@@ -389,13 +397,13 @@ $(document).ready(function () {
         populateKeywordData(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase());
 
         // Replace ["all"] with GetCheckedKeywords
-        drawDomainLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), ["all"], 7, "20150301");
+        drawDomainLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), ["all"], 7, startTimeValue);
 
         // Replace ["all"] with GetCheckedKeywords
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, "20150301");
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
 
         // Replace ["all"] with GetCheckedKeywords
-        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
     });
 
     // Show/hide toggle for toobar
@@ -418,11 +426,11 @@ $(document).ready(function () {
 
     // Handle raw count/percentage toggle
     $("#keyword_raw_counts, #keyword_percentages").change(function () {
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, "20150301");
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
     });
 
     $("#keyword_data_raw_counts, #keyword_data_percentages").change(function () {
-        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
     });
 
     // Update keyword list when new domain is chosen
@@ -440,17 +448,17 @@ $(document).ready(function () {
 
     // When "Check/Uncheck All" buttons are clicked, refresh graph
     $("#cookies_keyword_checkall_button, #cookies_keyword_uncheckall_button").click(function () {
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, "20150301");
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
     });
 
     // Whenever a keyword is selected/unselected, refresh the graph
     $("#cookies_keyword_list").change(function () {
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, "20150301");
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
     });
 
     // Upon selecting a different keyword in the keyword info graph area, refresh graph
     $("#cookies_keyword_data_dropdown").change(function () {
-        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), "20150301", 7);
+        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
     });
 
     // Handle toggle for keyword table

@@ -37,5 +37,7 @@ namespace StatsPortal.DAL
             connection.Open();
             return connection;
         }
+
+
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Web;
+using StatsPortal.DAL.Extensions;
 
 namespace StatsPortal.DAL
 {
@@ -17,6 +18,7 @@ namespace StatsPortal.DAL
 
         protected IEnumerable<T> ToList(IDbCommand command)
         {
+
             using (var reader = command.ExecuteReader())
             {
                 var items = new List<T>();
@@ -30,6 +32,8 @@ namespace StatsPortal.DAL
                 return items;
             }
         }
+
+
 
         protected abstract void Map(IDataRecord record, T item);
     }

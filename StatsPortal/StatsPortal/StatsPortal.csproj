@@ -180,6 +180,7 @@
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CookieModel.cs" />
+    <Compile Include="Models\CookieViewModel.cs" />
     <Compile Include="Models\CountryMatchingStatsModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\LookupModel.cs" />
