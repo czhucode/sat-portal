@@ -371,23 +371,18 @@ namespace StatsPortal.Controllers
             return Json(chartData, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult getDomainLineData(string domain, string startDay, int days, string[] keywordList)
+        public JsonResult getDomainLineData(string domain, string startDay, int days)
         {
             //model.SnippetStats = LoadSnippetData();
             var data = ReloadData(domain, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
 
             List<string> keywords = new List<string>();
             foreach (SnippetModel s in data)
-            if (keywordList == null)
             {
                 if (!keywords.Contains(s.Keyword))
                 {
                     keywords.Add(s.Keyword);
                 }
-            }
-            else
-            {
-                keywords = keywordList.ToList();
             }
 
             int x = 0;

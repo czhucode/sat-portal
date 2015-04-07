@@ -591,9 +591,9 @@ function drawDomainLine(domainName, startDate, dayCount) {
         data: {
             domain: domainName,
             startDay: startDate,
-            days: dayCount,
+            days: dayCount
             // keywordList: getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase())
-            keywordList: keywordMenuList
+            //keywordList: keywordMenuList
             //countCheck: checked
         },
         success: function (chartsdata) {
