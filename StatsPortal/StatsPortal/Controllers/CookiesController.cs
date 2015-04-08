@@ -6,8 +6,11 @@ using System.Linq;
 using System.Security.Policy;
 using System.Web;
 using System.Web.Mvc;
+using System.Runtime.Serialization.Json;
 using System.Web.UI.WebControls.Expressions;
 using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using StatsPortal.Models;
 using System.Data;
 using System.Data.SqlClient;
@@ -465,6 +468,18 @@ namespace StatsPortal.Controllers
         {
             //List<CookieModel> data = LoadCookieData(domain, keywordList, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
             List<CookieModel> data = models.ToList();
+
+            if (keywordList != null)
+            {
+                for (int i = 0; i < keywordList.Length; i++)
+                {
+                    keywordList[i] = System.Uri.UnescapeDataString(keywordList[i]);
+                }
+            }
+            //for (int i = 0; i < keywordList.Length; i++)
+            //{
+            //    keywordList[i] = HttpUtility.HtmlDecode(keywordList[i]);
+            //}
             //List<string> keywords = new List<string>();
             //foreach (CookieModel c in data)
             //{
@@ -557,6 +572,8 @@ namespace StatsPortal.Controllers
         {
             //List<CookieModel> data = LoadCookieData(domain, new string[] {keyword}, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
             List<CookieModel> data = models.ToList();
+
+            keyword = System.Uri.UnescapeDataString(keyword);
 
             string[][] fullKeywordData = new string[days][];
             for (int j = 0; j < days; j++)

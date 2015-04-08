@@ -459,7 +459,7 @@ function getDomains(startDate, endDate, fn) {
             //domainDropdownList = domainList;
             //console.log(domainDropdownList[0].toString());
             fn(domainList);
-            debugger;
+
 
         },
         error: function () {
@@ -479,7 +479,7 @@ function getReadDomains() {
 function populateDomainDropdown(domainlist)
 {
     var snippetDropdownPopulate = "";
-    debugger;
+
     for (var i = 0; i < domainlist.length; i++) {
         if (dataValues[i].Domain.toLowerCase() === domainlist[i].toLowerCase()) {
             snippetDropdownPopulate += "<option selected>" + capitalizeFirstLetter(domainlist[i]) + "</option>";
@@ -487,7 +487,7 @@ function populateDomainDropdown(domainlist)
             snippetDropdownPopulate += "<option>" + capitalizeFirstLetter(domainlist[i]) + "</option>";
         }
     }
-    debugger;
+
     $("#snippet_keyword_bar_chart_dropdown").html(snippetDropdownPopulate);
 }
 
@@ -499,18 +499,18 @@ function populateKeywordData(domain) {
         var keywordDataPopulate = "";
         for (var i = 0; i < snippetCheckbox.length; i++) {
             if (i == 0) {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
             } else {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
 
             }
-            keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+            keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
         }
-        debugger;
+
         $("#snippet_keyword_list").html(snippetCheckboxPopulate);
         $("#snippet_keyword_data_dropdown").html(keywordDataPopulate);
     }); 
-    debugger;
+
     //var snippetCheckbox = getNewKeywords(domain);
 
     //var snippetCheckboxPopulate = "";
@@ -606,7 +606,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
         },
         error: function () {
             alert("Error loading data! Please try again.");
-            debugger;
+
         }
     });
 }
@@ -616,6 +616,12 @@ function drawSnippetLine(domainName, keywordList, startDate, endDate, dayCount) 
     if (document.getElementById('keyword_percentages').checked) {
         checked = false;
     }
+
+    for (var i = 0; i < keywordList.length; i++) {
+        keywordList[i] = encodeURIComponent(keywordList[i]);
+
+    }
+
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -645,6 +651,10 @@ function drawSnippetLine(domainName, keywordList, startDate, endDate, dayCount) 
 }
 
 function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
+
+    keyword = encodeURIComponent(keyword);
+
+
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -665,10 +675,10 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
 
             for (var i = 0; i < keywordData.length; i++) {
                 if (keywordData[i][0] == null) {
-                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + "</td></tr>";
+                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domainName + '</td><td>' + decodeURIComponent(keyword).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + "</td></tr>";
 
                 } else {
-                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + keywordData[i][1] + '</td><td>' + keywordData[i][2] + '</td><td>' + roundToTwo(parseFloat(keywordData[i][2]) / parseFloat(keywordData[i][1]) * 100) + '</td><td>' + keywordData[i][3] + '</td><td>' + keywordData[i][4] + '</td><td>' + keywordData[i][5] + '</td><td>' + keywordData[i][6] + '</td><td>' + keywordData[i][7] + "</td></tr>";
+                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domainName + '</td><td>' + decodeURIComponent(keyword).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td><td>' + keywordData[i][1] + '</td><td>' + keywordData[i][2] + '</td><td>' + roundToTwo(parseFloat(keywordData[i][2]) / parseFloat(keywordData[i][1]) * 100) + '</td><td>' + keywordData[i][3] + '</td><td>' + keywordData[i][4] + '</td><td>' + keywordData[i][5] + '</td><td>' + keywordData[i][6] + '</td><td>' + keywordData[i][7] + "</td></tr>";
                 }
                 //                tableBodyPopulate += '<tr><td>' + domainList[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + domainList[i][1] + '</td><td>' + domainList[i][2] + '</td><td>' + roundToTwo(parseFloat(domainList[i][2]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][3] + '</td><td>' + roundToTwo(parseFloat(domainList[i][3]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][4] + '</td><td>' + roundToTwo(parseFloat(domainList[i][4]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][5] + '</td><td>' + roundToTwo(parseFloat(domainList[i][5]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][6] + '</td><td>' + roundToTwo(parseFloat(domainList[i][6]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][7] + '</td><td>' + roundToTwo(parseFloat(domainList[i][7]) / parseFloat(domainList[i][1]) * 100) + '</td></tr>';
 
@@ -858,7 +868,7 @@ $(document).ready(function () {
     });
 
     // Initialize graphs
-    drawSnippetLine(dataValues[0].Domain.toLowerCase(), dataValues[0].Keyword, startTimeValue, endTimeValue, 7);
+    drawSnippetLine(dataValues[0].Domain.toLowerCase(), [dataValues[0].Keyword], startTimeValue, endTimeValue, 7);
     drawDomainLine(dataValues[0].Domain.toLowerCase(), startTimeValue, 7);
     //drawKeywordInfo(dataValues[0].Domain.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
     drawKeywordInfo(dataValues[0].Domain.toLowerCase(), dataValues[0].Keyword, startTimeValue, 7);

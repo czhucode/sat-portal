@@ -2,6 +2,14 @@
 google.load("visualization", "1", { packages: ["line"] });
 google.load("visualization", "1.1", { packages: ["bar"] });
 
+//function htmlEscape(str) {
+//    return String(str)
+//            .replace(/&/g, '&amp;')
+//            .replace(/"/g, '&quot;')
+//            .replace(/'/g, '&#39;')
+//            .replace(/</g, '&lt;')
+//            .replace(/>/g, '&gt;');
+//}
 
 function populateDomainDropdown() {
     
@@ -21,7 +29,7 @@ function populateDomainDropdown() {
                     cookiesDropdownPopulate += "<option>" + capitalizeFirstLetter(domainList[i]) + "</option>";
                 }
             }
-            debugger;
+
             $("#cookies_keyword_bar_chart_dropdown").html(cookiesDropdownPopulate);
 
         },
@@ -44,24 +52,25 @@ function populateKeywordData(domain) {
             domain: domain
         },
         success: function (keywordList) {
-
+            var cookiesCheckbox = [];
             //var cookiesCheckbox = getNewKeywords(domain);
-            var cookiesCheckbox = keywordList;
+            cookiesCheckbox = keywordList;
+
 
             var cookiesCheckboxPopulate = "";
             var keywordDataPopulate = "";
             for (var i = 0; i < cookiesCheckbox.length; i++) {
                 if (i == 0) {
-                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
                 } else {
-                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;') + '</label></div>';
+                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
 
                 }
                 if (cookiesCheckbox[i].toString().toLowerCase === dataValues.Keyword.toString().toLowerCase) {
-                    keywordDataPopulate += "<option selected>" + cookiesCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+                    keywordDataPopulate += "<option selected>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
 
                 } else {
-                    keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;') + "</option>";
+                    keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
                 }
             }
 
@@ -189,6 +198,12 @@ function drawKeywordLineChart(domain, keywordList, days, startDay) {
         countCheck = false;
     }
 
+    for (var i = 0; i < keywordList.length; i++) {
+        keywordList[i] = encodeURIComponent(keywordList[i]);
+
+    }
+ 
+
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -263,6 +278,9 @@ function drawKeywordBarTable(domain, keyword, startDay, days) {
         countCheck = false;
     }
 
+    keyword = encodeURIComponent(keyword);
+
+
     $.ajax({
         type: 'POST',
         dataType: 'json',
@@ -283,10 +301,10 @@ function drawKeywordBarTable(domain, keyword, startDay, days) {
 
             for (var i = 0; i < keywordData.length; i++) {
                 if (keywordData[i][0] == null) {
-                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domain + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + "</td></tr>";
+                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domain + '</td><td>' + decodeURIComponent(keyword).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + '</td><td>' + 0 + "</td></tr>";
 
                 } else {
-                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domain + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + keywordData[i][1] + '</td><td>' + keywordData[i][2] + '</td><td>' + roundToTwo(parseFloat(keywordData[i][2]) / parseFloat(keywordData[i][1]) * 100) + '</td><td>' + keywordData[i][3] + '</td><td>' + keywordData[i][4] + '</td><td>' + keywordData[i][5] + '</td><td>' + keywordData[i][6] + '</td><td>' + keywordData[i][7] + "</td></tr>";
+                    tableBodyPopulate += '<tr><td>' + keywordData[i][0] + '</td><td>' + domain + '</td><td>' + decodeURIComponent(keyword).replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</td><td>' + keywordData[i][1] + '</td><td>' + keywordData[i][2] + '</td><td>' + roundToTwo(parseFloat(keywordData[i][2]) / parseFloat(keywordData[i][1]) * 100) + '</td><td>' + keywordData[i][3] + '</td><td>' + keywordData[i][4] + '</td><td>' + keywordData[i][5] + '</td><td>' + keywordData[i][6] + '</td><td>' + keywordData[i][7] + "</td></tr>";
                 }
                 //                tableBodyPopulate += '<tr><td>' + domainList[i][0] + '</td><td>' + domainName + '</td><td>' + keyword.replace(/"/g, '&quot;') + '</td><td>' + domainList[i][1] + '</td><td>' + domainList[i][2] + '</td><td>' + roundToTwo(parseFloat(domainList[i][2]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][3] + '</td><td>' + roundToTwo(parseFloat(domainList[i][3]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][4] + '</td><td>' + roundToTwo(parseFloat(domainList[i][4]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][5] + '</td><td>' + roundToTwo(parseFloat(domainList[i][5]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][6] + '</td><td>' + roundToTwo(parseFloat(domainList[i][6]) / parseFloat(domainList[i][1]) * 100) + '</td><td>' + domainList[i][7] + '</td><td>' + roundToTwo(parseFloat(domainList[i][7]) / parseFloat(domainList[i][1]) * 100) + '</td></tr>';
 
@@ -379,7 +397,7 @@ function initialize() {
     console.log(startTimeValue);
     console.log(endTimeValue);
     // Replace ["all"] with GetCheckedKeywords
-    drawKeywordLineChart(dataValues.Domain, dataValues.Keyword, 7, startTimeValue);
+    drawKeywordLineChart(dataValues.Domain, [dataValues.Keyword], 7, startTimeValue);
 
     // Replace ["all"] with GetCheckedKeywords
     //drawKeywordBarTable(dataValues.Domain, dataValues.Keyword, startTimeValue, 7);

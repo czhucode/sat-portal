@@ -300,6 +300,14 @@ namespace StatsPortal.Controllers
             //model.SnippetStats = LoadSnippetData();
             var data = ReloadData(domain, startDay, endDate);
 
+            if (keywordList != null)
+            {
+                for (int i = 0; i < keywordList.Length; i++)
+                {
+                    keywordList[i] = System.Uri.UnescapeDataString(keywordList[i]);
+                }
+            }
+
             Dictionary<Tuple<string, string, string>, double> dict = new Dictionary<Tuple<string, string, string>, double>();
             for (int i = 0; i < data.Length; i++)
             {
@@ -510,6 +518,8 @@ namespace StatsPortal.Controllers
         {
             //model.SnippetStats = LoadSnippetData();
             var data = ReloadData(domain, startDay, (Convert.ToInt32(startDay) + dayCount - 1).ToString());
+
+            keyword = System.Uri.UnescapeDataString(keyword);
 
             string[][] fullKeywordData = new string[dayCount][];
             for (int j = 0; j < dayCount; j ++)
