@@ -164,6 +164,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CookiesController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="DAL\ConnectionFactory.cs" />
@@ -473,9 +474,9 @@
     <Content Include="Content\kendo\Uniform\sprite_2x.png" />
     <Content Include="Content\kendo\Uniform\sprite_kpi.png" />
     <Content Include="Content\kendo\Uniform\sprite_kpi_2x.png" />
-    <Content Include="Content\old_versions\bootstrap.css" />
-    <Content Include="Content\dashboard.css" />
-    <Content Include="Content\old_versions\bootstrap.min.css" />
+    <None Include="Content\old_versions\bootstrap.css" />
+    <None Include="Content\dashboard.css" />
+    <None Include="Content\old_versions\bootstrap.min.css" />
     <Content Include="Content\snippets.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
@@ -535,6 +536,7 @@
     <Content Include="Content\kendo\fonts\DejaVu\LICENSE" />
     <Content Include="Content\kendo\images\kendoui.ttf" />
     <Content Include="Content\kendo\images\kendoui.woff" />
+    <None Include="Properties\PublishProfiles\satportal.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1191,6 +1193,7 @@
     <Content Include="Scripts\kendo\kendo.window.min.js.map" />
     <Content Include="Views\Cookies\Cookies.cshtml" />
     <Content Include="Views\Cookies\Index.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,13 +1,12 @@
 ﻿@model System.Web.Mvc.HandleErrorInfo
 
 @{
-    Layout = "_Layout.cshtml";
-    ViewBag.Title = "Error";
+    ViewBag.Title = "NotFound";
 }
 
-<div>
+<div class="list-group">
     <div class="alert alert-danger">
-        Error!! An unexpected error has occurred. Please contact the system administrator.
+        Page Not Found!! Please make sure you typed in the correct URL or navigate to a different page from the menu.
     </div>
     @if (Model != null && HttpContext.Current.IsDebuggingEnabled)
     {
@@ -25,3 +24,5 @@
         </div>
     }
 </div>
+
+
