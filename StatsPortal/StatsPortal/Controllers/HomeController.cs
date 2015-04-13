@@ -10,7 +10,7 @@ namespace StatsPortal.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return Redirect("~/Stats/Matching?domain=Facebook");
         }
 
         public ActionResult About()

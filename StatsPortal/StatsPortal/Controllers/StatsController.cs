@@ -25,12 +25,12 @@ namespace StatsPortal.Controllers
         private IEnumerable<MatchedIdsModel> matchedIdsStats;
         private IEnumerable<LookupModel> lookupStats;
 
+        /*
         public ActionResult Index()
         {
-            var domains = new List<String> { "LinkedIn" };
-
-            return View(domains);
+            return Redirect("~/Stats/Matching?domain=Facebook");
         }
+        */
 
         public ActionResult Matching(string domain)
         {
