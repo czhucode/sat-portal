@@ -561,6 +561,8 @@ namespace StatsPortal.Controllers
                 }
             }
 
+            keywords.Sort();
+
             return Json(keywords, JsonRequestBehavior.AllowGet);
         }
 
