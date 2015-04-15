@@ -1,0 +1,27 @@
+﻿@model StatsPortal.Models.SKModel
+
+@{
+    ViewBag.Title = "SK";
+}
+
+@Scripts.Render("~/bundles/sk")
+
+
+<head>
+    <link rel="stylesheet" type="text/css" href="~/Content/snippets.css">
+</head>
+
+
+
+<script type="text/javascript">
+
+
+    var dataValues = @Html.Raw(Json.Encode(Model.SKData));
+
+
+    //$(window).resize(function () {
+    //    reloadGraphs();
+    //});
+
+
+</script>

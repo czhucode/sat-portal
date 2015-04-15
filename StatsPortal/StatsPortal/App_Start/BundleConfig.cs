@@ -36,6 +36,9 @@ namespace StatsPortal
             bundles.Add((new ScriptBundle("~/bundles/cookies").Include(
                         "~/Scripts/cookies.js")));
 
+            bundles.Add((new ScriptBundle("~/bundles/sk").Include(
+                        "~/Scripts/sk.js")));
+
             bundles.Add(new StyleBundle("~/Content/css").Include(
                       "~/Content/bootstrap.css",
                       "~/Content/site.css"));
