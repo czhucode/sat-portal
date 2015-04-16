@@ -1,4 +1,4 @@
-﻿@model StatsPortal.Models.SKModel
+﻿@model IEnumerable<StatsPortal.Models.SKModel>
 
 @{
     ViewBag.Title = "SK";
@@ -6,22 +6,27 @@
 
 @Scripts.Render("~/bundles/sk")
 
-
-<head>
-    <link rel="stylesheet" type="text/css" href="~/Content/snippets.css">
-</head>
-
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a>US</a>
+            </li>
+            <li class="">
+                <a>International</a>
+            </li>
+        </ul>
+        <div id="predicted_gender"></div>
+    </div>
+</div>
 
 
 <script type="text/javascript">
 
 
-    var dataValues = @Html.Raw(Json.Encode(Model.SKData));
+    var dataValues = @Html.Raw(Json.Encode(Model));
 
-
-    //$(window).resize(function () {
-    //    reloadGraphs();
-    //});
-
+    google.load("visualization", "1", { packages: ["corechart"] });
+    google.setOnLoadCallback(function () { drawPredictedGenderDistribution(dataValues, 'US'); });
 
 </script>

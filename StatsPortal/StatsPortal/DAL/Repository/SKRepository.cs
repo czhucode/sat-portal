@@ -21,9 +21,16 @@ namespace StatsPortal.DAL.Repository
             item.Variable = record.GetValue<String>("variable");
             item.Description = record.GetValue<String>("description");
             item.Value = record.GetValue<Double>("value");
-            
-            //fill enum
-            
+        }
+
+        // List All fields from the table
+        public IEnumerable<SKModel> GetAll()
+        {
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = @"Select * from dbo.sk_report_table";
+                return ToList(command);
+            }
         }
     }
 }

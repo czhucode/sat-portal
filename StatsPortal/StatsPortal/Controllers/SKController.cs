@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -20,8 +21,21 @@ namespace StatsPortal.Controllers
 
         public ActionResult SK()
         {
+            // Use the Connection factory to create connections to multiple databases.
+            var factory = new ConnectionFactory("SAT01");
+            
 
-            return View();
+            using (IDbConnection conn = factory.CreateConnection())
+            {
+                // Initialize the repository
+                var SKRepo = new SKRepository(conn);
+
+                var skModel = SKRepo.GetAll();
+
+                return View(skModel);
+            }
+
+            
         }
 
     }

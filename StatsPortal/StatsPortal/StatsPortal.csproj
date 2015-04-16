@@ -166,6 +166,7 @@
     <Compile Include="Controllers\CookiesController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SKController.cs" />
     <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="DAL\ConnectionFactory.cs" />
     <Compile Include="DAL\Extensions\CommandExtensionMethod.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="DAL\Repository\LookupRepository.cs" />
     <Compile Include="DAL\Repository\CountryMatchingRepository.cs" />
     <Compile Include="DAL\Repository\MatchingRepository.cs" />
+    <Compile Include="DAL\Repository\SKRepository.cs" />
     <Compile Include="DAL\Repository\SnippetsRepository.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -188,6 +190,7 @@
     <Compile Include="Models\MatchedIdsModel.cs" />
     <Compile Include="Models\CountryMatchingModel.cs" />
     <Compile Include="Controllers\SnippetController.cs" />
+    <Compile Include="Models\SKModel.cs" />
     <Compile Include="Models\SnippetEmailModel.cs" />
     <Compile Include="Models\SnippetModel.cs" />
     <Compile Include="Models\SnippetViewModel.cs" />
@@ -1047,6 +1050,7 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\site.js" />
+    <Content Include="Scripts\SK.js" />
     <Content Include="Scripts\snippets.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
@@ -1194,6 +1198,8 @@
     <Content Include="Views\Cookies\Cookies.cshtml" />
     <Content Include="Views\Cookies\Index.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\SK\Index.cshtml" />
+    <Content Include="Views\SK\SK.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
