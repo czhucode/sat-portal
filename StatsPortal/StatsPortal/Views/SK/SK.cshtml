@@ -21,6 +21,35 @@
 </div>
 
 
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a>US</a>
+            </li>
+            <li class="">
+                <a>International</a>
+            </li>
+        </ul>
+        <div id="predicted_age"></div>
+    </div>
+</div>
+
+
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a>US</a>
+            </li>
+            <li class="">
+                <a>International</a>
+            </li>
+        </ul>
+        <div id="nonzero_coefficients"></div>
+    </div>
+</div>
+
 <script type="text/javascript">
 
 
@@ -28,5 +57,7 @@
 
     google.load("visualization", "1", { packages: ["corechart"] });
     google.setOnLoadCallback(function () { drawPredictedGenderDistribution(dataValues, 'US'); });
+    google.setOnLoadCallback(function () { drawPredictedAgeDistribution(dataValues, 'US'); });
+    google.setOnLoadCallback(function () { drawNumberOfNonZeroCoefficients(dataValues, 'US'); });
 
 </script>

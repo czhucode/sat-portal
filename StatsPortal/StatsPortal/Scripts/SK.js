@@ -14,9 +14,13 @@ SkEnum = {
     OlderPredictedPercent : 'O_pred_perc',
     Lambda : 'Lambda',
     Coef1Count : 'Coef_1_count',
-    Coef2Cuont : 'Coef_2_count',
+    Coef2Count : 'Coef_2_count',
     Coef3Count : 'Coef_3_count',
-    Coef4Count : 'Coef_4_count',
+    Coef4Count: 'Coef_4_count',
+    Coef1CountBoth: 'Coef_1_count_both',
+    Coef2CountBoth: 'Coef_2_count_both',
+    Coef3CountBoth: 'Coef_3_count_both',
+    Coef4CountBoth: 'Coef_4_count_both',
     ModelCount : 'Model_count',
     NoInfoCount : 'NI_count',
     SampleCount : 'Sample_count',
@@ -124,6 +128,104 @@ function drawPredictedGenderDistribution(dataValues, country) {
 
     // Instantiate and draw our chart, passing in some options.
     var chart = new google.visualization.ColumnChart(document.getElementById('predicted_gender'));
+    chart.draw(data, options);
+}
+
+function drawPredictedAgeDistribution(dataValues, country) {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'Week Id');
+    data.addColumn('number', '7');
+    data.addColumn('number', '10');
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
+        var valYounger = getDataValue(dataValues, country, SkEnum.YoungerPredictedCount, weekId);
+        var valOlder = getDataValue(dataValues, country, SkEnum.OlderPredictedCount, weekId);
+
+        // Add values to the DataTable
+        data.addRow([weekId.toString(), valYounger, valOlder]);
+    }
+
+    //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
+
+    // Sort the data
+    data.sort([{ column: 0 }]);
+
+    var options = {
+        height: 400,
+        legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '75%' },
+        isStacked: true,
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.ColumnChart(document.getElementById('predicted_age'));
+    chart.draw(data, options);
+}
+
+function drawNumberOfNonZeroCoefficients(dataValues, country) {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'age_gender');
+    data.addColumn('number', 'Previous Week');
+    data.addColumn('number', 'Current Week');
+    data.addColumn('number', 'In Both Weeks');
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    for (var i = 1; i < 5; i++) {
+
+        var prevWeek = 0;
+        var currWeek = 0;
+        var bothWeeks = 0;
+
+        if (i == 1) {
+            prevWeek = getDataValue(dataValues, country, SkEnum.Coef1Count, previousWeekId);
+            currWeek = getDataValue(dataValues, country, SkEnum.Coef1Count, currentWeekId);
+            bothWeeks = getDataValue(dataValues, country, SkEnum.Coef1CountBoth, currentWeekId);
+        }
+
+        if (i == 2) {
+            prevWeek = getDataValue(dataValues, country, SkEnum.Coef2Count, previousWeekId);
+            currWeek = getDataValue(dataValues, country, SkEnum.Coef2Count, currentWeekId);
+            bothWeeks = getDataValue(dataValues, country, SkEnum.Coef2CountBoth, currentWeekId);
+        }
+
+        if (i == 3) {
+            prevWeek = getDataValue(dataValues, country, SkEnum.Coef3Count, previousWeekId);
+            currWeek = getDataValue(dataValues, country, SkEnum.Coef3Count, currentWeekId);
+            bothWeeks = getDataValue(dataValues, country, SkEnum.Coef3CountBoth, currentWeekId);
+        }
+
+        if (i == 4) {
+            prevWeek = getDataValue(dataValues, country, SkEnum.Coef4Count, previousWeekId);
+            currWeek = getDataValue(dataValues, country, SkEnum.Coef4Count, currentWeekId);
+            bothWeeks = getDataValue(dataValues, country, SkEnum.Coef4CountBoth, currentWeekId);
+        }
+
+        // Add values to the DataTable
+        data.addRow([i.toString(), prevWeek, currWeek, bothWeeks]);
+    }
+
+    //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
+
+    // Sort the data
+    data.sort([{ column: 0 }]);
+
+    var options = {
+        height: 400,
+        legend: { position: 'top', maxLines: 3 },
+        bar: { groupWidth: '75%' },
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.ColumnChart(document.getElementById('nonzero_coefficients'));
     chart.draw(data, options);
 }
 
