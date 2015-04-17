@@ -120,8 +120,11 @@ function drawPredictedGenderDistribution(dataValues, country) {
     data.sort([{ column: 0 }]);
 
     var options = {
+        title: 'Predicted Gender Distribution',
         height: 400,
-        legend: { position: 'top', maxLines: 3 },
+        legend: {
+            position: 'right'
+        },
         bar: { groupWidth: '75%' },
         isStacked: true,
     };
@@ -226,6 +229,101 @@ function drawNumberOfNonZeroCoefficients(dataValues, country) {
 
     // Instantiate and draw our chart, passing in some options.
     var chart = new google.visualization.ColumnChart(document.getElementById('nonzero_coefficients'));
+    chart.draw(data, options);
+}
+
+function drawAssignmentTypeDistribution(dataValues, country) {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'Week Id');
+    data.addColumn('number', 'Model');
+    data.addColumn('number', 'No Information');
+    data.addColumn('number', 'Sample');
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
+        var valModelCnt = getDataValue(dataValues, country, SkEnum.ModelCount, weekId);
+        var valNoInfoCnt = getDataValue(dataValues, country, SkEnum.NoInfoCount, weekId);
+        var valSampleCnt = getDataValue(dataValues, country, SkEnum.SampleCount, weekId);
+
+        // Add values to the DataTable
+        data.addRow([weekId.toString(), valModelCnt, valNoInfoCnt, valSampleCnt]);
+    }
+
+    //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
+
+    // Sort the data
+    data.sort([{ column: 0 }]);
+
+    var options = {
+        title: 'Assignment Type Distribution',
+        height: 400,
+        legend: {
+            position: 'right'
+        },
+        bar: { groupWidth: '75%' },
+        isStacked: true,
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.ColumnChart(document.getElementById('assignment_type_distribution'));
+    chart.draw(data, options);
+}
+
+function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'Week Id');
+    data.addColumn('number', '1');
+    data.addColumn('number', '2');
+    data.addColumn('number', '3');
+    data.addColumn('number', '4');
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
+        // Populate True Counts
+        var valTrue1Cnt = getDataValue(dataValues, country, SkEnum.TrainTrue1Percent, weekId);
+        var valTrue2Cnt = getDataValue(dataValues, country, SkEnum.TrainTrue2Percent, weekId);
+        var valTrue3Cnt = getDataValue(dataValues, country, SkEnum.TrainTrue3Percent, weekId);
+        var valTrue4Cnt = getDataValue(dataValues, country, SkEnum.TrainTrue4Percent, weekId);
+
+        // Populate Predicted Counts
+        var valPred1Cnt = getDataValue(dataValues, country, SkEnum.TrainPred1Percent, weekId);
+        var valPred2Cnt = getDataValue(dataValues, country, SkEnum.TrainPred2Percent, weekId);
+        var valPred3Cnt = getDataValue(dataValues, country, SkEnum.TrainPred3Percent, weekId);
+        var valPred4Cnt = getDataValue(dataValues, country, SkEnum.TrainPred4Percent, weekId);
+
+        // Calculate the X-Axis Labes based on the date
+        var label = weekId == currentWeekId ? 'Current' : (weekId == previousWeekId ? 'Previous' : 'Unknown');
+        
+        // Add values to the DataTable
+        data.addRow([label + ' True', valTrue1Cnt, valTrue2Cnt, valTrue3Cnt, valTrue4Cnt]);
+        data.addRow([label + ' Predicted', valPred1Cnt, valPred2Cnt, valPred3Cnt, valPred4Cnt]);
+    }
+
+    //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
+
+    // Sort the data
+    data.sort([{ column: 0 }]);
+
+    var options = {
+        title: 'True And Predicted AgeGender Distribution',
+        height: 400,
+        legend: {
+            position: 'right'
+        },
+        bar: { groupWidth: '75%' },
+        isStacked: true,
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.ColumnChart(document.getElementById('true_and_predicted_age_gender_distribution'));
     chart.draw(data, options);
 }
 
