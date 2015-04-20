@@ -180,9 +180,20 @@ function drawPredictedAgeDistribution(dataValues, country) {
         isStacked: true,
     };
 
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.ColumnChart(document.getElementById('predicted_age'));
+    var chart;
+
+    // Instantiate the chart
+    if (country == 'US') {
+        chart = new google.visualization.ColumnChart(document.getElementById('predicted_age_US'));
+    }
+    else {
+        chart = new google.visualization.ColumnChart(document.getElementById('predicted_age_intl'));
+    }
+
+    //draw our chart, passing in some options.
     chart.draw(data, options);
+
+    $("a[href='#predicted_age_intl']").one('shown.bs.tab', function () { drawPredictedAgeDistribution(dataValues, 'intl'); });
 }
 
 function drawNumberOfNonZeroCoefficients(dataValues, country) {

@@ -25,16 +25,19 @@
 
 
 <div class="col-lg-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default" role="tablist" id="predicted_age_tab">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a>US</a>
+                <a href="#predicted_age_US" role="tab" data-toggle="tab">US</a>
             </li>
             <li class="">
-                <a>International</a>
+                <a href="#predicted_age_intl" role="tab" data-toggle="tab">International</a>
             </li>
         </ul>
-        <div id="predicted_age"></div>
+        <div class="tab-content">
+            <div id="predicted_age_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="predicted_age_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
     </div>
 </div>
 
