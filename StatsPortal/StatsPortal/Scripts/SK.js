@@ -1,6 +1,33 @@
-﻿$(document).ready(function() {
-
-});
+﻿var globalOptions = {
+    titleTextStyle: {
+        color: '#757575',
+        fontSize: 16,
+        bold: false
+    },
+    height: 400,
+    legend: {
+        position: 'bottom',
+        textStyle: {
+            color: '#757575',
+            fontSize: 14,
+            bold: false
+        }
+    },
+    hAxis: {
+        textStyle: {
+            color: '#757575',
+            fontSize: 12,
+            bold: false
+        }
+    },
+    vAxis: {
+        textStyle: {
+            color: '#757575',
+            fontSize: 12,
+            bold: false
+        }
+    }
+};
 
 SkEnum = {
     TotalPersonsCount : 'Total_count',
@@ -120,15 +147,10 @@ function drawPredictedGenderDistribution(dataValues, country) {
     // Sort the data
     data.sort([{ column: 0, asc: true }]);
 
-    var options = {
-        title: 'Predicted Gender Distribution',
-        height: 400,
-        legend: {
-            position: 'right'
-        },
-        bar: { groupWidth: '75%' },
-        isStacked: true,
-    };
+    var options = globalOptions;
+    options.title = 'Predicted Gender Distribution';
+    options.bar = { groupWidth: '75%' };
+    options.isStacked = true;
 
     var chart;
 
@@ -170,16 +192,11 @@ function drawPredictedAgeDistribution(dataValues, country) {
     // Sort the data
     data.sort([{ column: 0, asc: true }]);
 
-    var options = {
-        title: 'Age Prediction Summary',
-        height: 400,
-        legend: {
-            position: 'right'
-        },
-        bar: { groupWidth: '75%' },
-        isStacked: true,
-    };
-
+    var options = globalOptions;
+    options.title = 'Age Prediction Summary';
+    options.bar = { groupWidth: '75%' };
+    options.isStacked = true;
+    
     var chart;
 
     // Instantiate the chart
@@ -247,14 +264,10 @@ function drawNumberOfNonZeroCoefficients(dataValues, country) {
     // Sort the data
     data.sort([{ column: 0, desc: true }]);
 
-    var options = {
-        title: 'Number of Non-zero Coefficients',
-        height: 400,
-        legend: {
-            position: 'right'
-        },
-        bar: { groupWidth: '75%' },
-    };
+    var options = globalOptions;
+    options.title = 'Number of Non-zero Coefficients';
+    options.bar = { groupWidth: '75%' };
+    options.isStacked = false;
 
     // Instantiate and draw our chart, passing in some options.
     //var chart = new google.visualization.ColumnChart(document.getElementById('nonzero_coefficients'));
@@ -300,15 +313,10 @@ function drawAssignmentTypeDistribution(dataValues, country) {
     // Sort the data
     data.sort([{ column: 0, asc: true }]);
 
-    var options = {
-        title: 'Assignment Type Distribution',
-        height: 400,
-        legend: {
-            position: 'right'
-        },
-        bar: { groupWidth: '75%' },
-        isStacked: true,
-    };
+    var options = globalOptions;
+    options.title = 'Assignment Type Distribution';
+    options.bar = { groupWidth: '75%' };
+    options.isStacked = true;
 
     var chart;
 
@@ -365,16 +373,11 @@ function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
     // Sort the data
     data.sort([{ column: 0, desc: true }]);
 
-    var options = {
-        title: 'True And Predicted AgeGender Distribution',
-        height: 400,
-        legend: {
-            position: 'right'
-        },
-        bar: { groupWidth: '75%' },
-        isStacked: true,
-    };
-
+    var options = globalOptions;
+    options.title = 'True And Predicted AgeGender Distribution';
+    options.bar = { groupWidth: '75%' };
+    options.isStacked = true;
+    
     // Instantiate and draw our chart, passing in some options.
     //var chart = new google.visualization.ColumnChart(document.getElementById('true_and_predicted_age_gender_distribution'));
 
@@ -415,15 +418,9 @@ function drawLambda(dataValues, country) {
     // Sort the data
     data.sort([{ column: 0, asc: true }]);
 
-    var options = {
-        title: 'Lambda Value',
-        height: 400,
-        legend: {
-            position: 'right'
-        },
-        bar: { groupWidth: '75%' }
-    };
-
+    var options = globalOptions;
+    options.title = 'Lambda Value';
+    
     // Instantiate and draw our chart, passing in some options.
     //var chart = new google.visualization.LineChart(document.getElementById('lambda_graph'));
 
@@ -465,14 +462,8 @@ function drawAccuracy(dataValues, country) {
     // Sort the data
     data.sort([{ column: 0, asc: true }]);
 
-    var options = {
-        title: 'Accuracy Value',
-        height: 400,
-        legend: {
-            position: 'right'
-        },
-        bar: { groupWidth: '75%' }
-    };
+    var options = globalOptions;
+    options.title = 'Accuracy Value';
 
     // Instantiate and draw our chart, passing in some options.
     //var chart = new google.visualization.LineChart(document.getElementById('accuracy_graph'));
