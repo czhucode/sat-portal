@@ -297,9 +297,20 @@ function drawAssignmentTypeDistribution(dataValues, country) {
         isStacked: true,
     };
 
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.ColumnChart(document.getElementById('assignment_type_distribution'));
+    var chart;
+
+    // Instantiate the chart
+    if (country == 'US') {
+        chart = new google.visualization.ColumnChart(document.getElementById('assignment_type_distribution_US'));
+    }
+    else {
+        chart = new google.visualization.ColumnChart(document.getElementById('assignment_type_distribution_intl'));
+    }
+
+    //draw our chart, passing in some options.
     chart.draw(data, options);
+
+    $("a[href='#assignment_type_distribution_intl']").one('shown.bs.tab', function () { drawAssignmentTypeDistribution(dataValues, 'intl'); });
 }
 
 function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {

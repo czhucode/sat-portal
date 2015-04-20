@@ -57,16 +57,19 @@
 </div>
 
 <div class="col-lg-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default" role="tablist" id="assignment_type_distribution_tab">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a>US</a>
+                <a href="#assignment_type_distribution_US" role="tab" data-toggle="tab">US</a>
             </li>
             <li class="">
-                <a>International</a>
+                <a href="#assignment_type_distribution_intl" role="tab" data-toggle="tab">International</a>
             </li>
         </ul>
-        <div id="assignment_type_distribution"></div>
+        <div class="tab-content">
+            <div id="assignment_type_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="assignment_type_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
     </div>
 </div>
 
