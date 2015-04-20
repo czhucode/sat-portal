@@ -118,7 +118,7 @@ function drawPredictedGenderDistribution(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0, desc: true }]);
+    data.sort([{ column: 0, asc: true }]);
 
     var options = {
         title: 'Predicted Gender Distribution',
@@ -168,7 +168,7 @@ function drawPredictedAgeDistribution(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0, desc: true }]);
+    data.sort([{ column: 0, asc: true }]);
 
     var options = {
         title: 'Age Prediction Summary',
@@ -257,8 +257,21 @@ function drawNumberOfNonZeroCoefficients(dataValues, country) {
     };
 
     // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.ColumnChart(document.getElementById('nonzero_coefficients'));
+    //var chart = new google.visualization.ColumnChart(document.getElementById('nonzero_coefficients'));
+
+    var chart;
+
+    // Instantiate the chart
+    if (country == 'US') {
+        chart = new google.visualization.ColumnChart(document.getElementById('nonzero_coefficients_US'));
+    }
+    else {
+        chart = new google.visualization.ColumnChart(document.getElementById('nonzero_coefficients_intl'));
+    }
+
     chart.draw(data, options);
+
+    $("a[href='#nonzero_coefficients_intl']").one('shown.bs.tab', function () { drawNumberOfNonZeroCoefficients(dataValues, 'intl'); });
 }
 
 function drawAssignmentTypeDistribution(dataValues, country) {
@@ -285,7 +298,7 @@ function drawAssignmentTypeDistribution(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0, desc: true }]);
+    data.sort([{ column: 0, asc: true }]);
 
     var options = {
         title: 'Assignment Type Distribution',
@@ -341,7 +354,7 @@ function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
 
         // Calculate the X-Axis Labes based on the date
         var label = weekId == currentWeekId ? 'Current' : (weekId == previousWeekId ? 'Previous' : 'Unknown');
-        
+
         // Add values to the DataTable
         data.addRow([label + ' True', valTrue1Cnt, valTrue2Cnt, valTrue3Cnt, valTrue4Cnt]);
         data.addRow([label + ' Predicted', valPred1Cnt, valPred2Cnt, valPred3Cnt, valPred4Cnt]);
@@ -363,8 +376,21 @@ function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
     };
 
     // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.ColumnChart(document.getElementById('true_and_predicted_age_gender_distribution'));
+    //var chart = new google.visualization.ColumnChart(document.getElementById('true_and_predicted_age_gender_distribution'));
+
+    var chart;
+
+    // Instantiate the chart
+    if (country == 'US') {
+        chart = new google.visualization.ColumnChart(document.getElementById('true_and_predicted_age_gender_distribution_US'));
+    }
+    else {
+        chart = new google.visualization.ColumnChart(document.getElementById('true_and_predicted_age_gender_distribution_intl'));
+    }
+
     chart.draw(data, options);
+
+    $("a[href='#true_and_predicted_age_gender_distribution_intl']").one('shown.bs.tab', function () { drawTrueAndPredictedAgeGenderDistribution(dataValues, 'intl'); });
 }
 
 function drawLambda(dataValues, country) {
@@ -387,7 +413,7 @@ function drawLambda(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0, desc: true }]);
+    data.sort([{ column: 0, asc: true }]);
 
     var options = {
         title: 'Lambda Value',
@@ -399,8 +425,22 @@ function drawLambda(dataValues, country) {
     };
 
     // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.LineChart(document.getElementById('lambda_graph'));
+    //var chart = new google.visualization.LineChart(document.getElementById('lambda_graph'));
+
+    var chart;
+
+    // Instantiate the chart
+    if (country == 'US') {
+        chart = new google.visualization.LineChart(document.getElementById('lambda_graph_US'));
+    }
+    else {
+        chart = new google.visualization.LineChart(document.getElementById('lambda_graph_intl'));
+    }
+
     chart.draw(data, options);
+
+    $("a[href='#lambda_graph_intl']").one('shown.bs.tab', function () { drawLambda(dataValues, 'intl'); });
+
 }
 
 function drawAccuracy(dataValues, country) {
@@ -423,7 +463,7 @@ function drawAccuracy(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0, desc: true }]);
+    data.sort([{ column: 0, asc: true }]);
 
     var options = {
         title: 'Accuracy Value',
@@ -435,8 +475,22 @@ function drawAccuracy(dataValues, country) {
     };
 
     // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.LineChart(document.getElementById('accuracy_graph'));
+    //var chart = new google.visualization.LineChart(document.getElementById('accuracy_graph'));
+
+    var chart;
+
+    // Instantiate the chart
+    if (country == 'US') {
+        chart = new google.visualization.LineChart(document.getElementById('accuracy_graph_US'));
+    }
+    else {
+        chart = new google.visualization.LineChart(document.getElementById('accuracy_graph_intl'));
+    }
+
     chart.draw(data, options);
+
+    $("a[href='#accuracy_graph_intl']").one('shown.bs.tab', function () { drawAccuracy(dataValues, 'intl'); });
+
 }
 
 function getDataValue(dataValues, country, variable, weekId) {

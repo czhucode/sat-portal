@@ -43,16 +43,19 @@
 
 
 <div class="col-lg-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default" role="tablist" id="nonzero_coefficients_tab">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a>US</a>
+                <a href="#nonzero_coefficients_US" role="tab" data-toggle="tab">US</a>
             </li>
             <li class="">
-                <a>International</a>
+                <a href="#nonzero_coefficients_intl" role="tab" data-toggle="tab">International</a>
             </li>
         </ul>
-        <div id="nonzero_coefficients"></div>
+        <div id="tab-content">
+            <div id="nonzero_coefficients_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="nonzero_coefficients_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
     </div>
 </div>
 
@@ -74,44 +77,53 @@
 </div>
 
 <div class="col-lg-12">
-    <div class="panel panel-default">
+    <div class="panel panel-default" role="tablist" id="true_and_predicted_age_gender_distribution_tab">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a>US</a>
+                <a href="#true_and_predicted_age_gender_distribution_US" role="tab" data-toggle="tab">US</a>
             </li>
             <li class="">
-                <a>International</a>
+                <a href="#true_and_predicted_age_gender_distribution_intl" role="tab" data-toggle="tab">International</a>
             </li>
         </ul>
-        <div id="true_and_predicted_age_gender_distribution"></div>
+        <div id="tab-content">
+            <div id="true_and_predicted_age_gender_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="true_and_predicted_age_gender_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
     </div>
 </div>
 
 <div class="col-lg-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default" role="tablist" id="lambda_graph_tab">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a>US</a>
+                <a href="#lambda_graph_US" role="tab" data-toggle="tab">US</a>
             </li>
             <li class="">
-                <a>International</a>
+                <a href="#lambda_graph_intl" role="tab" data-toggle="tab">International</a>
             </li>
         </ul>
-        <div id="lambda_graph"></div>
+        <div id="tab-content">
+            <div id="lambda_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="lambda_graph_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
     </div>
 </div>
 
 <div class="col-lg-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default" role="tablist" id="accuracy_graph_tab">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a>US</a>
+                <a href="#accuracy_graph_US" role="tab" data-toggle="tab">US</a>
             </li>
             <li class="">
-                <a>International</a>
+                <a href="#accuracy_graph_intl" role="tab" data-toggle="tab">International</a>
             </li>
         </ul>
-        <div id="accuracy_graph"></div>
+        <div id="tab-content">
+            <div id="accuracy_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="accuracy_graph_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
     </div>
 </div>
 
