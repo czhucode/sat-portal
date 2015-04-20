@@ -60,7 +60,8 @@ SkEnum = {
     TrainPred1Percent : 'Train_pred_1_perc',
     TrainPred2Percent : 'Train_pred_2_perc',
     TrainPred3Percent : 'Train_pred_3_perc',
-    TrainPred4Percent : 'Train_pred_4_perc',
+    TrainPred4Percent: 'Train_pred_4_perc',
+    CvAccuracy: 'cv_accuracy',
     CvConfT1P1Count : 'cv_conf_t1_p1_count',
     CvConfT1P2Count : 'cv_conf_t1_p2_count',
     CvConfT1P3Count : 'cv_conf_t1_p3_count',
@@ -159,8 +160,11 @@ function drawPredictedAgeDistribution(dataValues, country) {
     data.sort([{ column: 0 }]);
 
     var options = {
+        title: 'Age Prediction Summary',
         height: 400,
-        legend: { position: 'top', maxLines: 3 },
+        legend: {
+            position: 'right'
+        },
         bar: { groupWidth: '75%' },
         isStacked: true,
     };
@@ -222,8 +226,11 @@ function drawNumberOfNonZeroCoefficients(dataValues, country) {
     data.sort([{ column: 0 }]);
 
     var options = {
+        title: 'Number of Non-zero Coefficients',
         height: 400,
-        legend: { position: 'top', maxLines: 3 },
+        legend: {
+            position: 'right'
+        },
         bar: { groupWidth: '75%' },
     };
 
@@ -324,6 +331,78 @@ function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
 
     // Instantiate and draw our chart, passing in some options.
     var chart = new google.visualization.ColumnChart(document.getElementById('true_and_predicted_age_gender_distribution'));
+    chart.draw(data, options);
+}
+
+function drawLambda(dataValues, country) {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'Week Id');
+    data.addColumn('number', 'Lambda');
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
+        var valLambda = getDataValue(dataValues, country, SkEnum.Lambda, weekId);
+
+        // Add values to the DataTable
+        data.addRow([weekId.toString(), valLambda]);
+    }
+
+    //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
+
+    // Sort the data
+    data.sort([{ column: 0 }]);
+
+    var options = {
+        title: 'Lambda Value',
+        height: 400,
+        legend: {
+            position: 'right'
+        },
+        bar: { groupWidth: '75%' }
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.LineChart(document.getElementById('lambda_graph'));
+    chart.draw(data, options);
+}
+
+function drawAccuracy(dataValues, country) {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+
+    data.addColumn('string', 'Week Id');
+    data.addColumn('number', 'Accuracy');
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
+        var valAccuracy = getDataValue(dataValues, country, SkEnum.CvAccuracy, weekId);
+
+        // Add values to the DataTable
+        data.addRow([weekId.toString(), valAccuracy]);
+    }
+
+    //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
+
+    // Sort the data
+    data.sort([{ column: 0 }]);
+
+    var options = {
+        title: 'Accuracy Value',
+        height: 400,
+        legend: {
+            position: 'right'
+        },
+        bar: { groupWidth: '75%' }
+    };
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.LineChart(document.getElementById('accuracy_graph'));
     chart.draw(data, options);
 }
 

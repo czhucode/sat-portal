@@ -9,11 +9,11 @@
 <div class="col-lg-6">
     <div class="panel panel-default">
         <ul class="nav nav-tabs">
-            <li class="active">
+            <li class="active" id="pred_gender_us">
                 <a>US</a>
             </li>
-            <li class="">
-                <a>International</a>
+            <li class="" id="preg_gender_intl_li">
+                <a id="pred_gender_intl_a">International</a>
             </li>
         </ul>
         <div id="predicted_gender"></div>
@@ -78,6 +78,35 @@
     </div>
 </div>
 
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a>US</a>
+            </li>
+            <li class="">
+                <a>International</a>
+            </li>
+        </ul>
+        <div id="lambda_graph"></div>
+    </div>
+</div>
+
+<div class="col-lg-6">
+    <div class="panel panel-default">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a>US</a>
+            </li>
+            <li class="">
+                <a>International</a>
+            </li>
+        </ul>
+        <div id="accuracy_graph"></div>
+    </div>
+</div>
+
+
 <script type="text/javascript">
 
 
@@ -89,5 +118,8 @@
     google.setOnLoadCallback(function () { drawNumberOfNonZeroCoefficients(dataValues, 'US'); });
     google.setOnLoadCallback(function () { drawAssignmentTypeDistribution(dataValues, 'US'); });
     google.setOnLoadCallback(function () { drawTrueAndPredictedAgeGenderDistribution(dataValues, 'US'); });
+    google.setOnLoadCallback(function () { drawLambda(dataValues, 'US'); });
+    google.setOnLoadCallback(function () { drawAccuracy(dataValues, 'US'); });
+
 
 </script>
