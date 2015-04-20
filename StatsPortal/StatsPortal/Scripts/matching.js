@@ -1,6 +1,9 @@
-﻿google.load("visualization", "1", { packages: ["corechart"] });
-google.load("visualization", "1.1", { packages: ["line"] });
-google.load('visualization', '1.1', { packages: ['controls'] });
+﻿google.load('visualization', '1.0', { packages: ['corechart', 'geochart', 'line', 'controls'] });
+//google.load("visualization", "1.0", { packages: ["corechart"] });
+//google.load('visualization', '1.0', { packages: ['geochart'] });
+//google.load('visualization', '1.1', { packages: ['line'] });
+//google.load('visualization', '1.1', { packages: ['controls'] });
+
 
 // Get a single value in the querystring
 function getQueryStringValue(key) {

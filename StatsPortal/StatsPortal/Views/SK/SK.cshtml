@@ -7,16 +7,19 @@
 @Scripts.Render("~/bundles/sk")
 
 <div class="col-lg-6">
-    <div class="panel panel-default">
+    <div class="panel panel-default" role="tablist" id="predicted_gender_tab">
         <ul class="nav nav-tabs">
-            <li class="active" id="pred_gender_us">
-                <a>US</a>
+            <li class="active">
+                <a href="#predicted_gender_US" role="tab" data-toggle="tab">US</a>
             </li>
-            <li class="" id="preg_gender_intl_li">
-                <a id="pred_gender_intl_a">International</a>
+            <li class="">
+                <a href="#predicted_gender_intl" role="tab" data-toggle="tab">International</a>
             </li>
         </ul>
-        <div id="predicted_gender"></div>
+        <div class="tab-content">
+            <div id="predicted_gender_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="predicted_gender_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
     </div>
 </div>
 

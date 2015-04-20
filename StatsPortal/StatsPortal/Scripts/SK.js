@@ -118,7 +118,7 @@ function drawPredictedGenderDistribution(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0 }]);
+    data.sort([{ column: 0, desc: true }]);
 
     var options = {
         title: 'Predicted Gender Distribution',
@@ -130,9 +130,20 @@ function drawPredictedGenderDistribution(dataValues, country) {
         isStacked: true,
     };
 
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.ColumnChart(document.getElementById('predicted_gender'));
+    var chart;
+
+    // Instantiate the chart
+    if (country == 'US') {
+        chart = new google.visualization.ColumnChart(document.getElementById('predicted_gender_US'));
+    }
+    else {
+        chart = new google.visualization.ColumnChart(document.getElementById('predicted_gender_intl'));
+    }
+
+    //draw our chart, passing in some options.
     chart.draw(data, options);
+
+    $("a[href='#predicted_gender_intl']").one('shown.bs.tab', function () { drawPredictedGenderDistribution(dataValues, 'intl'); });
 }
 
 function drawPredictedAgeDistribution(dataValues, country) {
@@ -157,7 +168,7 @@ function drawPredictedAgeDistribution(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0 }]);
+    data.sort([{ column: 0, desc: true }]);
 
     var options = {
         title: 'Age Prediction Summary',
@@ -223,7 +234,7 @@ function drawNumberOfNonZeroCoefficients(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0 }]);
+    data.sort([{ column: 0, desc: true }]);
 
     var options = {
         title: 'Number of Non-zero Coefficients',
@@ -263,7 +274,7 @@ function drawAssignmentTypeDistribution(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0 }]);
+    data.sort([{ column: 0, desc: true }]);
 
     var options = {
         title: 'Assignment Type Distribution',
@@ -317,7 +328,7 @@ function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0 }]);
+    data.sort([{ column: 0, desc: true }]);
 
     var options = {
         title: 'True And Predicted AgeGender Distribution',
@@ -354,7 +365,7 @@ function drawLambda(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0 }]);
+    data.sort([{ column: 0, desc: true }]);
 
     var options = {
         title: 'Lambda Value',
@@ -390,7 +401,7 @@ function drawAccuracy(dataValues, country) {
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0 }]);
+    data.sort([{ column: 0, desc: true }]);
 
     var options = {
         title: 'Accuracy Value',
