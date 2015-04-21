@@ -31,7 +31,7 @@ namespace StatsPortal.DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = @"Select * from dbo.test_cpearce_match_stats";
+                command.CommandText = @"Select * from dbo.matching_id_stats";
                 return ToList(command);
             }
         }

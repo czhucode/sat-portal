@@ -30,7 +30,7 @@ namespace StatsPortal.DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = @"Select * from dbo.test_cpearce_lookup_stats";
+                command.CommandText = @"Select * from dbo.matching_lookup_stats";
                 return ToList(command);
             }
         }
@@ -39,7 +39,7 @@ namespace StatsPortal.DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = @"Select * from dbo.test_cpearce_lookup_stats where v_domain = @domain";
+                command.CommandText = @"Select * from dbo.matching_lookup_stats where v_domain = @domain";
                 command.AddParameter("domain", domain);
                 return ToList(command);
             }

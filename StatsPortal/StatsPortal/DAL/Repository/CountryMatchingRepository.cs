@@ -31,7 +31,7 @@ namespace StatsPortal.DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = @"Select * from dbo.test_cpearce_country_stats where v_domain = @domain";
+                command.CommandText = @"Select * from dbo.matching_country_machine_stats where v_domain = @domain";
                 command.AddParameter("domain", domain);
                 return ToList(command);
             }
@@ -41,7 +41,7 @@ namespace StatsPortal.DAL.Repository
         {
             using (var command = _connection.CreateCommand())
             {
-                command.CommandText = @"Select * from dbo.test_cpearce_country_stats where v_country = @country and v_domain = @domain";
+                command.CommandText = @"Select * from dbo.matching_country_machine_stats where v_country = @country and v_domain = @domain";
                 command.AddParameter("country", country);
                 command.AddParameter("domain", domain);
                 return ToList(command);
