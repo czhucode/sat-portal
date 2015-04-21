@@ -480,6 +480,7 @@
     <None Include="Content\old_versions\bootstrap.css" />
     <None Include="Content\dashboard.css" />
     <None Include="Content\old_versions\bootstrap.min.css" />
+    <Content Include="Content\SK.css" />
     <Content Include="Content\snippets.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />

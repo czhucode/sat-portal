@@ -26,7 +26,8 @@
             fontSize: 12,
             bold: false
         }
-    }
+    },
+    colors: ['#0F9D58', '#F4B400', '#4285F4', '#DB4437']
 };
 
 SkEnum = {
