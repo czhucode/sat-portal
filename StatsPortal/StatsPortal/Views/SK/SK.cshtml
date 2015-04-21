@@ -6,141 +6,232 @@
 
 @Scripts.Render("~/bundles/sk")
 
-<div class="col-lg-6">
-    <div class="panel panel-default" role="tablist" id="predicted_gender_tab">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#predicted_gender_US" role="tab" data-toggle="tab">US</a>
-            </li>
-            <li class="">
-                <a href="#predicted_gender_intl" role="tab" data-toggle="tab">International</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div id="predicted_gender_US" class="tab-pane fade in active" role="tabpanel"></div>
-            <div id="predicted_gender_intl" class="tab-pane fade" role="tabpanel"></div>
+<head>
+    <link rel="stylesheet" type="text/css" href="~/Content/SK.css">
+</head>
+
+
+<div class="row">
+    <div class="col-lg-12" id="global_toggle">
+        Toggle All:
+        <br />
+        <div class="btn-group" data-toggle-name="country_options" data-toggle="buttons-radio">
+            <button type="button" value="US" data-toggle="button" class="btn btn-info active" id="us_button">US</button>
+            <button type="button" value="intl" data-toggle="button" class="btn btn-info" id="intl_button">International</button>
         </div>
     </div>
 </div>
 
 
-<div class="col-lg-6">
-    <div class="panel panel-default" role="tablist" id="predicted_age_tab">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#predicted_age_US" role="tab" data-toggle="tab">US</a>
-            </li>
-            <li class="">
-                <a href="#predicted_age_intl" role="tab" data-toggle="tab">International</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div id="predicted_age_US" class="tab-pane fade in active" role="tabpanel"></div>
-            <div id="predicted_age_intl" class="tab-pane fade" role="tabpanel"></div>
+    <div class="col-lg-6">
+        <div class="panel panel-default" role="tablist" id="predicted_gender_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#predicted_gender_US" role="tab" data-toggle="tab">US</a>
+                </li>
+                <li class="">
+                    <a href="#predicted_gender_intl" role="tab" data-toggle="tab">International</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="predicted_gender_US" class="tab-pane fade in active" role="tabpanel"></div>
+                <div id="predicted_gender_intl" class="tab-pane fade" role="tabpanel"></div>
+            </div>
         </div>
     </div>
-</div>
 
 
-<div class="col-lg-6">
-    <div class="panel panel-default" role="tablist" id="nonzero_coefficients_tab">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#nonzero_coefficients_US" role="tab" data-toggle="tab">US</a>
-            </li>
-            <li class="">
-                <a href="#nonzero_coefficients_intl" role="tab" data-toggle="tab">International</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div id="nonzero_coefficients_US" class="tab-pane fade in active" role="tabpanel"></div>
-            <div id="nonzero_coefficients_intl" class="tab-pane fade" role="tabpanel"></div>
+    <div class="col-lg-6">
+        <div class="panel panel-default" role="tablist" id="predicted_age_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#predicted_age_US" role="tab" data-toggle="tab">US</a>
+                </li>
+                <li class="">
+                    <a href="#predicted_age_intl" role="tab" data-toggle="tab">International</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="predicted_age_US" class="tab-pane fade in active" role="tabpanel"></div>
+                <div id="predicted_age_intl" class="tab-pane fade" role="tabpanel"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="col-lg-6">
-    <div class="panel panel-default" role="tablist" id="assignment_type_distribution_tab">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#assignment_type_distribution_US" role="tab" data-toggle="tab">US</a>
-            </li>
-            <li class="">
-                <a href="#assignment_type_distribution_intl" role="tab" data-toggle="tab">International</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div id="assignment_type_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
-            <div id="assignment_type_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default" role="tablist" id="nonzero_coefficients_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#nonzero_coefficients_US" role="tab" data-toggle="tab">US</a>
+                </li>
+                <li class="">
+                    <a href="#nonzero_coefficients_intl" role="tab" data-toggle="tab">International</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="nonzero_coefficients_US" class="tab-pane fade in active" role="tabpanel"></div>
+                <div id="nonzero_coefficients_intl" class="tab-pane fade" role="tabpanel"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="col-lg-12">
-    <div class="panel panel-default" role="tablist" id="true_and_predicted_age_gender_distribution_tab">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#true_and_predicted_age_gender_distribution_US" role="tab" data-toggle="tab">US</a>
-            </li>
-            <li class="">
-                <a href="#true_and_predicted_age_gender_distribution_intl" role="tab" data-toggle="tab">International</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div id="true_and_predicted_age_gender_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
-            <div id="true_and_predicted_age_gender_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
+    <div class="col-lg-6">
+        <div class="panel panel-default" role="tablist" id="assignment_type_distribution_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#assignment_type_distribution_US" role="tab" data-toggle="tab">US</a>
+                </li>
+                <li class="">
+                    <a href="#assignment_type_distribution_intl" role="tab" data-toggle="tab">International</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="assignment_type_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
+                <div id="assignment_type_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="col-lg-6">
-    <div class="panel panel-default" role="tablist" id="lambda_graph_tab">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#lambda_graph_US" role="tab" data-toggle="tab">US</a>
-            </li>
-            <li class="">
-                <a href="#lambda_graph_intl" role="tab" data-toggle="tab">International</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div id="lambda_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
-            <div id="lambda_graph_intl" class="tab-pane fade" role="tabpanel"></div>
+    <div class="col-lg-12">
+        <div class="panel panel-default" role="tablist" id="true_and_predicted_age_gender_distribution_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#true_and_predicted_age_gender_distribution_US" role="tab" data-toggle="tab">US</a>
+                </li>
+                <li class="">
+                    <a href="#true_and_predicted_age_gender_distribution_intl" role="tab" data-toggle="tab">International</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="true_and_predicted_age_gender_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
+                <div id="true_and_predicted_age_gender_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
+            </div>
         </div>
     </div>
-</div>
 
-<div class="col-lg-6">
-    <div class="panel panel-default" role="tablist" id="accuracy_graph_tab">
-        <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#accuracy_graph_US" role="tab" data-toggle="tab">US</a>
-            </li>
-            <li class="">
-                <a href="#accuracy_graph_intl" role="tab" data-toggle="tab">International</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div id="accuracy_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
-            <div id="accuracy_graph_intl" class="tab-pane fade" role="tabpanel"></div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default" role="tablist" id="lambda_graph_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#lambda_graph_US" role="tab" data-toggle="tab">US</a>
+                </li>
+                <li class="">
+                    <a href="#lambda_graph_intl" role="tab" data-toggle="tab">International</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="lambda_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
+                <div id="lambda_graph_intl" class="tab-pane fade" role="tabpanel"></div>
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="col-lg-6">
+        <div class="panel panel-default" role="tablist" id="accuracy_graph_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#accuracy_graph_US" role="tab" data-toggle="tab">US</a>
+                </li>
+                <li class="">
+                    <a href="#accuracy_graph_intl" role="tab" data-toggle="tab">International</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="accuracy_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
+                <div id="accuracy_graph_intl" class="tab-pane fade" role="tabpanel"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
 
 
-<script type="text/javascript">
+        var dataValues = @Html.Raw(Json.Encode(Model));
+
+        google.load("visualization", "1", { packages: ["corechart"] });
+        google.setOnLoadCallback(function () { drawPredictedGenderDistribution(dataValues, 'US'); });
+        google.setOnLoadCallback(function () { drawPredictedAgeDistribution(dataValues, 'US'); });
+        google.setOnLoadCallback(function () { drawNumberOfNonZeroCoefficients(dataValues, 'US'); });
+        google.setOnLoadCallback(function () { drawAssignmentTypeDistribution(dataValues, 'US'); });
+        google.setOnLoadCallback(function () { drawTrueAndPredictedAgeGenderDistribution(dataValues, 'US'); });
+        google.setOnLoadCallback(function () { drawLambda(dataValues, 'US'); });
+        google.setOnLoadCallback(function () { drawAccuracy(dataValues, 'US'); });
 
 
-    var dataValues = @Html.Raw(Json.Encode(Model));
+        $(document).ready(function() {
 
-    google.load("visualization", "1", { packages: ["corechart"] });
-    google.setOnLoadCallback(function () { drawPredictedGenderDistribution(dataValues, 'US'); });
-    google.setOnLoadCallback(function () { drawPredictedAgeDistribution(dataValues, 'US'); });
-    google.setOnLoadCallback(function () { drawNumberOfNonZeroCoefficients(dataValues, 'US'); });
-    google.setOnLoadCallback(function () { drawAssignmentTypeDistribution(dataValues, 'US'); });
-    google.setOnLoadCallback(function () { drawTrueAndPredictedAgeGenderDistribution(dataValues, 'US'); });
-    google.setOnLoadCallback(function () { drawLambda(dataValues, 'US'); });
-    google.setOnLoadCallback(function () { drawAccuracy(dataValues, 'US'); });
+            $('#us_button').click(function() {
+
+                $(this).addClass('active');
+                $('#intl_button').removeClass('active');
+
+                // Reload predicted gender dist.
+                $("a[href='#predicted_gender_US']").tab('show');
+                $("a[href='#predicted_gender_US']").show();
+
+                // Reload predicted age dist.
+                $("a[href='#predicted_age_US']").tab('show');
+                $("a[href='#predicted_age_US']").show();
+
+                // Reload non-zero coeff.
+                $("a[href='#nonzero_coefficients_US']").tab('show');
+                $("a[href='#nonzero_coefficients_US']").show();
+
+                // Reload assignment type dist.
+                $("a[href='#assignment_type_distribution_US']").tab('show');
+                $("a[href='#assignment_type_distribution_US']").show();
+
+                // Reload true and predicted age/gender dist.
+                $("a[href='#true_and_predicted_age_gender_distribution_US']").tab('show');
+                $("a[href='#true_and_predicted_age_gender_distribution_US']").show();
+
+                // Reload lambda
+                $("a[href='#lambda_graph_US']").tab('show');
+                $("a[href='#lambda_graph_US']").show();
+
+                // Reload accuracy
+                $("a[href='#accuracy_graph_US']").tab('show');
+                $("a[href='#accuracy_graph_US']").show();
 
 
-</script>
+
+            });
+
+            $('#intl_button').click(function() {
+
+                $(this).addClass('active');
+                $('#us_button').removeClass('active');
+
+                // Reload predicted gender dist.
+                $("a[href='#predicted_gender_intl']").tab('show');
+                $("a[href='#predicted_gender_intl']").show();
+
+                // Reload predicted age dist.
+                $("a[href='#predicted_age_intl']").tab('show');
+                $("a[href='#predicted_age_intl']").show();
+
+                // Reload non-zero coeff.
+                $("a[href='#nonzero_coefficients_intl']").tab('show');
+                $("a[href='#nonzero_coefficients_intl']").show();
+
+                // Reload assignment type dist.
+                $("a[href='#assignment_type_distribution_intl']").tab('show');
+                $("a[href='#assignment_type_distribution_intl']").show();
+
+                // Reload true and predicted age/gender dist.
+                $("a[href='#true_and_predicted_age_gender_distribution_intl']").tab('show');
+                $("a[href='#true_and_predicted_age_gender_distribution_intl']").show();
+
+                // Reload lambda
+                $("a[href='#lambda_graph_intl']").tab('show');
+                $("a[href='#lambda_graph_intl']").show();
+
+                // Reload accuracy
+                $("a[href='#accuracy_graph_intl']").tab('show');
+                $("a[href='#accuracy_graph_intl']").show();
+
+            });
+        });
+    </script>

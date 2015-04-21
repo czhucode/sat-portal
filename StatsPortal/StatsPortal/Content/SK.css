@@ -1,2 +1,35 @@
 ﻿body {
 }
+
+.ui-datepicker {
+
+    border: 1.5px solid #aeaeae;
+
+}
+
+.ui-datepicker-calendar, .ui-datepicker-header {
+    background-color: #f9f9f9;
+    padding: 5px;
+}
+
+.ui-datepicker-next {
+    float: right;
+}
+
+.ui-datepicker-title {
+    text-align: center;
+    font-weight: bold;
+}
+
+.ui-datepicker-calendar * {
+    text-align: center;
+    padding: 3px; 
+}
+
+#global_toggle {
+    width: 100%;
+    padding: 5px;
+    text-align: center;
+    margin-top: -5%;
+    margin-bottom: 20px;
+}

@@ -132,7 +132,7 @@ function drawPredictedGenderDistribution(dataValues, country) {
     data.addColumn('number', 'Female');
 
     var currentWeekId = getMaxWeekId(dataValues);
-    var previousWeekId = currentWeekId - 1;
+    var previousWeekId = currentWeekId - 6;
 
     for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
         var valMale = getDataValue(dataValues, country, SkEnum.MalePredictedCount, weekId);
@@ -149,8 +149,9 @@ function drawPredictedGenderDistribution(dataValues, country) {
 
     var options = globalOptions;
     options.title = 'Predicted Gender Distribution';
-    options.bar = { groupWidth: '75%' };
+    //options.bar = { groupWidth: '75%' };
     options.isStacked = true;
+    //options.lineWidth = 1;
 
     var chart;
 
@@ -177,7 +178,7 @@ function drawPredictedAgeDistribution(dataValues, country) {
     data.addColumn('number', '10');
 
     var currentWeekId = getMaxWeekId(dataValues);
-    var previousWeekId = currentWeekId - 1;
+    var previousWeekId = currentWeekId - 6;
 
     for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
         var valYounger = getDataValue(dataValues, country, SkEnum.YoungerPredictedCount, weekId);
@@ -194,7 +195,7 @@ function drawPredictedAgeDistribution(dataValues, country) {
 
     var options = globalOptions;
     options.title = 'Age Prediction Summary';
-    options.bar = { groupWidth: '75%' };
+    //options.bar = { groupWidth: '75%' };
     options.isStacked = true;
     
     var chart;
@@ -297,7 +298,7 @@ function drawAssignmentTypeDistribution(dataValues, country) {
     data.addColumn('number', 'Sample');
 
     var currentWeekId = getMaxWeekId(dataValues);
-    var previousWeekId = currentWeekId - 1;
+    var previousWeekId = currentWeekId - 6;
 
     for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
         var valModelCnt = getDataValue(dataValues, country, SkEnum.ModelCount, weekId);
@@ -315,7 +316,7 @@ function drawAssignmentTypeDistribution(dataValues, country) {
 
     var options = globalOptions;
     options.title = 'Assignment Type Distribution';
-    options.bar = { groupWidth: '75%' };
+    //options.bar = { groupWidth: '75%' };
     options.isStacked = true;
 
     var chart;
@@ -404,7 +405,7 @@ function drawLambda(dataValues, country) {
     data.addColumn('number', 'Lambda');
 
     var currentWeekId = getMaxWeekId(dataValues);
-    var previousWeekId = currentWeekId - 1;
+    var previousWeekId = currentWeekId - 6;
 
     for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
         var valLambda = getDataValue(dataValues, country, SkEnum.Lambda, weekId);
@@ -448,7 +449,7 @@ function drawAccuracy(dataValues, country) {
     data.addColumn('number', 'Accuracy');
 
     var currentWeekId = getMaxWeekId(dataValues);
-    var previousWeekId = currentWeekId - 1;
+    var previousWeekId = currentWeekId - 6;
 
     for (var weekId = currentWeekId; weekId >= previousWeekId; weekId--) {
         var valAccuracy = getDataValue(dataValues, country, SkEnum.CvAccuracy, weekId);
@@ -502,3 +503,4 @@ function getMaxWeekId(dataValues) {
     }
     return max;
 }
+
