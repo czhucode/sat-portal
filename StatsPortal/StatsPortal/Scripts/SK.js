@@ -176,11 +176,11 @@ function drawPredictedAgeDistribution(dataValues, country) {
 
     data.addColumn('string', 'Week Id');
     if (country == "US") {
-        data.addColumn('number', 'Y 6-8');
-        data.addColumn('number', 'O 9-12');
+        data.addColumn('number', 'Y (6-8)');
+        data.addColumn('number', 'O (9-12)');
     } else {
-        data.addColumn('number', 'Y 8-11');
-        data.addColumn('number', 'O 12-14');
+        data.addColumn('number', 'Y (8-11)');
+        data.addColumn('number', 'O (12-14)');
     }
 
 

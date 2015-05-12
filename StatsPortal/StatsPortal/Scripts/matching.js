@@ -286,7 +286,8 @@ function drawLookupChart(dataValues) {
         explorer: {
             keepInBounds: true,
             actions: ['dragToZoom', 'rightClickToReset']
-        }
+        },
+        colors: ["#4285F4", "#DB4437", "#F4B400", "#0F9D58", "#AB47BC"]
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('lookup_stats'));
@@ -375,7 +376,8 @@ function drawMatchingChart(dataValues) {
         explorer: {
             keepInBounds: true,
             actions: ['dragToZoom', 'rightClickToReset']
-        }
+        },
+        colors: ["#4285F4", "#18FFFF", "#DB4437", "#F4B400", "#0F9D58", "#AB47BC"]
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('matched_overall'));
