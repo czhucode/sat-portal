@@ -24,6 +24,18 @@
         </div>
 
         <div class="row top-margin-small">
+            
+            <br />
+
+            Start Date:
+            <input type="text" class="datepicker form-control" id="start_date" readonly />
+
+            <br />
+
+            End Date:
+            <input type="text" class="datepicker form-control" id="end_date" readonly />
+
+            <br />
 
             <div class="col-md-12" id="populate_wrapper">
                 <button type="button" class="btn btn-primary" id="cookies_populate_button">Populate</button>
@@ -60,6 +72,11 @@
 
                     <div id="cookies_keyword_list"></div>
                     <br />
+                    
+                    <input placeholder="Filter keywords" id="keyword_filter_box" type="text" />
+
+                    <br /><br />
+
                     <button type="button" class="btn btn-default btn-xs" id="cookies_keyword_checkall_button">Select All</button>
                     <button type="button" class="btn btn-default btn-xs" id="cookies_keyword_uncheckall_button">Disselect All</button>
 
@@ -76,9 +93,9 @@
     <div class="panel panel-default">
         
         <div class="radio" id="keyword_data_toggle_container">
-            <label><input type="radio" name="optradio" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
+            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
 
-            <label><input type="radio" name="optradio" id="keyword_data_percentages">Percent Parsed</label>
+            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_percentages">Percent Parsed</label>
         </div>
         <div class="col-md-12" id="keyword_form_container">
             <select class="form-control" id="cookies_keyword_data_dropdown"></select>
@@ -88,10 +105,31 @@
         <br />
 
         <div id="cookie_keyword_bar_chart"></div>
+        
+        @*<div class="radio btn-group" id="keyword_bar_line_toggle">
+            <label><input type="radio" name="optradio" id="keyword_bar_toggle" checked="checked">Bar View</label>
 
+            <label><input type="radio" name="optradio" id="keyword_line_toggle">Line View</label>
+        </div>*@
+        
+       
+        <div class="text_center" id="keyword_bar_line_toggle">
+            <div class="col col-md-12 radio">
+                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_bar">Bar View</label>
+
+                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_line" checked="checked">Line View</label>
+                @*<button id="toggle_keyword_bar" class="btn btn-sm clicked">Bar View</button>
+                <button id="toggle_keyword_line" class="btn btn-sm">Line View</button>*@
+            </div>
+        </div>
+        
+        <br />
+        <br />
+        <br />
+        <br />
 
         <div class="col col-md-12" id="keyword_chart_toggle_wrapper">
-            <button id="toggle_keyword_chart" class="btn btn-sm">View as Table</button>
+            <button id="toggle_keyword_chart" class="btn btn-sm btn-default">View as Table</button>
         </div>
 
         <!-- Keyword Table View -->
@@ -107,6 +145,8 @@
     var dataValues = @Html.Raw(Json.Encode(Model.CookieStats));
     var startTimeValue = @Model.startDate;
     var endTimeValue = @Model.endDate;
+    var maxTimeValue = @Model.maxDate;
+    var minTimeValue = @Model.minDate;
 
     //$(window).resize(function () {
     //    reloadGraphs();

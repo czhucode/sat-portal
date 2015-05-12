@@ -2,6 +2,47 @@
 google.load("visualization", "1", { packages: ["line"] });
 google.load("visualization", "1.1", { packages: ["bar"] });
 
+
+var globalOptions = {
+    titleTextStyle: {
+        color: '#757575',
+        fontSize: 16,
+        bold: false
+    },
+    height: 400,
+    legend: {
+        position: 'bottom',
+        textStyle: {
+            color: '#757575',
+            fontSize: 14,
+            bold: false
+        }
+    },
+    hAxis: {
+        textStyle: {
+            color: '#757575',
+            fontSize: 12,
+            bold: false
+        }
+    },
+    vAxis: {
+        textStyle: {
+            color: '#757575',
+            fontSize: 12,
+            bold: false
+        }
+    },
+    colors: ['#0F9D58', '#F4B400', '#4285F4', '#DB4437']
+};
+
+// Globals 
+var domainDropdownList;
+var keywordMenuList;
+
+var globalStartDate = "";
+var globalEndDate = "";
+
+
 //function htmlEscape(str) {
 //    return String(str)
 //            .replace(/&/g, '&amp;')
@@ -11,37 +52,56 @@ google.load("visualization", "1.1", { packages: ["bar"] });
 //            .replace(/>/g, '&gt;');
 //}
 
-function populateDomainDropdown() {
+function calcDiff(date1, date2) {
+    
+    var diff = 0;
+    if (date1 && date2) {
+        diff = Math.ceil((date2.getTime() - date1.getTime()) / 86400000);
+    }
+    debugger;
+
+   return diff;
+}
+
+function getDomains(startDate, endDate, fn) {
     
     $.ajax({
         type: 'POST',
         dataType: 'json',
         url: "GetDomains",
         traditional: true,
-        data:{},
+        data: {
+            startDate: startDate,
+            endDate: endDate
+        },
         success: function (domainList) {
 
-            var cookiesDropdownPopulate = "";
-            for (var i = 0; i < domainList.length; i++) {
-                if (domainList[i].toLowerCase() === dataValues.Domain.toLowerCase()) {
-                    cookiesDropdownPopulate += "<option selected>" + capitalizeFirstLetter(domainList[i]) + "</option>";
-                } else {
-                    cookiesDropdownPopulate += "<option>" + capitalizeFirstLetter(domainList[i]) + "</option>";
-                }
-            }
-
-            $("#cookies_keyword_bar_chart_dropdown").html(cookiesDropdownPopulate);
+            fn(domainList);
 
         },
         error: function () {
-            console.log("populateDomainDropdown failed");
+            console.log("getDomains failed");
         }
     });
 
 }
 
 
-function populateKeywordData(domain) {
+function populateDomainDropdown(domainList) {
+    var cookiesDropdownPopulate = "";
+    for (var i = 0; i < domainList.length; i++) {
+        if (dataValues[0].Domain.toLowerCase() === domainList[i].toLowerCase()) {
+            cookiesDropdownPopulate += "<option selected>" + capitalizeFirstLetter(domainList[i]) + "</option>";
+        } else {
+            cookiesDropdownPopulate += "<option>" + capitalizeFirstLetter(domainList[i]) + "</option>";
+        }
+    }
+
+    $("#cookies_keyword_bar_chart_dropdown").html(cookiesDropdownPopulate);
+}
+
+
+function populateNewKeywords(domain, startDate, endDate, fn) {
 
     $.ajax({
         type: 'POST',
@@ -49,34 +109,15 @@ function populateKeywordData(domain) {
         url: "GetKeywords",
         traditional: true,
         data: {
-            domain: domain
+            domain: domain,
+            startDate: startDate,
+            endDate: endDate
         },
         success: function (keywordList) {
-            var cookiesCheckbox = [];
-            //var cookiesCheckbox = getNewKeywords(domain);
-            cookiesCheckbox = keywordList;
 
+            fn(keywordList);
 
-            var cookiesCheckboxPopulate = "";
-            var keywordDataPopulate = "";
-            for (var i = 0; i < cookiesCheckbox.length; i++) {
-                if (i == 0) {
-                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-                } else {
-                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-
-                }
-                if (cookiesCheckbox[i].toString().toLowerCase === dataValues.Keyword.toString().toLowerCase) {
-                    keywordDataPopulate += "<option selected>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
-
-                } else {
-                    keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
-                }
-            }
-
-            $("#cookies_keyword_list").html(cookiesCheckboxPopulate);
-            $("#cookies_keyword_data_dropdown").html(keywordDataPopulate);
-
+           
         },
         error: function () {
             console.log("populateKeywordData failed");
@@ -84,6 +125,45 @@ function populateKeywordData(domain) {
     });
     
 }
+
+function populateKeywordData(domain, startDate, endDate, initialization) {
+    populateNewKeywords(domain, startDate, endDate, function (d) {
+        keywordMenuList = d;
+        //var cookiesCheckbox = [];
+        ////var cookiesCheckbox = getNewKeywords(domain);
+        //cookiesCheckbox = keywordMenuList;
+
+
+        var cookiesCheckbox = keywordMenuList;
+
+        var cookiesCheckboxPopulate = "";
+        var keywordDataPopulate = "";
+        for (var i = 0; i < cookiesCheckbox.length; i++) {
+            if (initialization && dataValues[0].Keyword.toLowerCase() == cookiesCheckbox[i].toLowerCase()) {
+                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+            } else if (initialization) {
+                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+
+            } else if (i == 0) {
+                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+            } else {
+                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+            }
+
+            if (dataValues[0].Keyword.toLowerCase() == cookiesCheckbox[i].toLowerCase()) {
+                keywordDataPopulate += "<option selected>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+            } else {
+                keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+            }
+
+        }
+
+        $("#cookies_keyword_list").html(cookiesCheckboxPopulate);
+        $("#cookies_keyword_data_dropdown").html(keywordDataPopulate);
+    });
+
+}
+
 
 //function getCookieData(domain, keyword) {
 //    $.ajax({
@@ -119,7 +199,7 @@ function getCheckedValues(className) {
 
 }
 
-function drawDomainLineChart(domain, keywordList, days, startDay) {
+function drawDomainLineChart(domain, startDate, endDate) {
 
     $.ajax({
         type: 'POST',
@@ -128,9 +208,8 @@ function drawDomainLineChart(domain, keywordList, days, startDay) {
         traditional: true,
         data: {
             domain: domain,
-            keywordList: keywordList,
-            days: days,
-            startDay: startDay
+            startDay: startDate,
+            endDate: endDate
         },
         success: function (dataPool) {
 
@@ -160,8 +239,8 @@ function drawDomainLineChart(domain, keywordList, days, startDay) {
                 data.addRow(dataPool[i]);
             }
 
-
-            var options = {
+            var options = globalOptions;
+            options = {
                 title: "Total Counts: " + capitalizeFirstLetter(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase()),
                 pointSize: 4,
                 crosshair: {
@@ -191,7 +270,7 @@ function drawDomainLineChart(domain, keywordList, days, startDay) {
 
 }
 
-function drawKeywordLineChart(domain, keywordList, days, startDay) {
+function drawKeywordLineChart(domain, keywordList, startDay, endDate) {
 
     var countCheck = true;
     if (document.getElementById('keyword_percentages').checked) {
@@ -212,8 +291,8 @@ function drawKeywordLineChart(domain, keywordList, days, startDay) {
         data: {
             domain: domain,
             keywordList: keywordList,
-            days: days,
             startDay: startDay,
+            endDate: endDate,
             countCheck: countCheck
         },
         success: function (dataPool) {
@@ -241,8 +320,8 @@ function drawKeywordLineChart(domain, keywordList, days, startDay) {
                 data.addRow(dataPool[i]);
             }
 
-
-            var options = {
+            var options = globalOptions;
+            options = {
                 title: "Total Seen by Keyword: " + capitalizeFirstLetter(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase()),
                 pointSize: 4,
                 crosshair: {
@@ -272,7 +351,7 @@ function drawKeywordLineChart(domain, keywordList, days, startDay) {
 
 }
 
-function drawKeywordBarTable(domain, keyword, startDay, days) {
+function drawKeywordBarTable(domain, keyword, startDay, endDate) {
     var countCheck = true;
     if (document.getElementById('keyword_data_percentages').checked) {
         countCheck = false;
@@ -290,7 +369,7 @@ function drawKeywordBarTable(domain, keyword, startDay, days) {
             domain: domain,
             keyword: keyword,
             startDay: startDay,
-            days: days
+            endDate: endDate
         },
         success: function (keywordData) {
 
@@ -345,7 +424,7 @@ function drawKeywordBarTable(domain, keyword, startDay, days) {
                 data.addColumn('number', '% Username');
 
                 for (var i = 0; i < keywordData.length; i++) {
-                    if (keywordData[i] == null) {
+                    if (keywordData[i] == null || parseFloat(keywordData[i][1]) == 0 || keywordData[i][1] == null) {
                         data.addRow([keywordData[i][0], 0, 0, 0, 0, 0, 0]);
                     } else {
                         data.addRow([keywordData[i][0], (parseInt(keywordData[i][2]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][3]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][4]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][5]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][6]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][7]) / parseFloat(keywordData[i][1]) * 100)]);
@@ -353,8 +432,8 @@ function drawKeywordBarTable(domain, keyword, startDay, days) {
                 }
             }
 
-
-            var options = {
+            var options = globalOptions;
+            options = {
 
                 title: "Demo Stats by Keyword: " + capitalizeFirstLetter(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase()),
                 //  width: 900,
@@ -372,7 +451,18 @@ function drawKeywordBarTable(domain, keyword, startDay, days) {
 
             };
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('cookie_keyword_bar_chart'));
+
+            var lineCheck = false;
+            if (document.getElementById('toggle_keyword_line').checked) {
+                lineCheck = true;
+            }
+
+            var chart;
+            if (lineCheck) {
+                chart = new google.visualization.LineChart(document.getElementById('cookie_keyword_bar_chart'));
+            } else {
+                chart = new google.visualization.ColumnChart(document.getElementById('cookie_keyword_bar_chart'));
+            }
 
             chart.draw(data, options);
 
@@ -385,23 +475,29 @@ function drawKeywordBarTable(domain, keyword, startDay, days) {
 
 function initialize() {
     // Populate toolbar domain dropdown
-    populateDomainDropdown();
+    //populateDomainDropdown();
+
+    globalStartDate = startTimeValue;
+    globalEndDate = endTimeValue;
+
+
+    getDomains(startTimeValue, endTimeValue, function (d) {
+        //domainDropdownList = d;
+        populateDomainDropdown(d);
+
+
+
+    });
+
+    
 
     // Populate keyword checkboxes
     //populateKeywordData(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase());
-    populateKeywordData(dataValues.Domain);
+    //populateKeywordData(dataValues.Domain);
 
-    // Replace ["all"] with GetCheckedKeywords
-    drawDomainLineChart(dataValues.Domain, ["all"], 7, startTimeValue);
+    populateKeywordData(dataValues[0].Domain.toLowerCase(), startTimeValue, endTimeValue, true);
 
-    console.log(startTimeValue);
-    console.log(endTimeValue);
-    // Replace ["all"] with GetCheckedKeywords
-    drawKeywordLineChart(dataValues.Domain, [dataValues.Keyword], 7, startTimeValue);
-
-    // Replace ["all"] with GetCheckedKeywords
-    //drawKeywordBarTable(dataValues.Domain, dataValues.Keyword, startTimeValue, 7);
-    drawKeywordBarTable(dataValues.Domain, dataValues.Keyword, startTimeValue, 7);
+    
 }
 
 $(document).ready(function () {
@@ -412,16 +508,22 @@ $(document).ready(function () {
     // Handle "Populate" buttom
     $("#cookies_populate_button").click(function () {
 
-        populateKeywordData(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase());
+        globalStartDate = document.getElementById('start_date').value;
+        globalEndDate = document.getElementById('end_date').value;
+
+        console.log('Global start change: ' + globalStartDate);
+        console.log('Global end change: ' + globalEndDate);
+
+        populateKeywordData(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate, false);
 
         // Replace ["all"] with GetCheckedKeywords
-        drawDomainLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), ["all"], 7, startTimeValue);
+        drawDomainLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
 
         // Replace ["all"] with GetCheckedKeywords
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
 
         // Replace ["all"] with GetCheckedKeywords
-        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
     });
 
     // Show/hide toggle for toobar
@@ -444,16 +546,16 @@ $(document).ready(function () {
 
     // Handle raw count/percentage toggle
     $("#keyword_raw_counts, #keyword_percentages").change(function () {
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
     });
 
-    $("#keyword_data_raw_counts, #keyword_data_percentages").change(function () {
-        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+    $("#keyword_data_raw_counts, #keyword_data_percentages, #toggle_keyword_bar, #toggle_keyword_line").change(function () {
+        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
     });
 
     // Update keyword list when new domain is chosen
     $("#cookies_keyword_bar_chart_dropdown").change(function () {
-        populateKeywordData(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase());
+        populateKeywordData(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate, false);
     });
 
     // Handle onclick changes to "Check/Uncheck All" buttons
@@ -466,17 +568,17 @@ $(document).ready(function () {
 
     // When "Check/Uncheck All" buttons are clicked, refresh graph
     $("#cookies_keyword_checkall_button, #cookies_keyword_uncheckall_button").click(function () {
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
     });
 
     // Whenever a keyword is selected/unselected, refresh the graph
     $("#cookies_keyword_list").change(function () {
-        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), 7, startTimeValue);
+        drawKeywordLineChart(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
     });
 
     // Upon selecting a different keyword in the keyword info graph area, refresh graph
     $("#cookies_keyword_data_dropdown").change(function () {
-        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+        drawKeywordBarTable(document.getElementById('cookies_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('cookies_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
     });
 
     // Handle toggle for keyword table
@@ -484,5 +586,143 @@ $(document).ready(function () {
         $("#keyword_table").toggle();
     });
 
+    var dateString = maxTimeValue.toString();
+    var y = dateString.substr(0, 4),
+        m = dateString.substr(4, 2) - 1,
+        d = dateString.substr(6, 2);
+
+    var maximumDate = new Date(y, m, d);
+
+    var dateString2 = minTimeValue.toString();
+    var y = dateString2.substr(0, 4),
+        m = dateString2.substr(4, 2) - 1,
+        d = dateString2.substr(6, 2);
+
+    var minimumDate = new Date(y, m, d);
+    
+    $('#start_date').datepicker({
+        dateFormat: 'yymmdd',
+        minDate: minimumDate,
+        maxDate: maximumDate,
+        onSelect: function (date) {
+            var date1 = $('#start_date').datepicker('getDate');
+            console.log("date1: " + date1);
+            debugger;
+            var date2 = $('#end_date').datepicker('getDate');
+            console.log("date2: " + date2);
+            debugger;
+            if (date2 <= date1) {
+                var addDays = 1;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+                $('#end_date').datepicker('setDate', date2);
+                //sets minDate to dt1 date + 1
+            }
+
+            console.log("Date diff: " + calcDiff(date1, date2));
+
+            if (calcDiff(date1, date2) > 63) {
+                alert("Date range too large! Please limit to a maximum span of 64 days. Your date parameters have been adjusted accordingly.");
+                var addDays = 63;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+    
+                $('#end_date').datepicker('setDate', date2);
+            }
+            var addDaysMinDate = 1;
+            var addMsMinDate = addDaysMinDate * 24 * 60 * 60 * 1000;
+            date1.setTime(date1.getTime() + addMsMinDate);
+            console.log("New date1: " + date1);
+            $('#end_date').datepicker('option', 'minDate', date1);
+            
+        },
+        onClose: function(date) {
+            var date1 = $('#start_date').datepicker('getDate');
+            console.log("date1: " + date1);
+
+            var date2 = $('#end_date').datepicker('getDate');
+            console.log("date2: " + date2);
+
+            if (calcDiff(date1, date2) > 63) {
+                var addDays = 63;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+
+                $('#end_date').datepicker('setDate', date2);
+            }
+        }
+    }).datepicker('setDate', globalStartDate.toString()).val();
+
+    $("#start_date").change(function () {
+        var date = document.getElementById('start_date').value.toLowerCase();
+        console.log(date);
+    });
+
+    $('#end_date').datepicker({
+        dateFormat: 'yymmdd',
+        minDate: $('#start_date').datepicker('getDate'),
+        maxDate: maximumDate,
+        onSelect: function (date) {
+            var date1 = $('#start_date').datepicker('getDate');
+            console.log("date1: " + date1);
+
+            var date2 = $('#end_date').datepicker('getDate');
+            console.log("date2: " + date2);
+
+            if (calcDiff(date1, date2) > 63) {
+                alert("Date range too large! Please limit to a maximum span of 64 days. Your date parameters have been adjusted accordingly.");
+                var addDays = 63;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+
+                $('#end_date').datepicker('setDate', date2);
+            }
+        },
+        onClose: function () {
+            var dt1 = $('#start_date').datepicker('getDate');
+            console.log("dt1: " + dt1);
+            var dt2 = $('#end_date').datepicker('getDate');
+            console.log("dt2: " + dt2);
+            //check to prevent a user from entering a date below date of dt1
+            if (dt2 <= dt1) {
+                var minDate = $('#end_date').datepicker('option', 'minDate');
+                $('#end_date').datepicker('setDate', minDate);
+            }
+        }
+    }).datepicker('setDate', globalEndDate.toString()).val();
+
+
+
+
+    $("#end_date").change(function () {
+        var date = document.getElementById('end_date').value.toLowerCase();
+        console.log(date);
+    });
+
+    // Handle keyword filter
+    $('#keyword_filter_box').keyup(function () {
+        var valThis = $(this).val().toLowerCase();
+        if (valThis == "") {
+            $('#cookies_keyword_list > div').show();
+        } else {
+            $('#cookies_keyword_list > div').each(function () {
+                var text = $(this).text().toLowerCase();
+                (text.indexOf(valThis) >= 0) ? $(this).show() : $(this).hide();
+            });
+        };
+    });
+
+
+    // Replace ["all"] with GetCheckedKeywords
+    drawDomainLineChart(dataValues[0].Domain, startTimeValue, endTimeValue);
+
+    console.log(startTimeValue);
+    console.log(endTimeValue);
+    // Replace ["all"] with GetCheckedKeywords
+    drawKeywordLineChart(dataValues[0].Domain, [dataValues[0].Keyword], startTimeValue, endTimeValue);
+
+    // Replace ["all"] with GetCheckedKeywords
+    //drawKeywordBarTable(dataValues.Domain, dataValues.Keyword, startTimeValue, 7);
+    drawKeywordBarTable(dataValues[0].Domain, dataValues[0].Keyword, startTimeValue, endTimeValue);
 
 });

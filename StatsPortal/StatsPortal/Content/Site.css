@@ -303,9 +303,9 @@ h6 {
     top: -50px;
     right: 10%;
     /*height: 1%;*/
-    text-align: right;
+    /*text-align: right;
     z-index: 10;
-}
+}*/
 
 #snippet_nav {
     position: relative;

@@ -11,5 +11,7 @@ namespace StatsPortal.Models
         public SnippetEmailModel[] SnippetEmailStats { get; set; }
         public string startDate { get; set; }
         public string endDate { get; set; }
+        public string maxDate { get; set; }
+        public string minDate { get; set; }
     }
 }

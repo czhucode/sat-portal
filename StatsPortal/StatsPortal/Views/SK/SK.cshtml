@@ -87,25 +87,67 @@
         </div>
     </div>
 
-    <div class="col-lg-12">
-        <div class="panel panel-default" role="tablist" id="true_and_predicted_age_gender_distribution_tab">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#true_and_predicted_age_gender_distribution_US" role="tab" data-toggle="tab">US</a>
-                </li>
-                <li class="">
-                    <a href="#true_and_predicted_age_gender_distribution_intl" role="tab" data-toggle="tab">International</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div id="true_and_predicted_age_gender_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
-                <div id="true_and_predicted_age_gender_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
-            </div>
+<div class="col-lg-12">
+    <div class="panel panel-default" role="tablist" id="true_and_predicted_age_gender_distribution_tab">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#true_and_predicted_age_gender_distribution_US" role="tab" data-toggle="tab">US</a>
+            </li>
+            <li class="">
+                <a href="#true_and_predicted_age_gender_distribution_intl" role="tab" data-toggle="tab">International</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="true_and_predicted_age_gender_distribution_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="true_and_predicted_age_gender_distribution_intl" class="tab-pane fade" role="tabpanel"></div>
         </div>
     </div>
+</div>
+
+<div class="col-lg-6">
+    <div class="panel panel-default" role="tablist" id="prev_confusion_matrix_tab">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#prev_confusion_matrix_US" role="tab" data-toggle="tab">US</a>
+            </li>
+            <li class="">
+                <a href="#prev_confusion_matrix_intl" role="tab" data-toggle="tab">International</a>
+            </li>
+        </ul>
+        
+        <h5>Previous Week Confusion Matrix</h5>
+
+        <div class="tab-content">
+            <div id="prev_confusion_matrix_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="prev_confusion_matrix_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
+
+    </div>
+</div>
+
+<div class="col-lg-6">
+    <div class="panel panel-default" role="tablist" id="current_confusion_matrix_tab">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#current_confusion_matrix_US" role="tab" data-toggle="tab">US</a>
+            </li>
+            <li class="">
+                <a href="#current_confusion_matrix_intl" role="tab" data-toggle="tab">International</a>
+            </li>
+        </ul>
+        
+        <h5>Current Week Confusion Matrix</h5>
+
+        <div class="tab-content">
+            <div id="current_confusion_matrix_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="current_confusion_matrix_intl" class="tab-pane fade" role="tabpanel"></div>
+        </div>
+
+    </div>
+</div>
 
 
-    <div class="col-lg-6">
+<div class="col-lg-6">
         <div class="panel panel-default" role="tablist" id="lambda_graph_tab">
             <ul class="nav nav-tabs">
                 <li class="active">
@@ -122,24 +164,26 @@
         </div>
     </div>
 
-    <div class="col-lg-6">
-        <div class="panel panel-default" role="tablist" id="accuracy_graph_tab">
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#accuracy_graph_US" role="tab" data-toggle="tab">US</a>
-                </li>
-                <li class="">
-                    <a href="#accuracy_graph_intl" role="tab" data-toggle="tab">International</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div id="accuracy_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
-                <div id="accuracy_graph_intl" class="tab-pane fade" role="tabpanel"></div>
-            </div>
+<div class="col-lg-6">
+    <div class="panel panel-default" role="tablist" id="accuracy_graph_tab">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#accuracy_graph_US" role="tab" data-toggle="tab">US</a>
+            </li>
+            <li class="">
+                <a href="#accuracy_graph_intl" role="tab" data-toggle="tab">International</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="accuracy_graph_US" class="tab-pane fade in active" role="tabpanel"></div>
+            <div id="accuracy_graph_intl" class="tab-pane fade" role="tabpanel"></div>
         </div>
     </div>
+</div>
 
-    <script type="text/javascript">
+
+
+<script type="text/javascript">
 
 
         var dataValues = @Html.Raw(Json.Encode(Model));
@@ -150,6 +194,8 @@
         google.setOnLoadCallback(function () { drawNumberOfNonZeroCoefficients(dataValues, 'US'); });
         google.setOnLoadCallback(function () { drawAssignmentTypeDistribution(dataValues, 'US'); });
         google.setOnLoadCallback(function () { drawTrueAndPredictedAgeGenderDistribution(dataValues, 'US'); });
+        drawPrevConfusionMatrix(dataValues, 'US');
+        drawCurrentConfusionMatrix(dataValues, 'US');
         google.setOnLoadCallback(function () { drawLambda(dataValues, 'US'); });
         google.setOnLoadCallback(function () { drawAccuracy(dataValues, 'US'); });
 
@@ -180,6 +226,14 @@
                 // Reload true and predicted age/gender dist.
                 $("a[href='#true_and_predicted_age_gender_distribution_US']").tab('show');
                 $("a[href='#true_and_predicted_age_gender_distribution_US']").show();
+
+                // Reload previous week confusion matrix.
+                $("a[href='#prev_confusion_matrix_US']").tab('show');
+                $("a[href='#prev_confusion_matrix_US']").show();
+
+                // Reload current week confusion matrix.
+                $("a[href='#current_confusion_matrix_US']").tab('show');
+                $("a[href='#current_confusion_matrix_US']").show();
 
                 // Reload lambda
                 $("a[href='#lambda_graph_US']").tab('show');
@@ -217,6 +271,14 @@
                 // Reload true and predicted age/gender dist.
                 $("a[href='#true_and_predicted_age_gender_distribution_intl']").tab('show');
                 $("a[href='#true_and_predicted_age_gender_distribution_intl']").show();
+
+                // Reload previous week confusion matrix.
+                $("a[href='#prev_confusion_matrix_intl']").tab('show');
+                $("a[href='#prev_confusion_matrix_intl']").show();
+
+                // Reload current week confusion matrix.
+                $("a[href='#current_confusion_matrix_intl']").tab('show');
+                $("a[href='#current_confusion_matrix_intl']").show();
 
                 // Reload lambda
                 $("a[href='#lambda_graph_intl']").tab('show');

@@ -175,8 +175,14 @@ function drawPredictedAgeDistribution(dataValues, country) {
     var data = new google.visualization.DataTable();
 
     data.addColumn('string', 'Week Id');
-    data.addColumn('number', '7');
-    data.addColumn('number', '10');
+    if (country == "US") {
+        data.addColumn('number', 'Y 6-8');
+        data.addColumn('number', 'O 9-12');
+    } else {
+        data.addColumn('number', 'Y 8-11');
+        data.addColumn('number', 'O 12-14');
+    }
+
 
     var currentWeekId = getMaxWeekId(dataValues);
     var previousWeekId = currentWeekId - 6;
@@ -226,6 +232,7 @@ function drawNumberOfNonZeroCoefficients(dataValues, country) {
 
     var currentWeekId = getMaxWeekId(dataValues);
     var previousWeekId = currentWeekId - 1;
+    var legendString = "";
 
     for (var i = 1; i < 5; i++) {
 
@@ -234,37 +241,59 @@ function drawNumberOfNonZeroCoefficients(dataValues, country) {
         var bothWeeks = 0;
 
         if (i == 1) {
+            if (country == "US") {
+                legendString = "6-8 M";
+            } else {
+                legendString = "8-11 M";
+            }
             prevWeek = getDataValue(dataValues, country, SkEnum.Coef1Count, previousWeekId);
             currWeek = getDataValue(dataValues, country, SkEnum.Coef1Count, currentWeekId);
             bothWeeks = getDataValue(dataValues, country, SkEnum.Coef1CountBoth, currentWeekId);
         }
 
         if (i == 2) {
+            if (country == "US") {
+                legendString = "9-12 M";
+            } else {
+                legendString = "12-14 M";
+            }
             prevWeek = getDataValue(dataValues, country, SkEnum.Coef2Count, previousWeekId);
             currWeek = getDataValue(dataValues, country, SkEnum.Coef2Count, currentWeekId);
             bothWeeks = getDataValue(dataValues, country, SkEnum.Coef2CountBoth, currentWeekId);
         }
 
         if (i == 3) {
+            if (country == "US") {
+                legendString = "6-8 F";
+            }
+            else {
+                legendString = "8-11 F";
+            }
             prevWeek = getDataValue(dataValues, country, SkEnum.Coef3Count, previousWeekId);
             currWeek = getDataValue(dataValues, country, SkEnum.Coef3Count, currentWeekId);
             bothWeeks = getDataValue(dataValues, country, SkEnum.Coef3CountBoth, currentWeekId);
         }
 
         if (i == 4) {
+            if (country == 'US') {
+                legendString = "9-12 F";
+            }
+            else {
+                legendString = "12-14 F";
+            }
             prevWeek = getDataValue(dataValues, country, SkEnum.Coef4Count, previousWeekId);
             currWeek = getDataValue(dataValues, country, SkEnum.Coef4Count, currentWeekId);
             bothWeeks = getDataValue(dataValues, country, SkEnum.Coef4CountBoth, currentWeekId);
         }
 
         // Add values to the DataTable
-        data.addRow([i.toString(), prevWeek, currWeek, bothWeeks]);
+        data.addRow([i.toString() + " (" + legendString + ")", prevWeek, currWeek, bothWeeks]);
     }
 
     //data.addRow(currentWeekId, getDataValue(dataValues, country, SkEnum.MalePredictedCount, previousWeekId), getDataValue(dataValues, country, SkEnum.FemalePredictedCount, previousWeekId));
 
     // Sort the data
-    data.sort([{ column: 0, desc: true }]);
+    //data.sort([{ column: 0, desc: true }]);
 
     var options = globalOptions;
     options.title = 'Number of Non-zero Coefficients';
@@ -376,7 +405,7 @@ function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
     data.sort([{ column: 0, desc: true }]);
 
     var options = globalOptions;
-    options.title = 'True And Predicted AgeGender Distribution';
+    options.title = 'True And Predicted AgeGender Distribution Between Previous/Current Week';
     options.bar = { groupWidth: '75%' };
     options.isStacked = true;
     
@@ -397,6 +426,47 @@ function drawTrueAndPredictedAgeGenderDistribution(dataValues, country) {
 
     $("a[href='#true_and_predicted_age_gender_distribution_intl']").one('shown.bs.tab', function () { drawTrueAndPredictedAgeGenderDistribution(dataValues, 'intl'); });
 }
+
+function drawPrevConfusionMatrix(dataValues, country) {
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    var tableHeader = '<table class="table"><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th></tr>';
+    var tableBody = "<tr><td><b>1</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P1Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P1Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P1Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P1Count, previousWeekId).toString() + "</td></tr><tr><td><b>2</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P2Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P2Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P2Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P2Count, previousWeekId).toString() + "</td></tr><tr><td><b>3</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P3Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P3Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P3Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P3Count, previousWeekId).toString() + "</td></tr><tr><td><b>4</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P4Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P4Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P4Count, previousWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P4Count, previousWeekId).toString() + "</td></tr></table>";
+
+    console.log(tableHeader + tableBody);
+
+    if (country == 'US') {
+        $('#prev_confusion_matrix_US').html(tableHeader + tableBody);
+    } else {
+        $('#prev_confusion_matrix_intl').html(tableHeader + tableBody);
+    }
+
+    $("a[href='#prev_confusion_matrix_intl']").one('shown.bs.tab', function () { drawPrevConfusionMatrix(dataValues, 'intl'); });
+
+}
+
+function drawCurrentConfusionMatrix(dataValues, country) {
+
+    var currentWeekId = getMaxWeekId(dataValues);
+    var previousWeekId = currentWeekId - 1;
+
+    var tableHeader = '<table class="table"><tr><th></th><th>1</th><th>2</th><th>3</th><th>4</th></tr>';
+    var tableBody = "<tr><td><b>1</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P1Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P1Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P1Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P1Count, currentWeekId).toString() + "</td></tr><tr><td><b>2</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P2Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P2Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P2Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P2Count, currentWeekId).toString() + "</td></tr><tr><td><b>3</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P3Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P3Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P3Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P3Count, currentWeekId).toString() + "</td></tr><tr><td><b>4</b></td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT1P4Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT2P4Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT3P4Count, currentWeekId).toString() + "</td><td>" + getDataValue(dataValues, country, SkEnum.CvConfT4P4Count, currentWeekId).toString() + "</td></tr></table>";
+
+    console.log(tableHeader + tableBody);
+
+    if (country == 'US') {
+        $('#current_confusion_matrix_US').html(tableHeader + tableBody);
+    } else {
+        $('#current_confusion_matrix_intl').html(tableHeader + tableBody);
+    }
+
+    $("a[href='#current_confusion_matrix_intl']").one('shown.bs.tab', function () { drawCurrentConfusionMatrix(dataValues, 'intl'); });
+
+}
+
 
 function drawLambda(dataValues, country) {
     // Create the data table.
