@@ -139,21 +139,23 @@ function populateKeywordData(domain, startDate, endDate, initialization) {
         var cookiesCheckboxPopulate = "";
         var keywordDataPopulate = "";
         for (var i = 0; i < cookiesCheckbox.length; i++) {
-            if (initialization && dataValues[0].Keyword.toLowerCase() == cookiesCheckbox[i].toLowerCase()) {
-                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-            } else if (initialization) {
-                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+            if (cookiesCheckbox[i]) {
+                if (initialization && dataValues[0].Keyword.toLowerCase() == cookiesCheckbox[i].toLowerCase()) {
+                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                } else if (initialization) {
+                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
 
-            } else if (i == 0) {
-                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-            } else {
-                cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-            }
+                } else if (i == 0) {
+                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                } else {
+                    cookiesCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                }
 
-            if (dataValues[0].Keyword.toLowerCase() == cookiesCheckbox[i].toLowerCase()) {
-                keywordDataPopulate += "<option selected>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
-            } else {
-                keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                if (dataValues[0].Keyword.toLowerCase() == cookiesCheckbox[i].toLowerCase()) {
+                    keywordDataPopulate += "<option selected>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                } else {
+                    keywordDataPopulate += "<option>" + cookiesCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                }
             }
 
         }
@@ -214,6 +216,7 @@ function drawDomainLineChart(domain, startDate, endDate) {
         success: function (dataPool) {
 
             var data = new google.visualization.DataTable();
+            var lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
 
             console.log("Getting cookie Data");
 
@@ -253,7 +256,8 @@ function drawDomainLineChart(domain, startDate, endDate) {
                     actions: ['dragToZoom', 'rightClickToReset']
                 },
                 // width: 1000,
-                height: 500
+                height: 500,
+                colors: lineColors
             };
 
             var chart = new google.visualization.LineChart(document.getElementById('cookie_domain_line_chart'));
@@ -375,7 +379,7 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
 
             var keywordInfo = keywordData;
 
-            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Emails Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Names Parsed</th><th>Usenames Parsed</th></tr></thead>";
+            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Names Parsed</th><th>Usernames Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Emails Parsed</th></tr></thead>";
             var tableBodyPopulate = "<tbody>";
 
             for (var i = 0; i < keywordData.length; i++) {
@@ -396,16 +400,18 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
             $("#keyword_table").html(tableHeaderPopulate + "" + tableBodyPopulate);
 
             var data = new google.visualization.DataTable();
+            var lineColors;
 
             if (countCheck) {
+                lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', 'Total Seen');
                 data.addColumn('number', 'Total Parsed');
-                data.addColumn('number', 'Emails');
-                data.addColumn('number', 'Genders');
-                data.addColumn('number', 'Birthyears');
                 data.addColumn('number', 'Names');
                 data.addColumn('number', 'Usernames');
+                data.addColumn('number', 'Genders');
+                data.addColumn('number', 'Birthyears');
+                data.addColumn('number', 'Emails');
 
                 for (var i = 0; i < keywordData.length; i++) {
                     if (keywordData[i] == null) {
@@ -415,13 +421,14 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
                     }
                 }
             } else {
+                lineColors = ["#FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', '% Parsed');
-                data.addColumn('number', '% Email');
-                data.addColumn('number', '% Gender');
-                data.addColumn('number', '% Birthyear');
                 data.addColumn('number', '% Name');
                 data.addColumn('number', '% Username');
+                data.addColumn('number', '% Gender');
+                data.addColumn('number', '% Birthyear');
+                data.addColumn('number', '% Email');
 
                 for (var i = 0; i < keywordData.length; i++) {
                     if (keywordData[i] == null || parseFloat(keywordData[i][1]) == 0 || keywordData[i][1] == null) {
@@ -447,8 +454,8 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
                 explorer: {
                     keepInBounds: true,
                     actions: ['dragToZoom', 'rightClickToReset']
-                }
-
+                },
+                colors: lineColors
             };
 
 

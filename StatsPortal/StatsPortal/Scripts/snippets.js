@@ -114,6 +114,7 @@ function reloadGraphs() {
 function drawDomainLineChart(dataPool, startDate, endDate) {
 
     var data = new google.visualization.DataTable();
+    var lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
 
 
     var numRows = dataPool.length;
@@ -158,7 +159,8 @@ function drawDomainLineChart(dataPool, startDate, endDate) {
             actions: ['dragToZoom', 'rightClickToReset']
         },
        // width: 1000,
-        height: 500
+        height: 500,
+        colors: lineColors
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('snippet_line_chart'));
@@ -483,15 +485,15 @@ function getDomains(startDate, endDate, fn) {
 
 }
 
-function getReadDomains() {
+//function getReadDomains() {
 
 
-    return domainDropdownList;
+//    return domainDropdownList;
 
-}
+//}
 
-function populateDomainDropdown(domainlist)
-{
+function populateDomainDropdown(domainlist) {
+    //domainlist = domainlist.sort();
     var snippetDropdownPopulate = "";
 
     for (var i = 0; i < domainlist.length; i++) {
@@ -512,20 +514,25 @@ function populateKeywordData(domain, startDate, endDate, initialization) {
         var snippetCheckboxPopulate = "";
         var keywordDataPopulate = "";
         for (var i = 0; i < snippetCheckbox.length; i++) {
-            if (initialization && dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-            } else if (initialization) {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-            } else if (i == 0) {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-            } else {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+            if (snippetCheckbox[i]) {
+                if (initialization && dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
+                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                } else if (initialization) {
+                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                } else if (i == 0) {
+                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                } else {
+                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                }
+                if (dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
+                    keywordDataPopulate += "<option selected>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                } else {
+                    keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                }
             }
-            if (dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
-                keywordDataPopulate += "<option selected>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
-            } else {
-                keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
-            } 
+            //else {
+            //    console.log(snippetCheckbox[i].Keyword);
+            //}
 
         }
 
@@ -691,7 +698,7 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
  
             var keywordInfo = keywordData;
             
-            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Emails Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Names Parsed</th><th>Usenames Parsed</th></tr></thead>";
+            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Names Parsed</th><th>Usernames Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Emails Parsed</th></tr></thead>";
             var tableBodyPopulate = "<tbody>";
 
             for (var i = 0; i < keywordData.length; i++) {
@@ -712,16 +719,18 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
             $("#keyword_table").html(tableHeaderPopulate + "" + tableBodyPopulate);
 
             var data = new google.visualization.DataTable();
+            var lineColors;
 
             if (document.getElementById('keyword_data_raw_counts').checked) {
+                lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', 'Total Seen');
                 data.addColumn('number', 'Total Parsed');
-                data.addColumn('number', 'Emails');
-                data.addColumn('number', 'Genders');
-                data.addColumn('number', 'Birthyears');
                 data.addColumn('number', 'Names');
                 data.addColumn('number', 'Usernames');
+                data.addColumn('number', 'Genders');
+                data.addColumn('number', 'Birthyears');
+                data.addColumn('number', 'Emails');
 
                 for (var i = 0; i < keywordData.length; i++) {
                     if (keywordData[i] == null) {
@@ -731,13 +740,14 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
                     }
                 }
             } else {
+                lineColors = ["#FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', '% Parsed');
-                data.addColumn('number', '% Email');
-                data.addColumn('number', '% Gender');
-                data.addColumn('number', '% Birthyear');
                 data.addColumn('number', '% Name');
                 data.addColumn('number', '% Username');
+                data.addColumn('number', '% Gender');
+                data.addColumn('number', '% Birthyear');
+                data.addColumn('number', '% Email');
          
                 for (var i = 0; i < keywordData.length; i++) {
                     if (keywordData[i] == null || parseFloat(keywordData[i][1]) == 0 || keywordData[i][1] == null) {
@@ -748,9 +758,8 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
                 }
             }
 
-           
+
             var options = {
-   
                 title: "Demo Stats by Keyword: " + capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()),
                 //  width: 900,
                 height: 500,
@@ -763,10 +772,11 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
                 explorer: {
                     keepInBounds: true,
                     actions: ['dragToZoom', 'rightClickToReset']
-                }
+                },
+                colors: lineColors
 
-                
-            };
+
+        };
 
             var lineCheck = false;
             if (document.getElementById('toggle_keyword_line').checked) {
@@ -808,6 +818,8 @@ $(document).ready(function() {
         
     });
 
+    //populateDomainDropdown(domainNameList);
+
     //$("#snippet_keyword_bar_chart_dropdown").autocomplete({
     //    source: domainDropdownList,
     //    select: function (event, ui) {
@@ -840,6 +852,10 @@ $(document).ready(function() {
         drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
     });
 
+    // Domain autocomplete
+    //$("#snippet_keyword_bar_chart_dropdown").autocomplete({
+    //    source: domainNameList
+    //});
 
     // Update keyword list when new domain is chosen
     $("#snippet_keyword_bar_chart_dropdown").change(function () {
@@ -905,6 +921,10 @@ $(document).ready(function() {
     // Whenever a keyword is selected/unselected, refresh the graph
     $("#snippet_keyword_list").change(function () {
         drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
+        //var keywordTest = getCheckedValues("keyword_checkbox");
+        //for (var i = 0; i < keywordTest.length; i++) {
+        //    console.log(keywordTest[i]);
+        //}
     });
 
     // Upon selecting a different keyword in the keyword info graph area, refresh graph

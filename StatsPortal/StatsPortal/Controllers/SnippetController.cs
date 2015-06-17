@@ -113,6 +113,7 @@ namespace StatsPortal.Controllers
                 model.endDate = end.ToString("yyyyMMdd");
                 model.maxDate = end.ToString("yyyyMMdd");
                 model.minDate = DateTime.ParseExact(snippetRepo.GetMinDate().ToString(), "yyyyMMdd", null).ToString("yyyyMMdd");
+                //model.domainList = snippetRepo.GetDomains(start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd")).ToList();
             }
 
             return View(model);
@@ -654,11 +655,11 @@ namespace StatsPortal.Controllers
                         {
                             keywordData[1] = data[i].TotalCount.ToString();
                             keywordData[2] = data[i].TotalParsed.ToString();
-                            keywordData[3] = data[i].EmailParsed.ToString();
-                            keywordData[4] = data[i].GenderParsed.ToString();
-                            keywordData[5] = data[i].BirthyearParsed.ToString();
-                            keywordData[6] = data[i].NameParsed.ToString();
-                            keywordData[7] = data[i].UsernameParsed.ToString();
+                            keywordData[3] = data[i].NameParsed.ToString();
+                            keywordData[4] = data[i].UsernameParsed.ToString();
+                            keywordData[5] = data[i].GenderParsed.ToString();
+                            keywordData[6] = data[i].BirthyearParsed.ToString();
+                            keywordData[7] = data[i].EmailParsed.ToString();
                         }
                         fullKeywordData[j] = keywordData;
                     }

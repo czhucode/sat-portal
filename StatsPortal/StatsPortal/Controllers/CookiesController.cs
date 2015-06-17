@@ -816,11 +816,11 @@ namespace StatsPortal.Controllers
                             //keywordData[0] = data[i].Date;
                             keywordData[1] = data[i].TotalCount.ToString();
                             keywordData[2] = data[i].TotalParsed.ToString();
-                            keywordData[3] = data[i].EmailParsed.ToString();
-                            keywordData[4] = data[i].GenderParsed.ToString();
-                            keywordData[5] = data[i].BirthyearParsed.ToString();
-                            keywordData[6] = data[i].NameParsed.ToString();
-                            keywordData[7] = data[i].UsernameParsed.ToString();
+                            keywordData[3] = data[i].NameParsed.ToString();
+                            keywordData[4] = data[i].UsernameParsed.ToString();
+                            keywordData[5] = data[i].GenderParsed.ToString();
+                            keywordData[6] = data[i].BirthyearParsed.ToString();
+                            keywordData[7] = data[i].EmailParsed.ToString();
                         }
                         fullKeywordData[j] = keywordData;
                     }
