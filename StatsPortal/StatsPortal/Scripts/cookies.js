@@ -88,6 +88,7 @@ function getDomains(startDate, endDate, fn) {
 
 
 function populateDomainDropdown(domainList) {
+    domainList = domainList.sort();
     var cookiesDropdownPopulate = "";
     for (var i = 0; i < domainList.length; i++) {
         if (dataValues[0].Domain.toLowerCase() === domainList[i].toLowerCase()) {
@@ -216,7 +217,7 @@ function drawDomainLineChart(domain, startDate, endDate) {
         success: function (dataPool) {
 
             var data = new google.visualization.DataTable();
-            var lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
+            var lineColors = ["#9E9E9E", "#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
 
             console.log("Getting cookie Data");
 
@@ -226,10 +227,10 @@ function drawDomainLineChart(domain, startDate, endDate) {
             data.addColumn('string', dataPool[0][0]);
             data.addColumn('number', "Seen");
             data.addColumn('number', "Parsed");
+            data.addColumn('number', "Birthyear");
+            data.addColumn('number', "Gender");
             data.addColumn('number', "Name");
             data.addColumn('number', "Username");
-            data.addColumn('number', "Gender");
-            data.addColumn('number', "Birthyear");
             data.addColumn('number', "Email");
 
 
@@ -379,7 +380,7 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
 
             var keywordInfo = keywordData;
 
-            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Names Parsed</th><th>Usernames Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Emails Parsed</th></tr></thead>";
+            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Birthyears Parsed</th><th>Genders Parsed</th><th>Names Parsed</th><th>Usernames Parsed</th><th>Emails Parsed</th></tr></thead>";
             var tableBodyPopulate = "<tbody>";
 
             for (var i = 0; i < keywordData.length; i++) {
@@ -403,14 +404,14 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
             var lineColors;
 
             if (countCheck) {
-                lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
+                lineColors = ["#9E9E9E", "#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', 'Total Seen');
                 data.addColumn('number', 'Total Parsed');
+                data.addColumn('number', 'Birthyears');
+                data.addColumn('number', 'Genders');
                 data.addColumn('number', 'Names');
                 data.addColumn('number', 'Usernames');
-                data.addColumn('number', 'Genders');
-                data.addColumn('number', 'Birthyears');
                 data.addColumn('number', 'Emails');
 
                 for (var i = 0; i < keywordData.length; i++) {
@@ -421,13 +422,13 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
                     }
                 }
             } else {
-                lineColors = ["#FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
+                lineColors = ["#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', '% Parsed');
+                data.addColumn('number', '% Birthyear');
+                data.addColumn('number', '% Gender');
                 data.addColumn('number', '% Name');
                 data.addColumn('number', '% Username');
-                data.addColumn('number', '% Gender');
-                data.addColumn('number', '% Birthyear');
                 data.addColumn('number', '% Email');
 
                 for (var i = 0; i < keywordData.length; i++) {
@@ -482,19 +483,19 @@ function drawKeywordBarTable(domain, keyword, startDay, endDate) {
 
 function initialize() {
     // Populate toolbar domain dropdown
-    //populateDomainDropdown();
+    
 
     globalStartDate = startTimeValue;
     globalEndDate = endTimeValue;
+    populateDomainDropdown(domainNameList);
+
+    //getDomains(startTimeValue, endTimeValue, function (d) {
+    //    //domainDropdownList = d;
+    //    populateDomainDropdown(d);
 
 
-    getDomains(startTimeValue, endTimeValue, function (d) {
-        //domainDropdownList = d;
-        populateDomainDropdown(d);
 
-
-
-    });
+    //});
 
     
 
@@ -536,11 +537,11 @@ $(document).ready(function () {
     // Show/hide toggle for toobar
     $(function () {
         $("#toggle_cookies_nav, #toggle_cookies_in_menu").click(function () {
-            if ($("#cookies_nav").hasClass("popped")) {
-                $("#cookies_nav").animate({ top: '-1000px' }, { queue: false, duration: 500 }).removeClass("popped");
-                $("#toggle_cookies_nav").animate({ top: '5%' }, { queue: false, duration: 500 });
+            if ($("#cookies_nav_wrapper").hasClass("popped")) {
+                $("#cookies_nav_wrapper").animate({ top: '-1000px' }, { queue: false, duration: 500 }).removeClass("popped");
+                $("#toggle_cookies_nav").animate({ top: '10px' }, { queue: false, duration: 500 });
             } else {
-                $("#cookies_nav").animate({ top: "-1px" }, { queue: false, duration: 250 }).addClass("popped");
+                $("#cookies_nav_wrapper").animate({ top: "-1px" }, { queue: false, duration: 250 }).addClass("popped");
                 $("#toggle_cookies_nav").animate({ top: '-50px' }, { queue: false, duration: 50 });
             }
         });

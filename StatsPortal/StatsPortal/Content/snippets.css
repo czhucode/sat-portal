@@ -17,9 +17,10 @@
 }
 
 #toggle_snippet_nav {
-    position: absolute;
+    /*position: absolute;*/
+    position: fixed;
     top: -50px;
-    right: 10%;
+    right: 10px;
     /*height: 1%;*/
     text-align: right;
     z-index: 10;

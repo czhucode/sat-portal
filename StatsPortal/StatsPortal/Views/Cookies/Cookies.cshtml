@@ -12,11 +12,12 @@
 
 
 <!-- Toolbar -->
-<div class="dropdown col-md-2" id="cookies_nav_wrapper">
+<button id="toggle_cookies_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-menu-down padding-right-5"></span><span class="glyphicon glyphicon-cog"></span></span></button>
 
-    <button id="toggle_cookies_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-menu-down padding-right-5"></span><span class="glyphicon glyphicon-cog"></span></span></button>
+<div class="dropdown col-md-2 popped" id="cookies_nav_wrapper">
 
-    <div class="popped" id="cookies_nav">
+
+    <div id="cookies_nav">
         <div id="toggle_cookies_in_menu"><span class="glyphicon glyphicon-menu-up padding-right-5"></span></div>
 
         <div id="row">
@@ -56,6 +57,56 @@
 
 <div class="col-md-12">
     <div class="panel panel-default">
+
+        <div class="radio" id="keyword_data_toggle_container">
+            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
+
+            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_percentages">Percent Parsed</label>
+        </div>
+        <div class="col-md-12" id="keyword_form_container">
+            <select class="form-control" id="cookies_keyword_data_dropdown"></select>
+        </div>
+
+        <br />
+        <br />
+
+        <div id="cookie_keyword_bar_chart"></div>
+
+        @*<div class="radio btn-group" id="keyword_bar_line_toggle">
+                <label><input type="radio" name="optradio" id="keyword_bar_toggle" checked="checked">Bar View</label>
+
+                <label><input type="radio" name="optradio" id="keyword_line_toggle">Line View</label>
+            </div>*@
+
+
+        <div class="text_center" id="keyword_bar_line_toggle">
+            <div class="col col-md-12 radio">
+                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_bar">Bar View</label>
+
+                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_line" checked="checked">Line View</label>
+                @*<button id="toggle_keyword_bar" class="btn btn-sm clicked">Bar View</button>
+                    <button id="toggle_keyword_line" class="btn btn-sm">Line View</button>*@
+            </div>
+        </div>
+
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <div class="col col-md-12" id="keyword_chart_toggle_wrapper">
+            <button id="toggle_keyword_chart" class="btn btn-sm btn-default">View as Table</button>
+        </div>
+
+        <!-- Keyword Table View -->
+        <table class="table" id="keyword_table"></table>
+
+    </div>
+</div>
+
+
+<div class="col-md-12">
+    <div class="panel panel-default">
         
         <div class="radio" id="keyword_counts_container">
             <label><input type="radio" name="optradio" id="keyword_raw_counts" checked="checked">Raw Counts</label>
@@ -89,54 +140,7 @@
     </div>
 </div>
 
-<div class="col-md-12">
-    <div class="panel panel-default">
-        
-        <div class="radio" id="keyword_data_toggle_container">
-            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
 
-            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_percentages">Percent Parsed</label>
-        </div>
-        <div class="col-md-12" id="keyword_form_container">
-            <select class="form-control" id="cookies_keyword_data_dropdown"></select>
-        </div>
-
-        <br />
-        <br />
-
-        <div id="cookie_keyword_bar_chart"></div>
-        
-        @*<div class="radio btn-group" id="keyword_bar_line_toggle">
-            <label><input type="radio" name="optradio" id="keyword_bar_toggle" checked="checked">Bar View</label>
-
-            <label><input type="radio" name="optradio" id="keyword_line_toggle">Line View</label>
-        </div>*@
-        
-       
-        <div class="text_center" id="keyword_bar_line_toggle">
-            <div class="col col-md-12 radio">
-                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_bar">Bar View</label>
-
-                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_line" checked="checked">Line View</label>
-                @*<button id="toggle_keyword_bar" class="btn btn-sm clicked">Bar View</button>
-                <button id="toggle_keyword_line" class="btn btn-sm">Line View</button>*@
-            </div>
-        </div>
-        
-        <br />
-        <br />
-        <br />
-        <br />
-
-        <div class="col col-md-12" id="keyword_chart_toggle_wrapper">
-            <button id="toggle_keyword_chart" class="btn btn-sm btn-default">View as Table</button>
-        </div>
-
-        <!-- Keyword Table View -->
-        <table class="table" id="keyword_table"></table>
-
-    </div>
-</div>
 
 
 <script type="text/javascript">
@@ -147,6 +151,7 @@
     var endTimeValue = @Model.endDate;
     var maxTimeValue = @Model.maxDate;
     var minTimeValue = @Model.minDate;
+    var domainNameList = @Html.Raw(Json.Encode(Model.domainList));
 
     //$(window).resize(function () {
     //    reloadGraphs();

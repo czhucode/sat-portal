@@ -9,6 +9,10 @@ var keywordMenuList;
 var globalStartDate = "";
 var globalEndDate = "";
 
+var keywordExcludeList = ["scorecardresearch", "acamp_id=", "mnum=", "CMXID=", "CXNID=", "-- ig=", "WMXID=", "counters.gigya.com", "widgetserver.com/syndication/subscriber/InsertPanel.js?panelId=",
+"platial.com/mapkit/load?id=widget", "microsoftstore.com", "office.microsoft.com", "microsoft.com/office", "windows.microsoft.com", "microsoft.com/windows", "officelive.com", "xbox.com",
+"windowsphone.com", "xboxlive.com", "b.voicefive.com", "scorecardresearch"];
+
 function calcDiff(date1, date2) {
 
     var diff = 0;
@@ -114,8 +118,8 @@ function reloadGraphs() {
 function drawDomainLineChart(dataPool, startDate, endDate) {
 
     var data = new google.visualization.DataTable();
-    var lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
-
+    var lineColors = ["#757575", "#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
+    
 
     var numRows = dataPool.length;
     var numCols = dataPool[0].length;
@@ -126,10 +130,10 @@ function drawDomainLineChart(dataPool, startDate, endDate) {
     data.addColumn('string', dataPool[0][0]);
     data.addColumn('number', "Seen");
     data.addColumn('number', "Parsed");
+    data.addColumn('number', "Birthyear");
+    data.addColumn('number', "Gender");
     data.addColumn('number', "Name");
     data.addColumn('number', "Username");
-    data.addColumn('number', "Gender");
-    data.addColumn('number', "Birthyear");
     data.addColumn('number', "Email");
 
 
@@ -493,7 +497,7 @@ function getDomains(startDate, endDate, fn) {
 //}
 
 function populateDomainDropdown(domainlist) {
-    //domainlist = domainlist.sort();
+    domainlist = domainlist.sort();
     var snippetDropdownPopulate = "";
 
     for (var i = 0; i < domainlist.length; i++) {
@@ -510,25 +514,56 @@ function populateDomainDropdown(domainlist) {
 function populateKeywordData(domain, startDate, endDate, initialization) {
     populateNewKeywords(domain, startDate, endDate, function (d) {
         keywordMenuList = d;
-        var snippetCheckbox = keywordMenuList;
+        //var snippetCheckbox = keywordMenuList;
+        var snippetCheckbox = [];
+        var indexCheck = true;
+        for (var x = 0; x < keywordMenuList.length; x++) {
+
+            indexCheck = true;
+
+            for (var y = 0; y < keywordExcludeList.length; y++) {
+                if (keywordMenuList[x].toLowerCase().indexOf(keywordExcludeList[y].toLowerCase()) >= 0) {
+                    indexCheck = false;
+                }
+            }
+
+            if (indexCheck) {
+                snippetCheckbox.push(keywordMenuList[x]);
+            }
+
+        }
+
         var snippetCheckboxPopulate = "";
         var keywordDataPopulate = "";
+        console.log("snippetcheckbox start length: " + snippetCheckbox.length.toString());
         for (var i = 0; i < snippetCheckbox.length; i++) {
             if (snippetCheckbox[i]) {
-                if (initialization && dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
-                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-                } else if (initialization) {
-                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-                } else if (i == 0) {
-                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-                } else {
-                    snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-                }
-                if (dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
-                    keywordDataPopulate += "<option selected>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
-                } else {
-                    keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
-                }
+                //var indexCheck = true;
+                //for (var x = 0; x < keywordExcludeList.length; x++) {
+                //    if (snippetCheckbox[i].toLowerCase().indexOf(keywordExcludeList[x].toLowerCase()) >= 0) {
+                //        indexCheck = false;
+                //        console.log(keywordExcludeList[x] + " " + indexCheck.toString());
+                //    }
+                //}
+                //if (indexCheck) {
+                    if (initialization && dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    } else if (initialization) {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    } else if (i == 0) {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    } else {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    }
+                    if (dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
+                        keywordDataPopulate += "<option selected>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                    } else {
+                        keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                    }
+                //} else {
+                //    snippetCheckbox.splice(i, 1);
+                //    i--;
+                //}
             }
             //else {
             //    console.log(snippetCheckbox[i].Keyword);
@@ -698,7 +733,7 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
  
             var keywordInfo = keywordData;
             
-            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Names Parsed</th><th>Usernames Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Emails Parsed</th></tr></thead>";
+            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Birthyears Parsed</th><th>Genders Parsed</th><th>Names Parsed</th><th>Usernames Parsed</th><th>Emails Parsed</th></tr></thead>";
             var tableBodyPopulate = "<tbody>";
 
             for (var i = 0; i < keywordData.length; i++) {
@@ -722,14 +757,14 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
             var lineColors;
 
             if (document.getElementById('keyword_data_raw_counts').checked) {
-                lineColors = ["#F44336", "FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
+                lineColors = ["#9E9E9E", "#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', 'Total Seen');
                 data.addColumn('number', 'Total Parsed');
+                data.addColumn('number', 'Birthyears');
+                data.addColumn('number', 'Genders');
                 data.addColumn('number', 'Names');
                 data.addColumn('number', 'Usernames');
-                data.addColumn('number', 'Genders');
-                data.addColumn('number', 'Birthyears');
                 data.addColumn('number', 'Emails');
 
                 for (var i = 0; i < keywordData.length; i++) {
@@ -740,13 +775,13 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
                     }
                 }
             } else {
-                lineColors = ["#FF9800", "#FDD835", "#4CAF50", "#00BCD4", "3F51B5", "9C27B0"];
+                lineColors = ["#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', '% Parsed');
+                data.addColumn('number', '% Birthyear');
+                data.addColumn('number', '% Gender');
                 data.addColumn('number', '% Name');
                 data.addColumn('number', '% Username');
-                data.addColumn('number', '% Gender');
-                data.addColumn('number', '% Birthyear');
                 data.addColumn('number', '% Email');
          
                 for (var i = 0; i < keywordData.length; i++) {
@@ -802,23 +837,24 @@ function drawKeywordInfo(domainName, keyword, startDate, endDate) {
 }
 
 
-$(document).ready(function() {
+$(document).ready(function () {
 
+    
     globalStartDate = startTimeValue;
     globalEndDate = endTimeValue;
 
     // Load domains from file
     //var dataValueDomains = getDomains("globalStartDate", globalEndDate);
 
-    getDomains(startTimeValue, endTimeValue, function(d) {
-        domainDropdownList = d;
-        populateDomainDropdown(d);
+    //getDomains(startTimeValue, endTimeValue, function(d) {
+    //    domainDropdownList = d;
+    //    populateDomainDropdown(d);
 
 
         
-    });
+    //});
 
-    //populateDomainDropdown(domainNameList);
+    populateDomainDropdown(domainNameList);
 
     //$("#snippet_keyword_bar_chart_dropdown").autocomplete({
     //    source: domainDropdownList,
@@ -935,11 +971,11 @@ $(document).ready(function() {
     // Handle click animations for domain bar
     $(function () {
         $("#toggle_snippet_nav, #toggle_snippet_in_menu").click(function () {
-            if ($("#snippet_nav").hasClass("popped")) {
-                $("#snippet_nav").animate({ top: '-1000px' }, { queue: false, duration: 500 }).removeClass("popped");
-                $("#toggle_snippet_nav").animate({ top: '5%' }, { queue: false, duration: 500 });
+            if ($("#snippet_nav_wrapper").hasClass("popped")) {
+                $("#snippet_nav_wrapper").animate({ top: '-1000px' }, { queue: false, duration: 500 }).removeClass("popped");
+                $("#toggle_snippet_nav").animate({ top: '10px' }, { queue: false, duration: 500 });
             } else {
-                $("#snippet_nav").animate({ top: "-1px" }, { queue: false, duration: 250 }).addClass("popped");
+                $("#snippet_nav_wrapper").animate({ top: "-1px" }, { queue: false, duration: 250 }).addClass("popped");
                 $("#toggle_snippet_nav").animate({ top: '-50px' }, { queue: false, duration: 50 });
             }
         });

@@ -107,7 +107,7 @@ namespace StatsPortal.DAL.Repository
                     testDates.Add(DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(i));
                 }
                 string test_query =
-                    "SELECT TOP 200 (v_domain_name) FROM snippet_stats_v2 WITH (NOLOCK) WHERE i_handoff_date IN (";
+                    "SELECT TOP 1000 (v_domain_name) FROM snippet_stats_v2 WITH (NOLOCK) WHERE i_handoff_date IN (";
                 for (int i = 0; i < testDates.Count; i++)
                 {
                     if (i == testDates.Count - 1)
@@ -120,7 +120,7 @@ namespace StatsPortal.DAL.Repository
                     }
                 }
                 test_query +=
-                    ") AND v_domain_name IS NOT NULL GROUP BY v_domain_name ORDER BY COUNT(i_records_seen) desc";
+                    ") AND v_domain_name IS NOT NULL GROUP BY v_domain_name ORDER BY SUM(i_records_seen) desc";
                 command.CommandText = test_query;
                 using (var reader = command.ExecuteReader())
                 {

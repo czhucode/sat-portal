@@ -13,6 +13,6 @@ namespace StatsPortal.Models
         public string endDate { get; set; }
         public string maxDate { get; set; }
         public string minDate { get; set; }
-        //public List<string> domainList { get; set; }
+        public List<string> domainList { get; set; }
     }
 }

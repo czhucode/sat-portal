@@ -113,7 +113,7 @@ namespace StatsPortal.Controllers
                 model.endDate = end.ToString("yyyyMMdd");
                 model.maxDate = end.ToString("yyyyMMdd");
                 model.minDate = DateTime.ParseExact(snippetRepo.GetMinDate().ToString(), "yyyyMMdd", null).ToString("yyyyMMdd");
-                //model.domainList = snippetRepo.GetDomains(start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd")).ToList();
+                model.domainList = snippetRepo.GetDomains(start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd")).ToList();
             }
 
             return View(model);
@@ -542,10 +542,10 @@ namespace StatsPortal.Controllers
 
                     tempString[1] = totalCount.ToString();
                     tempString[2] = totalParsed.ToString();
-                    tempString[3] = nameCount.ToString();
-                    tempString[4] = usernameCount.ToString();
-                    tempString[5] = genderCount.ToString();
-                    tempString[6] = birthyearCount.ToString();
+                    tempString[3] = birthyearCount.ToString();
+                    tempString[4] = genderCount.ToString();
+                    tempString[5] = nameCount.ToString();
+                    tempString[6] = usernameCount.ToString();
                     tempString[7] = emailCount.ToString();
 
 
@@ -655,10 +655,10 @@ namespace StatsPortal.Controllers
                         {
                             keywordData[1] = data[i].TotalCount.ToString();
                             keywordData[2] = data[i].TotalParsed.ToString();
-                            keywordData[3] = data[i].NameParsed.ToString();
-                            keywordData[4] = data[i].UsernameParsed.ToString();
-                            keywordData[5] = data[i].GenderParsed.ToString();
-                            keywordData[6] = data[i].BirthyearParsed.ToString();
+                            keywordData[3] = data[i].BirthyearParsed.ToString();
+                            keywordData[4] = data[i].GenderParsed.ToString();
+                            keywordData[5] = data[i].NameParsed.ToString();
+                            keywordData[6] = data[i].UsernameParsed.ToString();
                             keywordData[7] = data[i].EmailParsed.ToString();
                         }
                         fullKeywordData[j] = keywordData;
