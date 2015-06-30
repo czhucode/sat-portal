@@ -520,10 +520,11 @@ function populateKeywordData(domain, startDate, endDate, initialization) {
         for (var x = 0; x < keywordMenuList.length; x++) {
 
             indexCheck = true;
-
-            for (var y = 0; y < keywordExcludeList.length; y++) {
-                if (keywordMenuList[x].toLowerCase().indexOf(keywordExcludeList[y].toLowerCase()) >= 0) {
-                    indexCheck = false;
+            if (keywordMenuList[x]) {
+                for (var y = 0; y < keywordExcludeList.length; y++) {
+                    if (keywordMenuList[x].toLowerCase().indexOf(keywordExcludeList[y].toLowerCase()) >= 0) {
+                        indexCheck = false;
+                    }
                 }
             }
 
@@ -535,7 +536,7 @@ function populateKeywordData(domain, startDate, endDate, initialization) {
 
         var snippetCheckboxPopulate = "";
         var keywordDataPopulate = "";
-        console.log("snippetcheckbox start length: " + snippetCheckbox.length.toString());
+
         for (var i = 0; i < snippetCheckbox.length; i++) {
             if (snippetCheckbox[i]) {
                 //var indexCheck = true;
