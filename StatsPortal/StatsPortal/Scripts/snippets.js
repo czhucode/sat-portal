@@ -1,10 +1,28 @@
 ﻿google.load("visualization", "1", { packages: ["corechart"] });
-google.load("visualization", "1", { packages: ["line"] });
+google.load("visualization", "1.1", { packages: ["line"] });
 google.load("visualization", "1.1", { packages: ["bar"] });
 
 // Globals 
 var domainDropdownList;
 var keywordMenuList;
+
+var globalStartDate = "";
+var globalEndDate = "";
+
+var keywordExcludeList = ["scorecardresearch", "acamp_id=", "mnum=", "CMXID=", "CXNID=", "-- ig=", "WMXID=", "counters.gigya.com", "widgetserver.com/syndication/subscriber/InsertPanel.js?panelId=",
+"platial.com/mapkit/load?id=widget", "microsoftstore.com", "office.microsoft.com", "microsoft.com/office", "windows.microsoft.com", "microsoft.com/windows", "officelive.com", "xbox.com",
+"windowsphone.com", "xboxlive.com", "b.voicefive.com", "scorecardresearch"];
+
+function calcDiff(date1, date2) {
+
+    var diff = 0;
+    if (date1 && date2) {
+        diff = Math.ceil((date2.getTime() - date1.getTime()) / 86400000);
+    }
+
+
+    return diff;
+}
 
 //function drawSnippetCombo() {
 
@@ -92,15 +110,16 @@ var keywordMenuList;
 //}
 
 function reloadGraphs() {
-    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
-    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), startTimeValue, 7);
-    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+    drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
+    drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
+    drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
 };
 
-function drawDomainLineChart(dataPool, days, firstDay) {
+function drawDomainLineChart(dataPool, startDate, endDate) {
 
     var data = new google.visualization.DataTable();
-
+    var lineColors = ["#757575", "#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
+    
 
     var numRows = dataPool.length;
     var numCols = dataPool[0].length;
@@ -111,10 +130,10 @@ function drawDomainLineChart(dataPool, days, firstDay) {
     data.addColumn('string', dataPool[0][0]);
     data.addColumn('number', "Seen");
     data.addColumn('number', "Parsed");
+    data.addColumn('number', "Birthyear");
+    data.addColumn('number', "Gender");
     data.addColumn('number', "Name");
     data.addColumn('number', "Username");
-    data.addColumn('number', "Gender");
-    data.addColumn('number', "Birthyear");
     data.addColumn('number', "Email");
 
 
@@ -144,7 +163,8 @@ function drawDomainLineChart(dataPool, days, firstDay) {
             actions: ['dragToZoom', 'rightClickToReset']
         },
        // width: 1000,
-        height: 500
+        height: 500,
+        colors: lineColors
     };
 
     var chart = new google.visualization.LineChart(document.getElementById('snippet_line_chart'));
@@ -153,7 +173,7 @@ function drawDomainLineChart(dataPool, days, firstDay) {
     chart.draw(data, options);
 }
 
-function drawKeywordLine(dataPool, days, firstDay) {
+function drawKeywordLine(dataPool) {
 
     var data = new google.visualization.DataTable();
     //if (document.getElementById('keyword_raw_counts').checked) {
@@ -469,15 +489,15 @@ function getDomains(startDate, endDate, fn) {
 
 }
 
-function getReadDomains() {
+//function getReadDomains() {
 
 
-    return domainDropdownList;
+//    return domainDropdownList;
 
-}
+//}
 
-function populateDomainDropdown(domainlist)
-{
+function populateDomainDropdown(domainlist) {
+    domainlist = domainlist.sort();
     var snippetDropdownPopulate = "";
 
     for (var i = 0; i < domainlist.length; i++) {
@@ -491,20 +511,65 @@ function populateDomainDropdown(domainlist)
     $("#snippet_keyword_bar_chart_dropdown").html(snippetDropdownPopulate);
 }
 
-function populateKeywordData(domain) {
-    populateNewKeywords(domain, startTimeValue, endTimeValue, function (d) {
+function populateKeywordData(domain, startDate, endDate, initialization) {
+    populateNewKeywords(domain, startDate, endDate, function (d) {
         keywordMenuList = d;
-        var snippetCheckbox = keywordMenuList;
+        //var snippetCheckbox = keywordMenuList;
+        var snippetCheckbox = [];
+        var indexCheck = true;
+        for (var x = 0; x < keywordMenuList.length; x++) {
+
+            indexCheck = true;
+            if (keywordMenuList[x]) {
+                for (var y = 0; y < keywordExcludeList.length; y++) {
+                    if (keywordMenuList[x].toLowerCase().indexOf(keywordExcludeList[y].toLowerCase()) >= 0) {
+                        indexCheck = false;
+                    }
+                }
+            }
+
+            if (indexCheck) {
+                snippetCheckbox.push(keywordMenuList[x]);
+            }
+
+        }
+
         var snippetCheckboxPopulate = "";
         var keywordDataPopulate = "";
-        for (var i = 0; i < snippetCheckbox.length; i++) {
-            if (i == 0) {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
-            } else {
-                snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
 
+        for (var i = 0; i < snippetCheckbox.length; i++) {
+            if (snippetCheckbox[i]) {
+                //var indexCheck = true;
+                //for (var x = 0; x < keywordExcludeList.length; x++) {
+                //    if (snippetCheckbox[i].toLowerCase().indexOf(keywordExcludeList[x].toLowerCase()) >= 0) {
+                //        indexCheck = false;
+                //        console.log(keywordExcludeList[x] + " " + indexCheck.toString());
+                //    }
+                //}
+                //if (indexCheck) {
+                    if (initialization && dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    } else if (initialization) {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    } else if (i == 0) {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '" checked>' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    } else {
+                        snippetCheckboxPopulate += '<div class="checkbox"><label><input type="checkbox" class="keyword_checkbox" value="' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '">' + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</label></div>';
+                    }
+                    if (dataValues[0].Keyword.toLowerCase() == snippetCheckbox[i].toLowerCase()) {
+                        keywordDataPopulate += "<option selected>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                    } else {
+                        keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+                    }
+                //} else {
+                //    snippetCheckbox.splice(i, 1);
+                //    i--;
+                //}
             }
-            keywordDataPopulate += "<option>" + snippetCheckbox[i].replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + "</option>";
+            //else {
+            //    console.log(snippetCheckbox[i].Keyword);
+            //}
+
         }
 
         $("#snippet_keyword_list").html(snippetCheckboxPopulate);
@@ -545,7 +610,7 @@ function populateNewKeywords(domain, startDate, endDate, fn) {
             // Callback that creates and populates a data table,    
             // instantiates the pie chart, passes in the data and    
             // draws it. 
-            console.log(keywordList[0].toString());
+            //console.log(keywordList[0].toString());
             //keywordMenuList = keywordList;
             //console.log(keywordMenuList[0].toString());
             fn(keywordList);
@@ -578,7 +643,7 @@ function getCheckedValues(className) {
 }
 
 
-function drawDomainLine(domainName, startDate, dayCount) {
+function drawDomainLine(domainName, startDate, endDate) {
     //var checked = true;
     //if (document.getElementById('keyword_percentages_domain').checked) {
     //    checked = false;
@@ -591,7 +656,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
         data: {
             domain: domainName,
             startDay: startDate,
-            days: dayCount
+            endDate: endDate
             // keywordList: getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase())
             //keywordList: keywordMenuList
             //countCheck: checked
@@ -601,7 +666,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
             // Callback that creates and populates a data table,    
             // instantiates the pie chart, passes in the data and    
             // draws it. 
-            drawDomainLineChart(chartsdata, dayCount, startTimeValue);
+            drawDomainLineChart(chartsdata, globalStartDate, globalEndDate);
 
         },
         error: function () {
@@ -611,7 +676,7 @@ function drawDomainLine(domainName, startDate, dayCount) {
     });
 }
 
-function drawSnippetLine(domainName, keywordList, startDate, endDate, dayCount) {
+function drawSnippetLine(domainName, keywordList, startDate, endDate) {
     var checked = true;
     if (document.getElementById('keyword_percentages').checked) {
         checked = false;
@@ -631,7 +696,6 @@ function drawSnippetLine(domainName, keywordList, startDate, endDate, dayCount) 
             domain: domainName,
             startDay: startDate,
             endDate: endDate,
-            days: dayCount,
             // keywordList: getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase())
             keywordList: keywordList,
             countCheck: checked
@@ -641,7 +705,7 @@ function drawSnippetLine(domainName, keywordList, startDate, endDate, dayCount) 
             // Callback that creates and populates a data table,    
             // instantiates the pie chart, passes in the data and    
             // draws it. 
-            drawKeywordLine(chartsdata, dayCount, startTimeValue);
+            drawKeywordLine(chartsdata);
 
         },
         error: function () {
@@ -650,7 +714,7 @@ function drawSnippetLine(domainName, keywordList, startDate, endDate, dayCount) 
     });
 }
 
-function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
+function drawKeywordInfo(domainName, keyword, startDate, endDate) {
 
     keyword = encodeURIComponent(keyword);
 
@@ -664,13 +728,13 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
             domain: domainName,
             keyword: keyword,
             startDay: startDate,
-            dayCount: dayCount
+            endDate: endDate
         },
         success: function (keywordData) {
  
             var keywordInfo = keywordData;
             
-            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Emails Parsed</th><th>Genders Parsed</th><th>Birthyears Parsed</th><th>Names Parsed</th><th>Usenames Parsed</th></tr></thead>";
+            var tableHeaderPopulate = "<thead><tr><th>Date</th><th>Domain</th><th>Keyword</th><th>Total Seen</th><th>Total Parsed</th><th>Percent Parsed</th><th>Birthyears Parsed</th><th>Genders Parsed</th><th>Names Parsed</th><th>Usernames Parsed</th><th>Emails Parsed</th></tr></thead>";
             var tableBodyPopulate = "<tbody>";
 
             for (var i = 0; i < keywordData.length; i++) {
@@ -691,16 +755,18 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
             $("#keyword_table").html(tableHeaderPopulate + "" + tableBodyPopulate);
 
             var data = new google.visualization.DataTable();
+            var lineColors;
 
             if (document.getElementById('keyword_data_raw_counts').checked) {
+                lineColors = ["#9E9E9E", "#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', 'Total Seen');
                 data.addColumn('number', 'Total Parsed');
-                data.addColumn('number', 'Emails');
-                data.addColumn('number', 'Genders');
                 data.addColumn('number', 'Birthyears');
+                data.addColumn('number', 'Genders');
                 data.addColumn('number', 'Names');
                 data.addColumn('number', 'Usernames');
+                data.addColumn('number', 'Emails');
 
                 for (var i = 0; i < keywordData.length; i++) {
                     if (keywordData[i] == null) {
@@ -710,16 +776,17 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
                     }
                 }
             } else {
+                lineColors = ["#0D47A1", "#D50000", "#1E88E5", "#4CAF50", "#FF9800", "#9C27B0"];
                 data.addColumn('string', 'Date');
                 data.addColumn('number', '% Parsed');
-                data.addColumn('number', '% Email');
-                data.addColumn('number', '% Gender');
                 data.addColumn('number', '% Birthyear');
+                data.addColumn('number', '% Gender');
                 data.addColumn('number', '% Name');
                 data.addColumn('number', '% Username');
-
+                data.addColumn('number', '% Email');
+         
                 for (var i = 0; i < keywordData.length; i++) {
-                    if (keywordData[i] == null) {
+                    if (keywordData[i] == null || parseFloat(keywordData[i][1]) == 0 || keywordData[i][1] == null) {
                         data.addRow([keywordData[i][0], 0, 0, 0, 0, 0, 0]);
                     } else {
                         data.addRow([keywordData[i][0], (parseInt(keywordData[i][2]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][3]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][4]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][5]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][6]) / parseFloat(keywordData[i][1]) * 100), (parseInt(keywordData[i][7]) / parseFloat(keywordData[i][1]) * 100)]);
@@ -727,9 +794,8 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
                 }
             }
 
-           
+
             var options = {
-   
                 title: "Demo Stats by Keyword: " + capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase()),
                 //  width: 900,
                 height: 500,
@@ -742,11 +808,25 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
                 explorer: {
                     keepInBounds: true,
                     actions: ['dragToZoom', 'rightClickToReset']
-                }
-                
-            };
+                },
+                colors: lineColors
 
-            var chart = new google.visualization.ColumnChart(document.getElementById('keyword_data_bar'));
+
+        };
+
+            var lineCheck = false;
+            if (document.getElementById('toggle_keyword_line').checked) {
+                lineCheck = true;
+            }
+
+            var chart;
+            if (lineCheck) {
+                chart = new google.visualization.LineChart(document.getElementById('keyword_data_bar'));
+            } else {
+                chart = new google.visualization.ColumnChart(document.getElementById('keyword_data_bar'));
+            }
+
+            //var chart = new google.visualization.ColumnChart(document.getElementById('keyword_data_bar'));
 
             chart.draw(data, options);
 
@@ -760,13 +840,35 @@ function drawKeywordInfo(domainName, keyword, startDate, dayCount) {
 
 $(document).ready(function () {
 
-    // Load domains from file
-    //var dataValueDomains = getDomains("startTimeValue", endTimeValue);
     
-    getDomains(startTimeValue, endTimeValue, function (d) {
-        domainDropdownList = d;
-        populateDomainDropdown(d);
-    });
+    globalStartDate = startTimeValue;
+    globalEndDate = endTimeValue;
+
+    // Load domains from file
+    //var dataValueDomains = getDomains("globalStartDate", globalEndDate);
+
+    //getDomains(startTimeValue, endTimeValue, function(d) {
+    //    domainDropdownList = d;
+    //    populateDomainDropdown(d);
+
+
+        
+    //});
+
+    populateDomainDropdown(domainNameList);
+
+    //$("#snippet_keyword_bar_chart_dropdown").autocomplete({
+    //    source: domainDropdownList,
+    //    select: function (event, ui) {
+    //        this.value = ui.item.value;
+    //        $(this).trigger('change');
+    //        return false;
+    //    },
+    //    change: populateKeywordData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate, false)
+    //});
+
+    //var testDomains = ["Google", "Facebook", "LinkedIn", "Go"];
+
 
     //var dataValueDomains = domainDropdownList;
 
@@ -775,22 +877,26 @@ $(document).ready(function () {
 
 
     // Populate initial keyword data
-    populateKeywordData(dataValues[0].Domain.toLowerCase());
+    populateKeywordData(dataValues[0].Domain.toLowerCase(), startTimeValue, endTimeValue, true);
 
 
     // Handle raw count/percentage toggle
     $("#keyword_raw_counts, #keyword_percentages").change(function () {
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
     });
 
-    $("#keyword_data_raw_counts, #keyword_data_percentages").change(function () {
-        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+    $("#keyword_data_raw_counts, #keyword_data_percentages, #toggle_keyword_bar, #toggle_keyword_line").change(function () {
+        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
     });
 
+    // Domain autocomplete
+    //$("#snippet_keyword_bar_chart_dropdown").autocomplete({
+    //    source: domainNameList
+    //});
 
     // Update keyword list when new domain is chosen
     $("#snippet_keyword_bar_chart_dropdown").change(function () {
-        populateKeywordData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase());
+        populateKeywordData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate, false);
         //var newKeywords = getNewKeywords(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase());
 
         //var snippetCheckboxPopulate = "";
@@ -812,13 +918,23 @@ $(document).ready(function () {
 
     // Handle "Populate" button click
     $("#snippet_populate_button").click(function () {
+
+        globalStartDate = document.getElementById('start_date').value;
+        globalEndDate = document.getElementById('end_date').value;
+
+        console.log('Global start change: ' + globalStartDate);
+        console.log('Global end change: ' + globalEndDate);
+        //console.log('Start: ' + globalStartDate);
+        //console.log('End: ' + globalEndDate);
         //drawSnippetKeywordBar(dataValues);
         //drawSnippetCombo();
-        //reloadData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "startTimeValue", endTimeValue);
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
-        drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), startTimeValue, 7);
+        //reloadData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), "globalStartDate", globalEndDate);
+        //populateKeywordData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
+        populateKeywordData(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate, false);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
+        drawDomainLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
         //$(".domain_name").html(capitalizeFirstLetter(document.getElementById('snippet_keyword_bar_chart_dropdown').value));
-        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
     });
 
     // Handle onclick changes to "Check/Uncheck All" buttons
@@ -831,7 +947,7 @@ $(document).ready(function () {
 
     // When "Check/Uncheck All" buttons are clicked, refresh graph
     $("#snippet_keyword_checkall_button, #snippet_keyword_uncheckall_button").click(function () {
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
     });
 
     // Handle show/hide toggle for keyword menu
@@ -841,22 +957,26 @@ $(document).ready(function () {
 
     // Whenever a keyword is selected/unselected, refresh the graph
     $("#snippet_keyword_list").change(function () {
-        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), startTimeValue, endTimeValue, 7);
+        drawSnippetLine(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), getCheckedValues("keyword_checkbox"), globalStartDate, globalEndDate);
+        //var keywordTest = getCheckedValues("keyword_checkbox");
+        //for (var i = 0; i < keywordTest.length; i++) {
+        //    console.log(keywordTest[i]);
+        //}
     });
 
     // Upon selecting a different keyword in the keyword info graph area, refresh graph
     $("#snippet_keyword_data_dropdown").change(function () {
-        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+        drawKeywordInfo(document.getElementById('snippet_keyword_bar_chart_dropdown').value.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), globalStartDate, globalEndDate);
     });
 
     // Handle click animations for domain bar
     $(function () {
         $("#toggle_snippet_nav, #toggle_snippet_in_menu").click(function () {
-            if ($("#snippet_nav").hasClass("popped")) {
-                $("#snippet_nav").animate({ top: '-1000px' }, { queue: false, duration: 500 }).removeClass("popped");
-                $("#toggle_snippet_nav").animate({ top: '5%' }, { queue: false, duration: 500 });
+            if ($("#snippet_nav_wrapper").hasClass("popped")) {
+                $("#snippet_nav_wrapper").animate({ top: '-1000px' }, { queue: false, duration: 500 }).removeClass("popped");
+                $("#toggle_snippet_nav").animate({ top: '10px' }, { queue: false, duration: 500 });
             } else {
-                $("#snippet_nav").animate({ top: "-1px" }, { queue: false, duration: 250 }).addClass("popped");
+                $("#snippet_nav_wrapper").animate({ top: "-1px" }, { queue: false, duration: 250 }).addClass("popped");
                 $("#toggle_snippet_nav").animate({ top: '-50px' }, { queue: false, duration: 50 });
             }
         });
@@ -867,12 +987,137 @@ $(document).ready(function () {
         $("#keyword_table").toggle();
     });
 
-    // Initialize graphs
-    drawSnippetLine(dataValues[0].Domain.toLowerCase(), [dataValues[0].Keyword], startTimeValue, endTimeValue, 7);
-    drawDomainLine(dataValues[0].Domain.toLowerCase(), startTimeValue, 7);
-    //drawKeywordInfo(dataValues[0].Domain.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
-    drawKeywordInfo(dataValues[0].Domain.toLowerCase(), dataValues[0].Keyword, startTimeValue, 7);
+    // Handle keyword filter
+    $('#keyword_filter_box').keyup(function () {
+        var valThis = $(this).val().toLowerCase();
+        if (valThis == "") {
+            $('#snippet_keyword_list > div').show();
+        } else {
+            $('#snippet_keyword_list > div').each(function () {
+                var text = $(this).text().toLowerCase();
+                (text.indexOf(valThis) >= 0) ? $(this).show() : $(this).hide();
+            });
+        };
+    });
 
+   
+
+    // Initialize graphs
+    drawSnippetLine(dataValues[0].Domain.toLowerCase(), [dataValues[0].Keyword], startTimeValue, endTimeValue);
+    drawDomainLine(dataValues[0].Domain.toLowerCase(), startTimeValue, endTimeValue);
+    //drawKeywordInfo(dataValues[0].Domain.toLowerCase(), document.getElementById('snippet_keyword_data_dropdown').value.toLowerCase(), startTimeValue, 7);
+    drawKeywordInfo(dataValues[0].Domain.toLowerCase(), dataValues[0].Keyword, startTimeValue, endTimeValue);
+
+
+    var dateString = maxTimeValue.toString();
+    var y = dateString.substr(0, 4),
+        m = dateString.substr(4, 2) - 1,
+        d = dateString.substr(6, 2);
+
+    var maximumDate = new Date(y, m, d);
+
+    var dateString2 = minTimeValue.toString();
+    var y = dateString2.substr(0, 4),
+        m = dateString2.substr(4, 2) - 1,
+        d = dateString2.substr(6, 2);
+
+    var minimumDate = new Date(y, m, d);
+
+    $('#start_date').datepicker({
+        dateFormat: 'yymmdd',
+        minDate: minimumDate,
+        maxDate: maximumDate,
+        onSelect: function (date) {
+            var date1 = $('#start_date').datepicker('getDate');
+            console.log("date1: " + date1);
+            
+            var date2 = $('#end_date').datepicker('getDate');
+            console.log("date2: " + date2);
+            
+            if (date2 <= date1) {
+                var addDays = 1;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+                $('#end_date').datepicker('setDate', date2);
+                //sets minDate to dt1 date + 1
+            }
+            
+            console.log("Date diff: " + calcDiff(date1, date2));
+
+            if (calcDiff(date1, date2) > 63) {
+                alert("Date range too large! Please limit to a maximum span of 64 days. Your date parameters have been adjusted accordingly.");
+                var addDays = 63;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+                
+                $('#end_date').datepicker('setDate', date2);
+            }
+            var addDaysMinDate = 1;
+            var addMsMinDate = addDaysMinDate * 24 * 60 * 60 * 1000;
+            date1.setTime(date1.getTime() + addMsMinDate);
+            console.log("New date1: " + date1);
+            $('#end_date').datepicker('option', 'minDate', date1);
+
+        },
+        onClose: function(date) {
+            var date1 = $('#start_date').datepicker('getDate');
+            console.log("date1: " + date1);
+
+            var date2 = $('#end_date').datepicker('getDate');
+            console.log("date2: " + date2);
+
+            if (calcDiff(date1, date2) > 63) {
+                var addDays = 63;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+
+                $('#end_date').datepicker('setDate', date2);
+            }
+        }
+    }).datepicker('setDate', globalStartDate.toString()).val();
+
+    $("#start_date").change(function () {
+        var date = document.getElementById('start_date').value.toLowerCase();
+        console.log(date);
+    });
+
+    $('#end_date').datepicker({
+        dateFormat: 'yymmdd',
+        minDate: $('#start_date').datepicker('getDate'),
+        maxDate: maximumDate,
+        onSelect: function(date) {
+            var date1 = $('#start_date').datepicker('getDate');
+            console.log("date1: " + date1);
+
+            var date2 = $('#end_date').datepicker('getDate');
+            console.log("date2: " + date2);
+
+            if (calcDiff(date1, date2) > 63) {
+                alert("Date range too large! Please limit to a maximum span of 64 days. Your date parameters have been adjusted accordingly.");
+                var addDays = 63;
+                var addMs = addDays * 24 * 60 * 60 * 1000;
+                date2.setTime(date1.getTime() + addMs);
+
+                $('#end_date').datepicker('setDate', date2);
+            }
+        },
+        onClose: function () {
+            var dt1 = $('#start_date').datepicker('getDate');
+            console.log("dt1: " + dt1);
+            var dt2 = $('#end_date').datepicker('getDate');
+            console.log("dt2: " + dt2);
+            //check to prevent a user from entering a date below date of dt1
+            if (dt2 <= dt1) {
+                var minDate = $('#end_date').datepicker('option', 'minDate');
+                $('#end_date').datepicker('setDate', minDate);
+            }
+        }
+    }).datepicker('setDate', globalEndDate.toString()).val();
+
+    $("#end_date").change(function () {
+        var date = document.getElementById('end_date').value.toLowerCase();
+        console.log(date);
+    });
     
 
 

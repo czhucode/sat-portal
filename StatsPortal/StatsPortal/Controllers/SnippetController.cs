@@ -34,6 +34,25 @@ namespace StatsPortal.Controllers
 
         public ActionResult Snippet(string domain, string startDate, string endDate)
         {
+
+            if (!startDate.IsNullOrWhiteSpace() && !endDate.IsNullOrWhiteSpace())
+            {
+                // Confirm valid date parameters
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days > 64)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+                }
+
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days < 1)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+                }
+            }
+
             var model = new SnippetViewModel();
 
             DateTime end = new DateTime();
@@ -62,7 +81,7 @@ namespace StatsPortal.Controllers
                 //    endDate = "20150307";
                 //}
                 end = DateTime.ParseExact(snippetRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
-                start = end.AddDays(-6);
+                start = end.AddDays(-30);
 
                 //model.SnippetStats = LoadSnippetData();
 
@@ -92,6 +111,9 @@ namespace StatsPortal.Controllers
                 model.SnippetStats = ReloadData(domain, startDate, endDate);
                 model.startDate = start.ToString("yyyyMMdd");
                 model.endDate = end.ToString("yyyyMMdd");
+                model.maxDate = end.ToString("yyyyMMdd");
+                model.minDate = DateTime.ParseExact(snippetRepo.GetMinDate().ToString(), "yyyyMMdd", null).ToString("yyyyMMdd");
+                model.domainList = snippetRepo.GetDomains(start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd")).ToList();
             }
 
             return View(model);
@@ -99,6 +121,31 @@ namespace StatsPortal.Controllers
 
         private SnippetModel[] ReloadData(string domain, string startDate, string endDate)
         {
+
+            if (!startDate.IsNullOrWhiteSpace() && !endDate.IsNullOrWhiteSpace())
+            {
+                // Confirm valid date parameters
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days > 64)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+                }
+
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days < 1)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+                }
+
+                if (Convert.ToInt32(startDate) > Convert.ToInt32(endDate))
+                {
+                    startDate = "";
+                    endDate = "";
+                }
+            }
+
             var model = new SnippetViewModel();
             DateTime end = new DateTime();
             DateTime start = new DateTime();
@@ -114,17 +161,23 @@ namespace StatsPortal.Controllers
                     domain = "google";
                 }
 
-                //if (startDate.IsNullOrWhiteSpace())
-                //{
-                //    startDate = "20150301";
-                //}
-
-                //if (endDate.IsNullOrWhiteSpace())
-                //{
-                //    endDate = "20150307";
-                //}
-                end = DateTime.ParseExact(snippetRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
-                start = end.AddDays(-6);
+                
+                if (String.IsNullOrEmpty(endDate))
+                {
+                    end = DateTime.ParseExact(snippetRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
+                }
+                else
+                {
+                    end = DateTime.ParseExact(endDate, "yyyyMMdd", null);
+                }
+                if (String.IsNullOrEmpty(startDate))
+                {
+                    start = end.AddDays(-30);
+                }
+                else
+                {
+                    start = DateTime.ParseExact(startDate, "yyyyMMdd", null);
+                }
 
 
 
@@ -295,10 +348,24 @@ namespace StatsPortal.Controllers
 
         }
 
-        public JsonResult getColumnFormatData(string domain, string startDay, string endDate, int days, string[] keywordList, bool countCheck)
+        public JsonResult getColumnFormatData(string domain, string startDay, string endDate, string[] keywordList, bool countCheck)
         {
+
+            // Confirm valid date parameters
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
             //model.SnippetStats = LoadSnippetData();
             var data = ReloadData(domain, startDay, endDate);
+
+            var days = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days + 1;
 
             if (keywordList != null)
             {
@@ -342,7 +409,10 @@ namespace StatsPortal.Controllers
                     }
                 
             }
-
+            if (keywordList == null)
+            {
+                keywordList = new string[0];
+            }
 
             string[][] chartData = new string[days + 1][];
             chartData[0] = getColumns(data, domain, keywordList);
@@ -379,10 +449,24 @@ namespace StatsPortal.Controllers
             return Json(chartData, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult getDomainLineData(string domain, string startDay, int days)
+        public JsonResult getDomainLineData(string domain, string startDay, string endDate)
         {
+
+            // Confirm valid date parameters
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
             //model.SnippetStats = LoadSnippetData();
-            var data = ReloadData(domain, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
+            var data = ReloadData(domain, startDay, endDate);
+
+            var days = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days + 1;
 
             List<string> keywords = new List<string>();
             foreach (SnippetModel s in data)
@@ -458,10 +542,10 @@ namespace StatsPortal.Controllers
 
                     tempString[1] = totalCount.ToString();
                     tempString[2] = totalParsed.ToString();
-                    tempString[3] = nameCount.ToString();
-                    tempString[4] = usernameCount.ToString();
-                    tempString[5] = genderCount.ToString();
-                    tempString[6] = birthyearCount.ToString();
+                    tempString[3] = birthyearCount.ToString();
+                    tempString[4] = genderCount.ToString();
+                    tempString[5] = nameCount.ToString();
+                    tempString[6] = usernameCount.ToString();
                     tempString[7] = emailCount.ToString();
 
 
@@ -479,6 +563,18 @@ namespace StatsPortal.Controllers
 
         public JsonResult GetDomainList(string startDate, string endDate)
         {
+
+            // Confirm valid date parameters
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
             List<string> domainList = new List<string>();
 
             //var model = new SnippetViewModel();
@@ -514,10 +610,24 @@ namespace StatsPortal.Controllers
         }
 
 
-        public JsonResult GetKeywordData(string domain, string keyword, string startDay, int dayCount)
+        public JsonResult GetKeywordData(string domain, string keyword, string startDay, string endDate)
         {
+
+            // Confirm valid date parameters
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
             //model.SnippetStats = LoadSnippetData();
-            var data = ReloadData(domain, startDay, (Convert.ToInt32(startDay) + dayCount - 1).ToString());
+            var data = ReloadData(domain, startDay, endDate);
+
+            var dayCount = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days + 1;
 
             keyword = System.Uri.UnescapeDataString(keyword);
 
@@ -525,22 +635,36 @@ namespace StatsPortal.Controllers
             for (int j = 0; j < dayCount; j ++)
             {
                 string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(j)).ToString("yyyyMMdd");
+
                 string[] keywordData = new string[8];
+                keywordData[0] = currentDate;
+                keywordData[1] = "0";
+                keywordData[2] = "0";
+                keywordData[3] = "0";
+                keywordData[4] = "0";
+                keywordData[5] = "0";
+                keywordData[6] = "0";
+                keywordData[7] = "0";
+
                 for (int i = 0; i < data.Length; i++)
                 {
-                    if (data[i].Domain.ToLower().Equals(domain.ToLower()) && data[i].Keyword.ToLower().Equals(keyword.ToLower()) && data[i].Date.Equals(currentDate))
+                    if (!data[i].Keyword.IsNullOrWhiteSpace())
                     {
-                        keywordData[0] = data[i].Date;
-                        keywordData[1] = data[i].TotalCount.ToString();
-                        keywordData[2] = data[i].TotalParsed.ToString();
-                        keywordData[3] = data[i].EmailParsed.ToString();
-                        keywordData[4] = data[i].GenderParsed.ToString();
-                        keywordData[5] = data[i].BirthyearParsed.ToString();
-                        keywordData[6] = data[i].NameParsed.ToString();
-                        keywordData[7] = data[i].UsernameParsed.ToString();
+                        if (data[i].Domain.ToLower().Equals(domain.ToLower()) &&
+                            data[i].Keyword.ToLower().Equals(keyword.ToLower()) && data[i].Date.Equals(currentDate))
+                        {
+                            keywordData[1] = data[i].TotalCount.ToString();
+                            keywordData[2] = data[i].TotalParsed.ToString();
+                            keywordData[3] = data[i].BirthyearParsed.ToString();
+                            keywordData[4] = data[i].GenderParsed.ToString();
+                            keywordData[5] = data[i].NameParsed.ToString();
+                            keywordData[6] = data[i].UsernameParsed.ToString();
+                            keywordData[7] = data[i].EmailParsed.ToString();
+                        }
+                        fullKeywordData[j] = keywordData;
                     }
-                    fullKeywordData[j] = keywordData;
                 }
+
             }
 
 
@@ -549,6 +673,19 @@ namespace StatsPortal.Controllers
 
         public JsonResult GetKeywords(string domain, string startDate, string endDate)
         {
+
+            // Confirm valid date parameters
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
+
             var data = ReloadData(domain, startDate, endDate);
 
             List<string> keywords = new List<string>();

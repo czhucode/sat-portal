@@ -21,6 +21,7 @@ namespace StatsPortal.Controllers
 
         public ActionResult SK()
         {
+
             // Use the Connection factory to create connections to multiple databases.
             var factory = new ConnectionFactory("SAT01");
             

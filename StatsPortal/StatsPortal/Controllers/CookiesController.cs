@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Security.Policy;
 using System.Web;
 using System.Web.Mvc;
@@ -35,8 +36,30 @@ namespace StatsPortal.Controllers
         //public ActionResult Index(){}
 
         // Returns default data when page is loaded
-        public ActionResult Cookies(string startDate, string endDate)
+        public ActionResult Cookies(string domain, string startDate, string endDate)
         {
+
+            if (!startDate.IsNullOrWhiteSpace() && !endDate.IsNullOrWhiteSpace())
+            {
+                // Confirm valid date parameters
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days > 64)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+                }
+
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days < 1)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+                }
+            }
+
+            var model = new CookieViewModel();
+
+
             DateTime end = new DateTime();
             DateTime start = new DateTime();
 
@@ -48,10 +71,10 @@ namespace StatsPortal.Controllers
 
                 var cookieRepo = new CookiesRepository(conn);
                 // If we have not selected a domain, choose Facebook as the default
-                //if (domain.IsNullOrWhiteSpace())
-                //{
-                //    domain = "facebook.com";
-                //}
+                if (domain.IsNullOrWhiteSpace())
+                {
+                    domain = "google.com";
+                }
 
                 //if (startDate.IsNullOrWhiteSpace())
                 //{
@@ -65,9 +88,8 @@ namespace StatsPortal.Controllers
                 //    //endDate = "20150307";
                 //}
                 end = DateTime.ParseExact(cookieRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
-                start = end.AddDays(-6);
-                var testStart = start.ToString("yyyyMMdd");
-                var testEnd = end.ToString("yyyyMMdd");
+                start = end.AddDays(-30);
+
 
                 //// Create list to hold models
                 //List<CookieModel> cookieMonster = new List<CookieModel>();
@@ -109,20 +131,92 @@ namespace StatsPortal.Controllers
                 //var domainKeywordSort = from element in cookieMonster
                 //    orderby element.Domain ascending, element.Keyword ascending
                 //    select element;
-                models = cookieRepo.GetAll(start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd"));
+                model.CookieStats = ReloadData(domain, startDate, endDate);
+                model.startDate = start.ToString("yyyyMMdd");
+                model.endDate = end.ToString("yyyyMMdd");
+                model.maxDate = end.ToString("yyyyMMdd");
+                model.minDate = DateTime.ParseExact(cookieRepo.GetMinDate().ToString(), "yyyyMMdd", null).ToString("yyyyMMdd");
+                model.domainList = cookieRepo.GetDomains(start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd")).ToList();
             }
 
-            
-                CookieViewModel viewModel = new CookieViewModel();
-            viewModel.CookieStats = models.Where(item => item.Domain.ToLower().Equals("facebook.com")).First();
-            viewModel.startDate = start.ToString("yyyyMMdd");
-            viewModel.endDate = end.ToString("yyyyMMdd");
+           
             // Return the view with the data
             //CookieModel testing = models.Where(item => item.Domain.ToLower().Equals("facebook.com")).First();
 
             //return View(models.First());
-            return View(viewModel);
+            return View(model);
         }
+
+
+        private CookieModel[] ReloadData(string domain, string startDate, string endDate)
+        {
+
+            if (!startDate.IsNullOrWhiteSpace() && !endDate.IsNullOrWhiteSpace())
+            {
+                // Confirm valid date parameters
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days > 64)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+                }
+
+                if (
+                    (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null))
+                        .Days < 1)
+                {
+                    endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+                }
+
+
+                if (Convert.ToInt32(startDate) > Convert.ToInt32(endDate))
+                {
+                    startDate = "";
+                    endDate = "";
+                }
+            }
+
+            var model = new CookieViewModel();
+            DateTime end = new DateTime();
+            DateTime start = new DateTime();
+            // Use the Connection factory to create connections to multiple databases.
+            var factory = new ConnectionFactory("SAT04");
+            using (IDbConnection conn = factory.CreateConnection())
+            {
+                
+                var cookieRepo = new CookiesRepository(conn);
+
+                if (domain.IsNullOrWhiteSpace())
+                {
+                    domain = "google.com";
+                }
+
+                
+                if (String.IsNullOrEmpty(endDate))
+                {
+                    end = DateTime.ParseExact(cookieRepo.GetMaxDate().ToString(), "yyyyMMdd", null);
+                }
+                else
+                {
+                    end = DateTime.ParseExact(endDate, "yyyyMMdd", null);
+                }
+                if (String.IsNullOrEmpty(startDate))
+                {
+                    start = end.AddDays(-30);
+                }
+                else
+                {
+                    start = DateTime.ParseExact(startDate, "yyyyMMdd", null);
+                }
+
+
+
+                model.CookieStats = cookieRepo.GetAll(domain, start.ToString("yyyyMMdd"), end.ToString("yyyyMMdd")).ToArray();
+                model.startDate = start.ToString("yyyyMMdd");
+                model.endDate = end.ToString("yyyyMMdd");
+
+                //return model.SnippetStats;
+            }
 
         // Returns data for a given domain/keyword(s) and returns in a list of CookieModels
         //private List<CookieModel> LoadCookieData(string domain, string[] keywordList, string startDate, string endDate)
@@ -251,70 +345,145 @@ namespace StatsPortal.Controllers
 
         //}
 
+            return model.CookieStats;
+        }
+
         // Returns the distinct domains in the data
-        public JsonResult GetDomains()
+        public JsonResult GetDomains(string startDate, string endDate)
         {
-            List<string> domainList = new List<string>();
-            List<CookieModel> tempList = models.ToList();
+            //List<string> domainList = new List<string>();
+            //List<CookieModel> tempList = models.ToList();
 
 
-            //List<string> lines =
-            //   System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
+            ////List<string> lines =
+            ////   System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
 
 
-            //lines.RemoveAll(item => item.Trim() == "");
+            ////lines.RemoveAll(item => item.Trim() == "");
 
-            for (int i = 0; i < tempList.Count; i++)
+            //for (int i = 0; i < tempList.Count; i++)
+            //{
+
+            //    //string[] fields = lines[i].Split('\t');
+
+            //    if (!domainList.Contains(tempList[i].Domain))
+            //    {
+            //        domainList.Add(tempList[i].Domain);
+            //    }
+
+
+            //}
+
+            //domainList.Sort();
+
+            //return Json(domainList, JsonRequestBehavior.AllowGet);
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days < 1)
             {
-
-                //string[] fields = lines[i].Split('\t');
-
-                if (!domainList.Contains(tempList[i].Domain))
-                {
-                    domainList.Add(tempList[i].Domain);
-                }
-
-
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
             }
 
-            domainList.Sort();
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            List<string> domainList = new List<string>();
+
+            //var model = new SnippetViewModel();
+            // Use the Connection factory to create connections to multiple databases.
+            var factory = new ConnectionFactory("SAT04");
+            using (IDbConnection conn = factory.CreateConnection())
+            {
+                //IDbConnection conn = factory.CreateConnection();
+
+                var cookieRepo = new CookiesRepository(conn);
+
+                //List<string> lines =
+                //    System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\snippet_counts_combined_v2.txt").ToList();
+
+
+                ////lines.RemoveAll(item => item.Trim() == "");
+
+                //for (int i = 0; i < model.SnippetStats.Length; i++)
+                //{
+                //    if (!domainList.Contains(model.SnippetStats[i].Domain))
+                //    {
+                //        domainList.Add(model.SnippetStats[i].Domain);
+                //    }
+                //}
+
+                domainList = cookieRepo.GetDomains(startDate, endDate).ToList();
+
+                domainList.Sort();
+            }
+
 
             return Json(domainList, JsonRequestBehavior.AllowGet);
+
+
+
         }
 
         // Returns a list of keywords associated with a specific domain
-        public JsonResult GetKeywords(string domain)
+        public JsonResult GetKeywords(string domain, string startDate, string endDate)
         {
-            List<string> keywordList = new List<string>();
-            List<CookieModel> tempModel = models.ToList();
+            //List<string> keywordList = new List<string>();
+            //List<CookieModel> tempModel = models.ToList();
 
 
-            //List<string> lines =
-            //   System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
+            ////List<string> lines =
+            ////   System.IO.File.ReadAllLines(@"\\csiadsat07\temp\cpearce\web_portal\test_files\cookie_counts_combined.txt").ToList();
 
 
-            //lines.RemoveAll(item => item.Trim() == "");
+            ////lines.RemoveAll(item => item.Trim() == "");
 
-            for (int i = 0; i < tempModel.Count; i++)
-            {
+            //for (int i = 0; i < tempModel.Count; i++)
+            //{
                 
 
-                //string[] fields = lines[i].Split('\t');
+            //    //string[] fields = lines[i].Split('\t');
 
-                if (tempModel[i].Domain.ToLower().Equals(domain.ToLower()))
-                {
-                    if (!keywordList.Contains(tempModel[i].Keyword))
-                    {
-                        keywordList.Add(tempModel[i].Keyword);
-                    }
-                }
+            //    if (tempModel[i].Domain.ToLower().Equals(domain.ToLower()))
+            //    {
+            //        if (!keywordList.Contains(tempModel[i].Keyword))
+            //        {
+            //            keywordList.Add(tempModel[i].Keyword);
+            //        }
+            //    }
 
 
+            //}
+
+            //keywordList.Sort();
+
+            //return Json(keywordList, JsonRequestBehavior.AllowGet);
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
             }
 
-            keywordList.Sort();
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
 
-            return Json(keywordList, JsonRequestBehavior.AllowGet);
+            var data = ReloadData(domain, startDate, endDate);
+
+            List<string> keywords = new List<string>();
+
+            foreach (CookieModel s in data)
+            {
+                if (!keywords.Contains(s.Keyword))
+                {
+                    keywords.Add(s.Keyword);
+                }
+            }
+
+            keywords.Sort();
+
+            return Json(keywords, JsonRequestBehavior.AllowGet);
         }
 
         //// Returns data for a given domain/keyword(s) and returns in a list of CookieModels
@@ -360,25 +529,37 @@ namespace StatsPortal.Controllers
         //}
 
         // Returns data needed to build the domain-level line graph
-        public JsonResult GetDomainLineData(string domain, string[] keywordList, int days, string startDay)
+        public JsonResult GetDomainLineData(string domain, string startDay, string endDate)
         {
-            //List<CookieModel> data = LoadCookieData(domain, keywordList, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
-            List<CookieModel> data = models.ToList();
-            List<string> keywords = new List<string>();
-            foreach (CookieModel c in data)
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days < 1)
             {
-                if (c.Domain.ToLower().Equals(domain.ToLower()))
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            //List<CookieModel> data = LoadCookieData(domain, keywordList, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
+            var data = ReloadData(domain, startDay, endDate);
+
+            var days = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days + 1;
+
+
+            List<string> keywords = new List<string>();
+            foreach (CookieModel s in data)
+            {
+                if (!keywords.Contains(s.Keyword))
                 {
-                    if (!keywords.Contains(c.Keyword))
-                    {
-                        keywords.Add(c.Keyword);
-                    }
+                    keywords.Add(s.Keyword);
                 }
             }
 
             Dictionary<Tuple<string, string, string>, long[]> dict =
                 new Dictionary<Tuple<string, string, string>, long[]>();
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < data.Length; i++)
             {
                 if (data[i].Domain.ToLower().Equals(domain.ToLower()))
                 {
@@ -443,10 +624,10 @@ namespace StatsPortal.Controllers
 
                 tempString[1] = totalCount.ToString();
                 tempString[2] = totalParsed.ToString();
-                tempString[3] = nameCount.ToString();
-                tempString[4] = usernameCount.ToString();
-                tempString[5] = genderCount.ToString();
-                tempString[6] = birthyearCount.ToString();
+                tempString[3] = birthyearCount.ToString();
+                tempString[4] = genderCount.ToString();
+                tempString[5] = nameCount.ToString();
+                tempString[6] = usernameCount.ToString();
                 tempString[7] = emailCount.ToString();
 
 
@@ -464,10 +645,24 @@ namespace StatsPortal.Controllers
         }
 
         // Returns data needed to build the keyword-level line graph
-        public JsonResult GetKeywordLineData(string domain, string[] keywordList, int days, string startDay, bool countCheck)
+        public JsonResult GetKeywordLineData(string domain, string[] keywordList, string startDay, string endDate, bool countCheck)
         {
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
             //List<CookieModel> data = LoadCookieData(domain, keywordList, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
-            List<CookieModel> data = models.ToList();
+            var data = ReloadData(domain, startDay, endDate);
+
+            var days = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days + 1;
+
 
             if (keywordList != null)
             {
@@ -493,27 +688,35 @@ namespace StatsPortal.Controllers
             //}
 
             Dictionary<Tuple<string, string, string>, double> dict = new Dictionary<Tuple<string, string, string>, double>();
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < data.Length; i++)
             {
                 if (data[i].Domain.ToLower().Equals(domain.ToLower()))
                 {
-                    if (!dict.ContainsKey(new Tuple<string, string, string>(data[i].Domain,
-                        data[i].Keyword,
-                        data[i].Date)))
+                    int pos = -1;
+                    if (keywordList != null)
                     {
-                        Tuple<string, string, string> tup =
-                            new Tuple<string, string, string>(data[i].Domain,
-                                data[i].Keyword,
-                                data[i].Date);
+                        pos = Array.IndexOf(keywordList.ToArray(), data[i].Keyword);
+                    }
+                    if (pos > -1)
+                    {
+                        if (!dict.ContainsKey(new Tuple<string, string, string>(data[i].Domain,
+                            data[i].Keyword,
+                            data[i].Date)))
+                        {
+                            Tuple<string, string, string> tup =
+                                new Tuple<string, string, string>(data[i].Domain,
+                                    data[i].Keyword,
+                                    data[i].Date);
 
-                        if (countCheck)
-                        {
-                            dict.Add(tup, Convert.ToDouble(data[i].TotalCount));
-                        }
-                        else
-                        {
-                            dict.Add(tup,
-                                (Convert.ToDouble(data[i].TotalParsed)/Convert.ToDouble(data[i].TotalCount))*100);
+                            if (countCheck)
+                            {
+                                dict.Add(tup, Convert.ToDouble(data[i].TotalCount));
+                            }
+                            else
+                            {
+                                dict.Add(tup,
+                                    (Convert.ToDouble(data[i].TotalParsed)/Convert.ToDouble(data[i].TotalCount))*100);
+                            }
                         }
                     }
                 }
@@ -568,32 +771,60 @@ namespace StatsPortal.Controllers
         }
 
         // Returns data needed to build the keyword-level bar graph and display table
-        public JsonResult GetKeywordBarTableData(string domain, string keyword, int days, string startDay)
+        public JsonResult GetKeywordBarTableData(string domain, string keyword, string startDay, string endDate)
         {
-            //List<CookieModel> data = LoadCookieData(domain, new string[] {keyword}, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
-            List<CookieModel> data = models.ToList();
 
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
+            //List<CookieModel> data = LoadCookieData(domain, new string[] {keyword}, startDay, (Convert.ToInt32(startDay) + days - 1).ToString());
+            var data = ReloadData(domain, startDay, endDate);
+
+            var dayCount = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDay, "yyyyMMdd", null)).Days + 1;
+            
             keyword = System.Uri.UnescapeDataString(keyword);
 
-            string[][] fullKeywordData = new string[days][];
-            for (int j = 0; j < days; j++)
+            string[][] fullKeywordData = new string[dayCount][];
+            for (int j = 0; j < dayCount; j++)
             {
                 string currentDate = (DateTime.ParseExact(startDay, "yyyyMMdd", null).AddDays(j)).ToString("yyyyMMdd");
+
                 string[] keywordData = new string[8];
-                for (int i = 0; i < data.Count; i++)
+                keywordData[0] = currentDate;
+                keywordData[1] = "0";
+                keywordData[2] = "0";
+                keywordData[3] = "0";
+                keywordData[4] = "0";
+                keywordData[5] = "0";
+                keywordData[6] = "0";
+                keywordData[7] = "0";
+
+
+                for (int i = 0; i < data.Length; i++)
                 {
-                    if (data[i].Domain.ToLower().Equals(domain.ToLower()) && data[i].Keyword.ToLower().Equals(keyword.ToLower()) && data[i].Date.Equals(currentDate))
+                    if (!data[i].Keyword.IsNullOrWhiteSpace())
                     {
-                        keywordData[0] = data[i].Date;
-                        keywordData[1] = data[i].TotalCount.ToString();
-                        keywordData[2] = data[i].TotalParsed.ToString();
-                        keywordData[3] = data[i].EmailParsed.ToString();
-                        keywordData[4] = data[i].GenderParsed.ToString();
-                        keywordData[5] = data[i].BirthyearParsed.ToString();
-                        keywordData[6] = data[i].NameParsed.ToString();
-                        keywordData[7] = data[i].UsernameParsed.ToString();
+                        if (data[i].Domain.ToLower().Equals(domain.ToLower()) &&
+                            data[i].Keyword.ToLower().Equals(keyword.ToLower()) && data[i].Date.Equals(currentDate))
+                        {
+                            //keywordData[0] = data[i].Date;
+                            keywordData[1] = data[i].TotalCount.ToString();
+                            keywordData[2] = data[i].TotalParsed.ToString();
+                            keywordData[3] = data[i].BirthyearParsed.ToString();
+                            keywordData[4] = data[i].GenderParsed.ToString();
+                            keywordData[5] = data[i].NameParsed.ToString();
+                            keywordData[6] = data[i].UsernameParsed.ToString();
+                            keywordData[7] = data[i].EmailParsed.ToString();
+                        }
+                        fullKeywordData[j] = keywordData;
                     }
-                    fullKeywordData[j] = keywordData;
                 }
             }
 

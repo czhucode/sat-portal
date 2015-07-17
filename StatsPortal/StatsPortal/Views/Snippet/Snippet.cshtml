@@ -14,19 +14,38 @@
 <br />
 
 <!-- Toolbar -->
-<div class="dropdown col-md-2" id="snippet_nav_wrapper">
+<button id="toggle_snippet_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-menu-down padding-right-5"></span><span class="glyphicon glyphicon-cog"></span></span></button>
 
-    <button id="toggle_snippet_nav" class="btn btn-sm"><span id="toggle_icon"> <span class="glyphicon glyphicon-menu-down padding-right-5"></span><span class="glyphicon glyphicon-cog"></span></span></button>
+<div class="dropdown col-md-2 popped" id="snippet_nav_wrapper">
 
-    <div class="popped" id="snippet_nav">
+
+    <div id="snippet_nav">
         <div id="toggle_snippet_in_menu"><span class="glyphicon glyphicon-menu-up padding-right-5"></span></div>
         
         <div id="row">
             <select class="form-control" id="snippet_keyword_bar_chart_dropdown"></select>
         </div>
+ 
+        
+
+        @*<div id="domains_auto_widget">
+            <label for="snippet_keyword_bar_chart_dropdown">Domain: </label>
+            <input id="snippet_keyword_bar_chart_dropdown" class="form-control" value="Google" />
+        </div>*@
+        
+        <br />
 
         <div class="row top-margin-small">
-
+            
+            Start Date:
+            <input type="text" class="datepicker form-control" id="start_date" />
+            
+            <br />
+            
+            End Date:
+            <input type="text" class="datepicker form-control" id="end_date" />
+            
+            <br />
             <div class="col-md-12" id="populate_wrapper">
                 <button type="button" class="btn btn-primary" id="snippet_populate_button">Populate</button>
             </div>
@@ -52,6 +71,50 @@
     </div>
 </div>
 
+
+<!-- Keyword Bar Chart -->
+<div class="col-md-12" id="keyword_container">
+    <div class="panel panel-default" id="keyword_data_panel">
+
+        <div class="radio" id="keyword_data_toggle_container">
+            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
+
+            <label><input type="radio" name="optradio_keyword_data_display" id="keyword_data_percentages">Percent Parsed</label>
+        </div>
+        <div class="col-md-12" id="keyword_form_container">
+            <select class="form-control" id="snippet_keyword_data_dropdown"></select>
+        </div>
+
+        <br />
+        <br />
+
+        <div id="keyword_data_bar"></div>
+
+        <div class="text_center" id="keyword_bar_line_toggle">
+            <div class="col col-md-12 radio">
+                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_bar">Bar View</label>
+
+                <label><input type="radio" name="optradio_keyword_data_chart" id="toggle_keyword_line" checked="checked">Line View</label>
+                @*<button id="toggle_keyword_bar" class="btn btn-sm clicked">Bar View</button>
+                    <button id="toggle_keyword_line" class="btn btn-sm">Line View</button>*@
+            </div>
+        </div>
+
+        <br />
+        <br />
+        <br />
+        <br />
+
+        <div class="col col-md-12" id="keyword_chart_toggle_wrapper">
+            <button id="toggle_keyword_chart" class="btn btn-sm">View as Table</button>
+        </div>
+
+        <!-- Keyword Table View -->
+        <table class="table" id="keyword_table"></table>
+    </div>
+</div>
+
+
 <!-- Keyword Line Chart -->
 <div class="col-md-12">
     <div class="panel panel-default">
@@ -72,6 +135,11 @@
 
                     <div id="snippet_keyword_list"></div>
                     <br />
+
+                    <input placeholder="Filter keywords" id="keyword_filter_box" type="text" />
+                    
+                    <br /><br />
+
                     <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_checkall_button">Select All</button>
                     <button type="button" class="btn btn-default btn-xs" id="snippet_keyword_uncheckall_button">Disselect All</button>
 
@@ -85,32 +153,7 @@
 </div>
 
 
-<!-- Keyword Bar Chart -->
-<div class="col-md-12" id="keyword_container">
-    <div class="panel panel-default" id="keyword_data_panel">
 
-        <div class="radio" id="keyword_data_toggle_container">
-            <label><input type="radio" name="optradio" id="keyword_data_raw_counts" checked="checked">Raw Counts</label>
-
-            <label><input type="radio" name="optradio" id="keyword_data_percentages">Percent Parsed</label>
-        </div>
-        <div class="col-md-12" id="keyword_form_container">
-            <select class="form-control" id="snippet_keyword_data_dropdown"></select>
-        </div>
-        
-        <br />
-        <br />
-        
-        <div id="keyword_data_bar"></div>
-
-        <div class="col col-md-12" id="keyword_chart_toggle_wrapper">
-            <button id="toggle_keyword_chart" class="btn btn-sm">View as Table</button>
-        </div>
-        
-        <!-- Keyword Table View -->
-        <table class="table" id="keyword_table"></table>
-    </div>
-</div>
 
 <hr />
 
@@ -120,6 +163,10 @@
     var dataValues = @Html.Raw(Json.Encode(Model.SnippetStats));
     var startTimeValue = @Model.startDate;
     var endTimeValue = @Model.endDate;
+    var maxTimeValue = @Model.maxDate;
+    var minTimeValue = @Model.minDate;
+    var domainNameList = @Html.Raw(Json.Encode(Model.domainList));
+    
     //var snippetCounts = dataValues.SnippetStats;
 
     

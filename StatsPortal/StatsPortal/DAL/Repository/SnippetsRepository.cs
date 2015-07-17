@@ -32,6 +32,16 @@ namespace StatsPortal.DAL.Repository
         public IEnumerable<SnippetModel> GetAll(string domain, string startDate, string endDate)
         {
 
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+            
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
             using (var command = _connection.CreateCommand())
             {
 
@@ -40,8 +50,10 @@ namespace StatsPortal.DAL.Repository
                 List<DateTime> testDates = new List<DateTime>();
                 testDates.Add(DateTime.ParseExact(startDate, "yyyyMMdd", null));
 
+                var dayCount = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days + 1;
+
                 //for (int i = 1; i < (Convert.ToInt32(endDate) - Convert.ToInt32(startDate) + 1); i++)
-                for (int i = 1; i < 7; i++)
+                for (int i = 1; i < dayCount; i++)
                 {
                     testDates.Add(DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(i));
                 }
@@ -69,6 +81,15 @@ namespace StatsPortal.DAL.Repository
         public IEnumerable<string> GetDomains(string startDate, string endDate)
         {
 
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days < 1)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(1).ToString("yyyyMMdd");
+            }
+            if ((DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days > 64)
+            {
+                endDate = DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(63).ToString("yyyyMMdd");
+            }
+
             using (var command = _connection.CreateCommand())
             {
 
@@ -78,13 +99,15 @@ namespace StatsPortal.DAL.Repository
                 List<DateTime> testDates = new List<DateTime>();
                 testDates.Add(DateTime.ParseExact(startDate, "yyyyMMdd", null));
 
+                var dayCount = (DateTime.ParseExact(endDate, "yyyyMMdd", null) - DateTime.ParseExact(startDate, "yyyyMMdd", null)).Days + 1;
+
                 //for (int i = 1; i < (Convert.ToInt32(endDate) - Convert.ToInt32(startDate) + 1); i++)
-                for (int i = 1; i < 7; i++)
+                for (int i = 1; i < dayCount; i++)
                 {
                     testDates.Add(DateTime.ParseExact(startDate, "yyyyMMdd", null).AddDays(i));
                 }
                 string test_query =
-                    "SELECT TOP 50 (v_domain_name) FROM snippet_stats_v2 WITH (NOLOCK) WHERE i_handoff_date IN (";
+                    "SELECT TOP 1000 (v_domain_name) FROM snippet_stats_v2 WITH (NOLOCK) WHERE i_handoff_date IN (";
                 for (int i = 0; i < testDates.Count; i++)
                 {
                     if (i == testDates.Count - 1)
@@ -97,7 +120,7 @@ namespace StatsPortal.DAL.Repository
                     }
                 }
                 test_query +=
-                    ") AND v_domain_name IS NOT NULL GROUP BY v_domain_name ORDER BY COUNT(i_records_seen) desc";
+                    ") AND v_domain_name IS NOT NULL GROUP BY v_domain_name ORDER BY SUM(i_records_seen) desc";
                 command.CommandText = test_query;
                 using (var reader = command.ExecuteReader())
                 {
@@ -119,6 +142,26 @@ namespace StatsPortal.DAL.Repository
             using (var command = _connection.CreateCommand())
             {
                 command.CommandText = @"SELECT MAX(i_handoff_date) AS i_handoff_date FROM snippet_stats_v2";
+                using (var reader = command.ExecuteReader())
+                {
+
+                    while (reader.Read())
+                    {
+                        item = reader.GetValue<int>("i_handoff_date");
+                    }
+
+                }
+                return item;
+                //return ToList(command);
+            }
+        }
+
+        public int GetMinDate()
+        {
+            int item = 0;
+            using (var command = _connection.CreateCommand())
+            {
+                command.CommandText = @"SELECT MIN(i_handoff_date) AS i_handoff_date FROM snippet_stats_v2";
                 using (var reader = command.ExecuteReader())
                 {
 

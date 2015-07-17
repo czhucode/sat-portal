@@ -7,9 +7,10 @@
 }
 
 #toggle_cookies_nav {
-    position: absolute;
+    /*position: absolute;*/
+    position: fixed;
     top: -50px;
-    right: 10%;
+    right: 10px;
     /*height: 1%;*/
     text-align: right;
     z-index: 10;
@@ -83,6 +84,7 @@
 }
 
 #keyword_counts_container, #keyword_data_toggle_container {
+    width: 100%;
     text-align: right;
 }
 
@@ -111,4 +113,56 @@
 
 .top-margin-small {
     margin-top: 1px;
+}
+
+
+.ui-datepicker {
+
+    border: 1.5px solid #aeaeae;
+
+}
+
+#ui-datepicker-div { display: none; }
+
+.ui-datepicker-calendar, .ui-datepicker-header {
+    background-color: #f9f9f9;
+    padding: 5px;
+}
+
+.ui-datepicker-next {
+    float: right;
+}
+
+.ui-datepicker-title {
+    text-align: center;
+    font-weight: bold;
+}
+
+.ui-datepicker-calendar * {
+    text-align: center;
+    padding: 3px; 
+}
+
+#keyword_bar_line_toggle {
+    width: 100%;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: -30px;
+}
+
+
+#keyword_bar_line_toggle label {
+    margin-left: 25px;
+}
+
+input:read-only {
+    background-color: white;
+    cursor: pointer;
+}
+
+
+input[readonly].form-control {
+    background-color: #fff;
+    cursor: pointer;
+    /* any other styles */
 }

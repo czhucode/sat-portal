@@ -33,3 +33,14 @@
     margin-top: -5%;
     margin-bottom: 20px;
 }
+
+#prev_confusion_matrix_US table, #prev_confusion_matrix_US th, #prev_confusion_matrix_US tr, #prev_confusion_matrix_US td, 
+#prev_confusion_matrix_intl table, #prev_confusion_matrix_intl th, #prev_confusion_matrix_intl tr, #prev_confusion_matrix_intl td,
+#current_confusion_matrix_US table, #current_confusion_matrix_US th, #current_confusion_matrix_US tr, #current_confusion_matrix_US td, 
+#current_confusion_matrix_intl table, #current_confusion_matrix_intl th, #current_confusion_matrix_intl tr, #current_confusion_matrix_intl td {
+    text-align: center;
+}
+
+h5 {
+    margin: 30px 0px 30px 50px;
+}
