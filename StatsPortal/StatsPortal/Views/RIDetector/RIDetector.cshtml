@@ -1,0 +1,173 @@
+﻿@model StatsPortal.Models.RIDetectorModel
+
+@{
+    ViewBag.Title = "RIDectector";
+}
+
+@Scripts.Render("~/bundles/ridetector")
+
+<head>
+    <link rel="stylesheet" type="text/css" href="~/Content/RIDetector.css">
+</head>
+
+
+
+<div class="col-lg-12" style="padding-bottom: 20px">
+    <div class="btn-group" data-toggle-name="week_delta_options" data-toggle="buttons-radio">
+        <button type="button" value="Weekly" data-toggle="button" class="btn btn-info active" id="weekly_button">Weekly</button>
+        <button type="button" value="Monthly" data-toggle="button" class="btn btn-info" id="monthly_button">Monthly</button>
+    </div>
+</div>
+
+<div class ="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default" role="tablist" id="active_machine_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#active_machine_weekly" role="tab" data-toggle="tab">Weekly</a>
+                </li>
+                <li class="">
+                    <a href="#active_machine_monthly" role="tab" data-toggle="tab">Monthly</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="active_machine_weekly" class="tab-pane fade in active" role="tabpanel" style="height: 400px;"></div>
+                <div id="active_machine_monthly" class="tab-pane fade" role="tabpanel" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class ="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default" role="tablist" id="active_person_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#active_person_weekly" role="tab" data-toggle="tab">Weekly</a>
+                </li>
+                <li class="">
+                    <a href="#active_person_monthly" role="tab" data-toggle="tab">Monthly</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="active_person_weekly" class="tab-pane fade in active" role="tabpanel" style="height: 400px;"></div>
+                <div id="active_person_monthly" class="tab-pane fade" role="tabpanel" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class ="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default" role="tablist" id="active_person_withby_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#active_person_withby_weekly" role="tab" data-toggle="tab">Weekly</a>
+                </li>
+                <li class="">
+                    <a href="#active_person_withby_monthly" role="tab" data-toggle="tab">Monthly</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="active_person_withby_weekly" class="tab-pane fade in active" role="tabpanel" style="height: 400px;"></div>
+                <div id="active_person_withby_monthly" class="tab-pane fade" role="tabpanel" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class ="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default" role="tablist" id="active_person_withgen_tab">
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#active_person_withgen_weekly" role="tab" data-toggle="tab">Weekly</a>
+                </li>
+                <li class="">
+                    <a href="#active_person_withgen_monthly" role="tab" data-toggle="tab">Monthly</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="active_person_withgen_weekly" class="tab-pane fade in active" role="tabpanel" style="height: 400px;"></div>
+                <div id="active_person_withgen_monthly" class="tab-pane fade" role="tabpanel" style="height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script type="text/javascript">
+        
+        var RIActiveMachineChangeEventsStatsDataValues = @Html.Raw(Json.Encode(Model.RIActiveMachineChangeEventsStats));
+        var RIActivePersonChangeEventsStatsDataValues = @Html.Raw(Json.Encode(Model.RIActivePersonChangeEventsStats));
+        var RIActivePersonWithByChangeEventsStatsDataValues = @Html.Raw(Json.Encode(Model.RIActivePersonWithByChangeEventsStats));
+        var RIActivePersonWithGenChangeEventsStatsDataValues = @Html.Raw(Json.Encode(Model.RIActivePersonWithGenChangeEventsStats));
+
+        google.setOnLoadCallback(function () { drawActiveMachineChanges_table(RIActiveMachineChangeEventsStatsDataValues, '1'); });
+        google.setOnLoadCallback(function () { drawActivePersonChanges_table(RIActivePersonChangeEventsStatsDataValues, '1'); });
+        google.setOnLoadCallback(function () { drawActivePersonWithByChanges_table(RIActivePersonWithByChangeEventsStatsDataValues, '1'); });
+        google.setOnLoadCallback(function () { drawActivePersonWithGenChanges_table(RIActivePersonWithGenChangeEventsStatsDataValues, '1'); });
+
+        $(document).ready(function() {
+
+            $('#weekly_button').click(function() {
+
+                $(this).addClass('active');
+                $('#monthly_button').removeClass('active');
+
+                // Reload active-machine weekly change event
+                $("a[href='#active_machine_weekly']").tab('show');
+                $("a[href='#active_machine_weekly']").show();
+
+                // Reload active-person weekly change event
+                $("a[href='#active_person_weekly']").tab('show');
+                $("a[href='#active_person_weekly']").show();
+                
+                // Reload active-person-with-birthyear weekly change event
+                $("a[href='#active_person_withby_weekly']").tab('show');
+                $("a[href='#active_person_withby_weekly']").show();
+
+                // Reload active-person-with-gender weekly change event
+                $("a[href='#active_person_withgen_weekly']").tab('show');
+                $("a[href='#active_person_withgen_weekly']").show();
+
+            });
+
+            $('#monthly_button').click(function() {
+
+                $(this).addClass('active');
+                $('#weekly_button').removeClass('active');
+
+                // Reload active-machine monthly change event
+                $("a[href='#active_machine_monthly']").tab('show');
+                $("a[href='#active_machine_monthly']").show();
+
+                // Reload active_person monthly change event
+                $("a[href='#active_person_monthly']").tab('show');
+                $("a[href='#active_person_monthly']").show();
+
+                // Reload active-person-with-birthyear monthly change event
+                $("a[href='#active_person_withby_monthly']").tab('show');
+                $("a[href='#active_person_withby_monthly']").show();
+
+                // Reload active-person-with-gender monthly change event
+                $("a[href='#active_person_withgen_monthly']").tab('show');
+                $("a[href='#active_person_withgen_monthly']").show();
+
+
+            });
+        });
+        
+        $(window).resize(function () {
+            reloadGraphs();
+        });
+
+        function reloadGraphs() {
+            drawActiveMachineChanges_table(RIActiveMachineChangeEventsStatsDataValues, '4');
+            drawActivePersonChanges_table(RIActivePersonChangeEventsStatsDataValues, '4');
+            drawActivePersonWithByChanges_table(RIActivePersonWithByChangeEventsStatsDataValues, '4');
+            drawActivePersonWithGenChanges_table(RIActivePersonWithGenChangeEventsStatsDataValues, '4');
+        }
+    </script>
+
