@@ -42,12 +42,12 @@ namespace StatsPortal.Controllers
                 var RIActivePersonWithByChangeEventsRepo = new RIActivePersonWithByChangeEventsRepository(conn);
                 var RIActivePersonWithGenChangeEventsRepo = new RIActivePersonWithGenChangeEventsRepository(conn);
 
-                var maxWeedID = RIActiveMachineChangeEventsRepo.GetMaxWeekID();
-                
-                RIActiveMachineChangeEventsStats = RIActiveMachineChangeEventsRepo.GetByWeekID(maxWeedID);
-                RIActivePersonChangeEventsStats = RIActivePersonChangeEventsRepo.GetByWeekID(maxWeedID);
-                RIActivePersonWithByChangeEventsStats = RIActivePersonWithByChangeEventsRepo.GetByWeekID(maxWeedID);
-                RIActivePersonWithGenChangeEventsStats = RIActivePersonWithGenChangeEventsRepo.GetByWeekID(maxWeedID);
+               // var maxWeedID = RIActiveMachineChangeEventsRepo.GetMaxWeekID();
+
+                RIActiveMachineChangeEventsStats = RIActiveMachineChangeEventsRepo.GetAll();//GetByWeekID(maxWeedID);
+                RIActivePersonChangeEventsStats = RIActivePersonChangeEventsRepo.GetAll();//GetByWeekID(maxWeedID);
+                RIActivePersonWithByChangeEventsStats = RIActivePersonWithByChangeEventsRepo.GetAll();//GetByWeekID(maxWeedID);
+                RIActivePersonWithGenChangeEventsStats = RIActivePersonWithGenChangeEventsRepo.GetAll();//GetByWeekID(maxWeedID);
 
                 // Load the entire table
               
