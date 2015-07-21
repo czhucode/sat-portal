@@ -28,6 +28,67 @@ function selectHandler(value, domain) {
     }
 }
 
+function CreatetDisplayVariables(data) {
+    var columns = [];
+    var series = {};
+
+    for (var i = 0; i < data.getNumberOfColumns() ; i++) {
+        if (i >= 0) {
+            // if the column is the domain column or in the default list, display the series
+            columns.push(i);
+
+            // set the default series option
+            series[i - 1] = {};
+            series[i - 1].backupColor = series[i - 1].color;
+        }
+    }
+
+    return {
+        columns : columns,
+        series : series
+    };
+}
+
+function ShowHideSeries(data, chart, columns, options) {
+    var view = new google.visualization.DataView(data);
+    this.columns = columns;
+
+    var sel = chart.getSelection();
+    // if selection length is 0, we deselected an element
+    if (sel.length > 0) {
+        // if row is undefined, we clicked on the legend
+        if (sel[0].row == null) {
+            var col = sel[0].column;
+            if (typeof (this.columns[col]) == 'number') {
+                var src = this.columns[col];
+
+                // hide the data series
+                this.columns[col] = {
+                    label: data.getColumnLabel(src),
+                    type: data.getColumnType(src),
+                    sourceColumn: src,
+                    calc: function () {
+                        return null;
+                    }
+                };
+
+                // grey out the legend entry
+                options.series[src - 1].color = '#CCCCCC';
+            }
+            else {
+                var src = this.columns[col].sourceColumn;
+
+                // show the data series
+                this.columns[col] = src;
+                options.series[src - 1].color = null;
+            }
+            
+            view.setColumns(columns);
+            chart.draw(view, options);
+        }
+    }
+}
+
 function drawRegionsMap(dataValues) {
 
     // Create the data table.
@@ -152,59 +213,46 @@ function drawChart(dataValues) {
             data.addRow([dataValues[i].Date.toString(), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
         else if (dataValues[0].Domain == 'google')
             data.addRow([dataValues[i].Date.toString(), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].GenderCount, dataValues[i].BirthyearCount, dataValues[i].EmailCount]);
-        else if(dataValues[0].Domain == 'facebook')
+        else if (dataValues[0].Domain == 'facebook')
             data.addRow([dataValues[i].Date.toString(), dataValues[i].MatchedMachines, dataValues[i].NameCount, dataValues[i].GenderCount, dataValues[i].BirthyearCount]);
     }
 
     // Sort the data
     data.sort([{ column: 0 }]);
 
-    // Set chart options
-    //var options = {
-    //    title: getQueryStringValue('domain') + ' Matching Machine Stats',
-    //    subtitle: 'Country : ' + dataValues[0].Country,
-    //    curveType: 'function',
-    //    legend: { position: 'bottom' },
-    //    animation: {
-    //        duration: 1000,
-    //        easing: 'out',
-    //    },
-    //    vAxis: {
-    //        title: "Counts",
-    //        viewWindowMode: 'explicit',
-    //        chartArea: {
-    //            left: 0,
-    //            width: '100%'
-    //        }
-    //        //viewWindow: {
-    //        //    max: auto,
-    //        //    min: 0
-    //        //}
-    //    },
-    //    height: 450,
-    //    width : '100%',
-    //    pointSize: 5
-    //};
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.charts.Line(document.getElementById('visualization'));
+
+    // Initialize columns and series objects
+    var obj = new CreatetDisplayVariables(data);
+    var columns = obj.columns;
+    var series = obj.series;
+
     var options = {
         chart: {
             title: getQueryStringValue('domain') + ' Matching Machine Stats',
             subtitle: 'Country : ' + dataValues[0].Country,
         },
-        hAxis : {
+        hAxis: {
             slantedText: true,
-            slantedTextAngle : 30
+            slantedTextAngle: 30
         },
-        vAxis : {
-            title : 'Counts'
+        vAxis: {
+            title: 'Counts'
         },
-        height: 400
+        height: 400,
+        series: series
     };
 
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.charts.Line(document.getElementById('visualization'));
+    google.visualization.events.addListener(chart, 'select', function() {
+        var o = new ShowHideSeries(data, chart, columns, options);
+        columns = o.columns;
+    });
 
-    //chart.draw(data, google.charts.Line.convertOptions(options));         // Uncomment this line if using Material Charts
-    chart.draw(data, options);
+    // create a view with the default columns
+    var view = new google.visualization.DataView(data);
+    view.setColumns(columns);
+    chart.draw(view, options);
 }
 
 /**
@@ -246,9 +294,17 @@ function drawLookupChart(dataValues) {
     // Sort the data
     data.sort([{ column: 0 }]);
 
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.LineChart(document.getElementById('lookup_stats'));
+    
+    // Initialize columns and series objects
+    var obj = new CreatetDisplayVariables(data);
+    var columns = obj.columns;
+    var series = obj.series;
+
     // Define the options for the Line Chart
     var options = {
-        title:  getQueryStringValue('domain') + ' Lookup Stats',
+        title: getQueryStringValue('domain') + ' Lookup Stats',
         titleTextStyle: {
             color: '#757575',
             fontSize: 16,
@@ -265,7 +321,7 @@ function drawLookupChart(dataValues) {
             }
         },
         hAxis: {
-            title : 'Date',
+            title: 'Date',
             slantedText: true,
             slantedTextAngle: 30,
             textStyle: {
@@ -275,7 +331,7 @@ function drawLookupChart(dataValues) {
             }
         },
         vAxis: {
-            title : 'Counts',
+            title: 'Counts',
             textStyle: {
                 color: '#757575',
                 fontSize: 12,
@@ -287,13 +343,22 @@ function drawLookupChart(dataValues) {
             keepInBounds: true,
             actions: ['dragToZoom', 'rightClickToReset']
         },
-        colors: ["#4285F4", "#DB4437", "#F4B400", "#0F9D58", "#AB47BC"]
+        colors: ["#4285F4", "#DB4437", "#F4B400", "#0F9D58", "#AB47BC"],
+        series: series
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('lookup_stats'));
+    google.visualization.events.addListener(chart, 'select', function() {
+        var o = new ShowHideSeries(data, chart, columns, options);
+        columns = o.columns;
+    });
 
-    chart.draw(data, options);
+    // create a view with the default columns
+    var view = new google.visualization.DataView(data);
+    view.setColumns(columns);
+    chart.draw(view, options);
 }
+
+
 
 /**
   *     Draws the Line Chart that populates the Matched Id Stats.
@@ -336,6 +401,14 @@ function drawMatchingChart(dataValues) {
     // Sort the data
     data.sort([{ column: 0 }]);
 
+    // Instantiate and draw our chart
+    var chart = new google.visualization.LineChart(document.getElementById('matched_overall'));
+
+    // Initialize columns and series objects
+    var obj = new CreatetDisplayVariables(data);
+    var columns = obj.columns;
+    var series = obj.series;
+
     // Define the options for the Line Chart
     var options = {
         title: getQueryStringValue('domain') + ' Matching Id Stats',
@@ -377,12 +450,19 @@ function drawMatchingChart(dataValues) {
             keepInBounds: true,
             actions: ['dragToZoom', 'rightClickToReset']
         },
-        colors: ["#4285F4", "#18FFFF", "#DB4437", "#F4B400", "#0F9D58", "#AB47BC"]
+        colors: ["#4285F4", "#18FFFF", "#DB4437", "#F4B400", "#0F9D58", "#AB47BC"],
+        series:series
     };
 
-    var chart = new google.visualization.LineChart(document.getElementById('matched_overall'));
+    google.visualization.events.addListener(chart, 'select', function () {
+        var o = new ShowHideSeries(data, chart, columns, options);
+        columns = o.columns;
+    });
 
-    chart.draw(data, options);
+    // create a view with the default columns
+    var view = new google.visualization.DataView(data);
+    view.setColumns(columns);
+    chart.draw(view, options);
 }
 //$(window).resize(function (dataValues) {
 //    drawChart(dataValues);
